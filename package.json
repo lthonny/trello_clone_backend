@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js",
-    "dev": "nodemon index.js",
+    "start": "NODE_ENV=production node index.js",
+    "start:dev": "NODE_ENV=development nodemon index.js",
     "make-model": "npx sequelize-cli model:generate --name Users --attributes email:string",
-    "db:migrate": "sequelize-cli db:migrate"
+    "db:migrate": "NODE_ENV=development sequelize-cli db:migrate",
+    "db:create": "NODE_ENV=development npx sequelize-cli db:create && NODE_ENV=development npx sequelize-cli db:migrate"
   },
   "keywords": [],
   "author": "",
@@ -27,5 +28,8 @@
     "pg-promise": "^10.11.0",
     "sequelize": "^6.6.5",
     "validator": "^13.6.0"
+  },
+  "devDependencies": {
+    "sequelize-cli": "^6.2.0"
   }
 }
