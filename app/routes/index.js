@@ -1,12 +1,12 @@
 const express = require('express');
 const router = express.Router();
-const passport = require('passport');
-
-const initializePassport = require('../services/passport-config');
-initializePassport(passport, email => {
-    passport,
-    email => users.find(user => user.email === email)
-});
+// const passport = require('passport');
+//
+// const initializePassport = require('../services/passport-config');
+// initializePassport(passport, email => {
+//     passport,
+//     email => users.find(user => user.email === email)
+// });
 
 const userController = require('../contrellers/userController');
 router.post('/signin', userController.signin);
