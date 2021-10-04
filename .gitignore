@@ -3,4 +3,5 @@ env/.env.test
 env/.env.production
 .idea/
 node_modules/
-database/pgdata
+# database/pgdata
+pgdata/

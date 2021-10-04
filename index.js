@@ -6,14 +6,13 @@ console.log('path: ', path.resolve(process.cwd(), `.env.${process.env.NODE_ENV}`
 const express = require('express');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-// const router = require('./router/index');
+const router = require('./app/routes/index');
 
 const app = express();
 
 app.use(express.json());
 app.use(cookieParser());
-
-// app.use(router);
+app.use(router);
 
 
 
