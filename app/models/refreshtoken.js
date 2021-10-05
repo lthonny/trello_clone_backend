@@ -4,7 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     user_id: DataTypes.INTEGER
   }, {});
   RefreshToken.associate = (models) => {
-    // associations can be defined here
     RefreshToken.belongsTo(models.User, {
       as: 'user',
       foreignKey: 'user_id',

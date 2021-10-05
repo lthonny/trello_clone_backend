@@ -1,24 +1,17 @@
-'use strict';
-const {
-  Model
-} = require('sequelize');
 module.exports = (sequelize, DataTypes) => {
-  class user_board extends Model {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    static associate(models) {
-      // define association here
-    }
-  };
-  user_board.init({
+  const user_board = sequelize.define('user_board', {
     board_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER
-  }, {
-    sequelize,
-    modelName: 'user_board',
-  });
+  }, {});
+  user_board.associate = (models) => {
+    user_board.belongsTo(models.User, {
+      as: 'user',
+      foreignKey: 'user_id',
+    });
+    user_board.belongsTo(models.Board, {
+      as: 'board',
+      foreignKey: 'board_id',
+    });
+  };
   return user_board;
 };

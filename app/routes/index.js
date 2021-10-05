@@ -8,17 +8,26 @@ const router = express.Router();
 //     email => users.find(user => user.email === email)
 // });
 
+// const passport = require('passport');
+// const userServices = require('../services/userServices');
+
 const userController = require('../contrellers/userController');
 router.post('/signin', userController.signin);
 router.post('/signup', userController.signup);
 router.post('/logout', userController.logout);
+router.get('/refresh', userController.refresh);
 router.get('/isauth', userController.isauth);
 
 const boardController = require('../contrellers/boardController');
-const passport = require('passport');
-const userServices = require('../services/userServices');
+router.get('/boards/:id', boardController.board);
 router.get('/boards', boardController.boards);
-router.post('/boards/create', boardController.board);
+router.post('/boards/create', boardController.createBoard);
+
+const taskController = require('../contrellers/taskController');
+const userServices = require('../services/userServices');
+router.get('/task/:id', taskController.task);
+router.get('/tasks', taskController.tasks);
+router.post('/tasks/create', taskController.createTask);
 
 module.exports = router;
 
