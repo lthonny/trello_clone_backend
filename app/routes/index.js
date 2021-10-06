@@ -19,18 +19,18 @@ router.get('/refresh', userController.refresh);
 router.get('/isauth', userController.isauth);
 
 const boardController = require('../contrellers/boardController');
-router.get('/boards/:id', boardController.board);
+router.get('/board/:id', boardController.board);
 router.get('/boards', boardController.boards);
-router.delete('/boards/:id', boardController.deleteBoard);
-router.post('/boards/create', boardController.createBoard);
-router.post('/boards/update/:id', boardController.updateBoard);
+router.delete('/board/:id', boardController.deleteBoard);
+router.post('/board/create', boardController.createBoard);
+router.post('/board/update/:id', boardController.updateBoard);
 
 const taskController = require('../contrellers/taskController');
 const userServices = require('../services/userServices');
 router.get('/task/:id', taskController.task);
 router.get('/tasks', taskController.tasks);
 router.delete('/task/:id', taskController.deleteTask);
-router.post('/tasks/create', taskController.createTask);
+router.post('/task/create', taskController.createTask);
 router.post('/task/update/:id', taskController.updateTask);
 
 module.exports = router;
