@@ -31,6 +31,31 @@ class TaskController {
             next(e);
         }
     }
+
+    async updateTask(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { title, description } = req.body;
+
+            const task = await Task.update({title, description}, {where: { id }})
+            const updated = await Task.findOne({ where: { id } });
+
+            return res.json(updated);
+        } catch(e) {
+            next(e);
+        }
+    }
+
+    async deleteTask(req, res, next) {
+        try {
+            const { id } = req.params;
+            console.log(id)
+            await Task.destroy({where: {id}});
+            return res.json('ok');
+        } catch(e) {
+            next(e);
+        }
+    }
 }
 
 module.exports = new TaskController();

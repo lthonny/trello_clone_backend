@@ -29,7 +29,9 @@ const taskController = require('../contrellers/taskController');
 const userServices = require('../services/userServices');
 router.get('/task/:id', taskController.task);
 router.get('/tasks', taskController.tasks);
+router.delete('/task/:id', taskController.deleteTask);
 router.post('/tasks/create', taskController.createTask);
+router.post('/task/update/:id', taskController.updateTask);
 
 module.exports = router;
 
