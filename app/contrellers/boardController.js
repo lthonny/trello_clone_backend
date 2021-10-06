@@ -23,10 +23,22 @@ class BoardController {
   async createBoard(req, res, next) {
     try {
       const { name } = req.body;
+      console.log(req.body);
       const board = (await Board.create({ title: name })).get();
 
-      return res.status(200).send({ message: 'The table is created' });
+      // return res.status(200).send({ message: 'The table is created' });
+      return res.json(board);
     } catch (e) {
+      next(e);
+    }
+  }
+
+  async deleteBoard(req, res, next) {
+    try {
+      const { id } = req.params;
+      await Board.destroy({where: {id}});
+      return res.json('ok');
+    } catch(e) {
       next(e);
     }
   }

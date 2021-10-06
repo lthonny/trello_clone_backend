@@ -21,6 +21,7 @@ router.get('/isauth', userController.isauth);
 const boardController = require('../contrellers/boardController');
 router.get('/boards/:id', boardController.board);
 router.get('/boards', boardController.boards);
+router.delete('/boards/:id', boardController.deleteBoard);
 router.post('/boards/create', boardController.createBoard);
 
 const taskController = require('../contrellers/taskController');
