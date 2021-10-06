@@ -33,6 +33,20 @@ class BoardController {
     }
   }
 
+  async updateBoard(req, res, next) {
+    try {
+      const { id } = req.params;
+      const { name } = req.body;
+
+      const board = await Board.update({title: name}, {where: { id }});
+      const updated = await Board.findOne({ where: { id } });
+
+      return res.json(updated);
+    } catch(e) {
+      next(e);
+    }
+  }
+
   async deleteBoard(req, res, next) {
     try {
       const { id } = req.params;

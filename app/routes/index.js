@@ -23,6 +23,7 @@ router.get('/boards/:id', boardController.board);
 router.get('/boards', boardController.boards);
 router.delete('/boards/:id', boardController.deleteBoard);
 router.post('/boards/create', boardController.createBoard);
+router.post('/boards/update/:id', boardController.updateBoard);
 
 const taskController = require('../contrellers/taskController');
 const userServices = require('../services/userServices');
