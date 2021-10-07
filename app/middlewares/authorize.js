@@ -7,7 +7,7 @@ const authorize = (req, res, next) => {
     return res.status(401).send({ error: 'Unauthorized' });
   }
 
-  const JWT_ACCESS_SECRET = 'asdasdascz';
+  const JWT_ACCESS_SECRET = 'JWT_ACCESS_SECRET';
 
   const token = req.headers.authorization.split(' ')[1];
   return jwt.verify(token, JWT_ACCESS_SECRET, { expiresIn: '24h' }, (error, decoded) => {
