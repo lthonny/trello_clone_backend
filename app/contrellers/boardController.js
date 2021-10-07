@@ -1,4 +1,4 @@
-const { Board } = require('../models/index');
+const { Board, user_board } = require('../models/index');
 
 class BoardController {
   async board(req, res, next) {
@@ -14,7 +14,9 @@ class BoardController {
 
   async boards(req, res, next) {
     try {
-      return res.json(await Board.findAll());
+      const { id } = req.params;
+      const boards = await Board.findAll({include: {model: user_board, where: { user_id: 1 }}});
+      return res.json(boards);
     } catch (e) {
       next(e);
     }
@@ -22,12 +24,12 @@ class BoardController {
 
   async createBoard(req, res, next) {
     try {
+      const { id } = req.params;
       const { name } = req.body;
-      console.log(req.body);
       const board = (await Board.create({ title: name })).get();
+      const userBoard = await user_board.create({board_id: board.id, user_id: id});
 
-      // return res.status(200).send({ message: 'The table is created' });
-      return res.json(board);
+      return res.status(200).send({ message: 'The table is created' });
     } catch (e) {
       next(e);
     }

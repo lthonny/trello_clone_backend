@@ -5,11 +5,9 @@ module.exports = (sequelize, DataTypes) => {
   }, {});
   user_board.associate = (models) => {
     user_board.belongsTo(models.User, {
-      as: 'user',
       foreignKey: 'user_id',
     });
     user_board.belongsTo(models.Board, {
-      as: 'board',
       foreignKey: 'board_id',
     });
   };

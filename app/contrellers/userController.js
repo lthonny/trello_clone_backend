@@ -1,4 +1,6 @@
 const userService = require('../services/userServices');
+const { User, Task } = require('../models/index');
+const { signedCookie } = require('cookie-parser');
 
 class UserController {
   async signup(req, res, next) {
@@ -16,15 +18,13 @@ class UserController {
     }
   }
 
-  async signin(req, res, next) {
+  async login(req, res, next) {
     try {
       const { email, password} = req.body;
 
       const userData = await userService.sign_in(email, password);
-      res.cookie('refreshToken', userData.refreshToken, { 
-        maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false 
-      });
-      
+      res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false });
+      console.log('req.cookies', req.cookies);
       return res.json(userData);
     } catch (e) {
       next(e);
@@ -62,6 +62,15 @@ class UserController {
   async isauth(req, res, next) {
     try {
       return res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async users(req, res, next) {
+    try {
+      const users = await User.findAll();
+      return res.json(users);
     } catch (e) {
       next(e);
     }

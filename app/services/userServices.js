@@ -27,6 +27,7 @@ class UserService {
 
     async sign_in(email, password) {
         const user = await User.findOne({ where: { email } });
+
         if (!user) {
             throw ApiError.BadRequest('User was not found');
         }
@@ -70,10 +71,10 @@ class UserService {
         return { ...tokens, user: userDto };
       }
 
-      async getAllUsers() {
-        const users = await UserModel.findAll();
-        return users;
-      }
+      // async getAllUsers() {
+      //   const users = await User.findAll();
+      //   return users;
+      // }
 }
 
 module.exports = new UserService();
