@@ -1,5 +1,4 @@
 const jwt = require('jsonwebtoken');
-
 const { RefreshToken } = require("../models/index");
 
 const JWT_ACCESS_SECRET = 'JWT_ACCESS_SECRET';
