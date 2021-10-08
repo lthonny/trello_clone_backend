@@ -4,12 +4,6 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING
   }, {});
-  User.associate = (models) => {
-    // associations can be defined here
-    // User.hasMany(models.RefreshToken, {
-    //   as: 'refreshToken',
-    //   foreignKey: 'user_id',
-    // });
-  };
+  User.associate = (models) => {};
   return User;
 };

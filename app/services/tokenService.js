@@ -2,8 +2,8 @@ const jwt = require('jsonwebtoken');
 
 const { RefreshToken } = require("../models/index");
 
-const JWT_ACCESS_SECRET = 'asdasdascz';
-const JWT_REFRESH_SECRET = 'sdadasdasd';
+const JWT_ACCESS_SECRET = 'JWT_ACCESS_SECRET';
+const JWT_REFRESH_SECRET = 'JWT_REFRESH_SECRET';
 
 class TokenService {
     generateTokens(payload) {

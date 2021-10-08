@@ -3,6 +3,10 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     description: DataTypes.STRING
   }, {});
-  Task.associate = (models) => {};
+  Task.associate = (models) => {
+    Task.hasMany(models.user_tasks, {
+      foreignKey: 'task_id',
+    });
+  };
   return Task;
 };
