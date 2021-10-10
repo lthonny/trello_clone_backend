@@ -91,6 +91,7 @@ class BoardController {
   async deleteBoard(req, res, next) {
     try {
       const { id } = req.params;
+
       await Board.destroy({ where: { id } });
       return res.json('ok');
     } catch (e) {

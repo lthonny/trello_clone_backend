@@ -24,7 +24,7 @@ router.get('/api/users', userController.users);
 const boardController = require('../contrellers/boardController');
 // router.get('/api/board/:id', authorize, boardController.board);
 router.get('/api/boards/:id', authorize, boardController.boards);
-// router.delete('/api/board/:id', authorize, boardController.deleteBoard);
+router.delete('/api/board/:id', authorize, boardController.deleteBoard);
 router.post('/api/board/create/:id', authorize, boardController.createBoard);
 router.post('/api/board/update/:id', authorize, boardController.updateBoard);
 
