@@ -4,6 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     email: DataTypes.STRING,
     password: DataTypes.STRING
   }, {});
-  User.associate = (models) => {};
+  User.associate = (models) => {
+    User.hasMany(models.user_board, {
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE'
+    });
+  };
   return User;
 };

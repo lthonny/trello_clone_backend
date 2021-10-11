@@ -6,10 +6,13 @@ module.exports = (sequelize, DataTypes) => {
   user_board.associate = (models) => {
     user_board.belongsTo(models.User, {
       foreignKey: 'user_id',
+      onDelete: 'CASCADE'
     });
     user_board.belongsTo(models.Board, {
       foreignKey: 'board_id',
+      onDelete: 'CASCADE'
     });
   };
   return user_board;
+
 };
