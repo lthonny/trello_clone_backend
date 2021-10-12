@@ -1,4 +1,4 @@
-const { Task, user_tasks, Board } = require('../models/index');
+const { Task, user_tasks, Board, User } = require('../models/index');
 
 
 class Tasks {
@@ -48,9 +48,6 @@ class TaskService {
 
   async create(id, date) {
     const { title, description, nameTaskList, board_id } = date;
-
-    console.log(date)
-
     const task = await Task.create({ title, description, nameTaskList, board_id });
     const userTask = await user_tasks.create({ task_id: task.id, user_id: id });
 
@@ -65,8 +62,7 @@ class TaskService {
   }
 
   async delete(id) {
-    console.log(id);
-    return await Task.destroy({ where: { id } });
+    return await Task.destroy({ where: { id: id } });
   }
 
 }

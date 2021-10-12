@@ -48,6 +48,7 @@ class TaskController {
       await taskService.delete(req.params.id);
       return res.json('ok');
     } catch (e) {
+      console.log('error', e.message);
       next(e);
     }
   }

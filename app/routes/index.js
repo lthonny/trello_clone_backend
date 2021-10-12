@@ -30,8 +30,10 @@ router
   .get('/api/board/:id', authorize, boardController.board)
   .get('/api/boards/:id', authorize, boardController.boards)
   // .delete('/api/board/:id', authorize, boardController.deleteBoard)
-  .post('/api/board/create/:id', authorize, boardController.createBoard)
-  // .post('/api/board/update/:id', authorize, boardController.updateBoard);
+  .post('/api/board/create/:id', authorize, boardController.createBoard);
+
+
+router.post('/api/board/update/:id', authorize, boardController.updateBoard);
 
 
 const taskController = require('../contrellers/taskController');

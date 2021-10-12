@@ -40,7 +40,7 @@ class BoardService {
 
     // console.log(board.dataValues.title)
 
-    return { title, "tasks": board.Tasks };
+    return { id: id, title, "tasks": board.Tasks };
   }
 
   async fetchAll(id) {
@@ -67,13 +67,13 @@ class BoardService {
   }
 
   async update(id, name) {
+    console.log('name', name);
     const board = await Board.update(
       { title: name },
       { where: { id } },
     );
 
     const updated = await Board.findOne({ where: { id } });
-
     return updated;
   }
 

@@ -3,15 +3,14 @@ module.exports = (sequelize, DataTypes) => {
     task_id: DataTypes.INTEGER,
     user_id: DataTypes.INTEGER
   }, {});
-  user_tasks.associate = (models) => {
-    user_tasks.belongsTo(models.User, {
-      foreignKey: 'user_id',
-      onDelete: 'CASCADE'
-    });
-    user_tasks.belongsTo(models.Task, {
-      foreignKey: 'task_id',
-      onDelete: 'CASCADE'
-    });
-  };
+  user_tasks.associate = (models) => {};
   return user_tasks;
 };
+
+//
+// user_tasks.belongsTo(models.User, {
+//   foreignKey: 'user_id'
+// });
+// user_tasks.belongsTo(models.Task, {
+//   foreignKey: 'task_id'
+// });

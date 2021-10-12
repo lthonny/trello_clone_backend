@@ -9,6 +9,12 @@ module.exports = (sequelize, DataTypes) => {
       foreignKey: 'user_id',
       onDelete: 'CASCADE'
     });
+
+    User.belongsToMany(models.Task, {
+      through: models.user_tasks,
+      foreignKey: 'user_id',
+      onDelete: 'CASCADE'
+    })
   };
   return User;
 };

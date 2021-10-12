@@ -1,29 +1,22 @@
 module.exports = {
   up: async (queryInterface, Sequelize) => {
-    await queryInterface.createTable('user_tasks', {
+    await queryInterface.createTable('Invites', {
       id: {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      task_id: {
+      board_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'Tasks',
-        //   key: 'id'
-        // },
-        onDelete: 'CASCADE'
+        references: {
+          model: 'Boards',
+          key: 'id'
+        }
       },
-      user_id: {
-        type: Sequelize.INTEGER,
-        allowNull: false,
-        // references: {
-        //   model: 'Users',
-        //   key: 'id'
-        // },
-        onDelete: 'CASCADE'
+      key: {
+        type: Sequelize.STRING
       },
       createdAt: {
         allowNull: false,
@@ -35,5 +28,7 @@ module.exports = {
       }
     });
   },
-  down: (queryInterface) => queryInterface.dropTable('user_tasks')
+  down: async (queryInterface, Sequelize) => {
+    await queryInterface.dropTable('Invites');
+  }
 };
