@@ -43,7 +43,8 @@ router
   .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
-  // .post('/api/task/update/:id', authorize, taskController.updateTask)
+  .post('/api/task/update', authorize, taskController.updateTask)
+  .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder);
 
 
 module.exports = router;

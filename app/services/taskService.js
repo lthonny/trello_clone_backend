@@ -1,4 +1,5 @@
-const { Task, user_tasks, Board, User } = require('../models/index');
+const { Task, user_tasks, Board, User, user_board } = require('../models/index');
+const boardService = require('../services/boardService');
 
 
 class Tasks {
@@ -54,11 +55,34 @@ class TaskService {
     return task;
   }
 
-  async update(id, title, description) {
-    const task = await Task.update({ title, description }, { where: { id } });
-    const updated = await Task.findOne({ where: { id } });
+  async update(id, data) {
+
+    const { nameList } = data;
+
+    const task = await Task.update({ nameTaskList: nameList }, { where: { id: data.data.id } });
+    const updated = await Task.findOne({ where: { id: data.data.id } });
 
     return updated;
+  }
+
+  async updateOrder(idBoard, tasks) {
+    for (const { id, title, description, nameTaskList, board_id } of tasks) {
+      console.log(id, title, description, nameTaskList, board_id);
+      // await Task.update({ id, title, description, nameTaskList, board_id }, { where: { id: idBoard } });
+    }
+
+    const updateTasks = await Board.findAll({
+      include: {
+        model: user_board,
+        where: {
+          user_id: idBoard
+        },
+      }
+    })
+
+    console.log(updateTasks)
+
+    return updateTasks;
   }
 
   async delete(id) {

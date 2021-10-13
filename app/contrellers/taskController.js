@@ -34,10 +34,21 @@ class TaskController {
 
   async updateTask(req, res, next) {
     try {
-      const { title, description } = req.body;
+      // const { id, title, description } = req.body;
 
-      const task = await taskService.update(req.params.id, title, description);
+      // console.log(req.body)
+
+      const task = await taskService.update(req.params.id, req.body );
       return res.json(task);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async updateOrder(req, res, next) {
+    try {
+      const tasks = await taskService.updateOrder(req.params.id, req.body);
+      return res.json(tasks);
     } catch (e) {
       next(e);
     }
