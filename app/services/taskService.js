@@ -1,5 +1,6 @@
 const { Task, user_tasks, Board, User, user_board } = require('../models/index');
 const boardService = require('../services/boardService');
+const { where } = require('sequelize');
 
 
 class Tasks {
@@ -8,6 +9,7 @@ class Tasks {
   description;
   createdAt;
   updatedAt;
+  order;
 
   constructor(model) {
     this.id = model.id;
@@ -15,6 +17,7 @@ class Tasks {
     this.description = model.description;
     this.createdAt = model.createdAt;
     this.updatedAt = model.updatedAt;
+    this.order = model.order;
   }
 }
 
@@ -47,9 +50,12 @@ class TaskService {
     return tasks;
   }
 
-  async create(id, date) {
-    const { title, description, nameTaskList, board_id } = date;
-    const task = await Task.create({ title, description, nameTaskList, board_id });
+  async create(id, data) {
+    const { title, description, nameTaskList, board_id, order } = data;
+    console.log('create data', data);
+    const task = await Task.create({ title, description, nameTaskList, board_id, order: order });
+    console.log('new task', task);
+
     const userTask = await user_tasks.create({ task_id: task.id, user_id: id });
 
     return task;
@@ -57,32 +63,42 @@ class TaskService {
 
   async update(id, data) {
 
-    const { nameList } = data;
+    const { nameList, order } = data;
 
-    const task = await Task.update({ nameTaskList: nameList }, { where: { id: data.data.id } });
+    const task = await Task.update({ nameTaskList: nameList, order: order }, { where: { id: data.data.id } });
     const updated = await Task.findOne({ where: { id: data.data.id } });
 
     return updated;
   }
 
-  async updateOrder(idBoard, tasks) {
-    for (const { id, title, description, nameTaskList, board_id } of tasks) {
-      console.log(id, title, description, nameTaskList, board_id);
-      // await Task.update({ id, title, description, nameTaskList, board_id }, { where: { id: idBoard } });
-    }
+  async updateOrder(id, data) {
+    const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order }) => {
+      return new Tasks({ id, title, description, createdAt, updatedAt, board_id, order });
+    });
 
-    const updateTasks = await Board.findAll({
-      include: {
-        model: user_board,
-        where: {
-          user_id: idBoard
-        },
+    // await updateTasks.forEach((task) => {
+    //   return Task.update({order: task.order}, {where: {id: task.id}});
+    // })
+
+    async function processArray(updateTasks) {
+      for (const task of updateTasks) {
+        await Task.update({order: task.order}, {where: {id: task.id}});;
       }
-    })
+    }
+    await processArray(updateTasks);
 
-    console.log(updateTasks)
+    const board = await Board.findByPk(id, {
+      include: [
+        {
+          model: Task,
+          where: {
+            board_id: data[0].board_id
+          },
+        },
+      ],
+    });
 
-    return updateTasks;
+    return { id: id, "tasks": board.Tasks };
   }
 
   async delete(id) {

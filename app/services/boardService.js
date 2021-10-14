@@ -67,7 +67,6 @@ class BoardService {
   }
 
   async update(id, name) {
-    console.log('name', name);
     const board = await Board.update(
       { title: name },
       { where: { id } },

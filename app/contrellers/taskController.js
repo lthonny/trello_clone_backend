@@ -24,8 +24,8 @@ class TaskController {
 
   async createTask(req, res, next) {
     try {
-      const { title, description, nameTaskList, board_id } = req.body;
-      const task = await taskService.create(req.params.id, {title, description, nameTaskList, board_id});
+      const { title, description, nameTaskList, board_id, order } = req.body;
+      const task = await taskService.create(req.params.id, {title, description, nameTaskList, board_id, order});
       return res.status(200).send(task);
     } catch (e) {
       next(e);
@@ -34,10 +34,6 @@ class TaskController {
 
   async updateTask(req, res, next) {
     try {
-      // const { id, title, description } = req.body;
-
-      // console.log(req.body)
-
       const task = await taskService.update(req.params.id, req.body );
       return res.json(task);
     } catch (e) {

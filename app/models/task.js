@@ -3,7 +3,8 @@ module.exports = (sequelize, DataTypes) => {
     title: DataTypes.STRING,
     description: DataTypes.STRING,
     nameTaskList: DataTypes.STRING,
-    board_id: DataTypes.INTEGER
+    board_id: DataTypes.INTEGER,
+    order: DataTypes.INTEGER
   }, {});
   Task.associate = (models) => {
     // Task.hasMany(models.user_tasks, {
