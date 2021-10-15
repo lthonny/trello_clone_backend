@@ -4,7 +4,11 @@ module.exports = (sequelize, DataTypes) => {
     description: DataTypes.STRING,
     nameTaskList: DataTypes.STRING,
     board_id: DataTypes.INTEGER,
-    order: DataTypes.INTEGER
+    order: DataTypes.INTEGER,
+    archive: {
+      type: DataTypes.BOOLEAN,
+      // allowNull: false
+    }
   }, {});
   Task.associate = (models) => {
     // Task.hasMany(models.user_tasks, {

@@ -52,9 +52,7 @@ class TaskService {
 
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
-    console.log('create data', data);
-    const task = await Task.create({ title, description, nameTaskList, board_id, order: order });
-    console.log('new task', task);
+    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
 
     const userTask = await user_tasks.create({ task_id: task.id, user_id: id });
 
@@ -69,6 +67,11 @@ class TaskService {
     const updated = await Task.findOne({ where: { id: data.data.id } });
 
     return updated;
+  }
+
+  async updateDescription(id, description) {
+    const task = await Task.update({description}, {where: {id}});
+    return;
   }
 
   async updateOrder(id, data) {
@@ -101,10 +104,32 @@ class TaskService {
     return { id: id, "tasks": board.Tasks };
   }
 
+  async archive(id) {
+    const getTasks = await Board.findAll({
+      include: {
+        model: user_board,
+        where: {
+          user_id: id
+        },
+      },
+    });
+
+    console.log('archive tasks', getTasks);
+
+    // const tasks = getBoards.map(({ id, title, createdAt, updatedAt }) => {
+    //   return new Boards({ id, title, createdAt, updatedAt });
+    // });
+
+    return [];
+  }
+
+  async archiveCreate() {
+    return [];
+  }
+
   async delete(id) {
     return await Task.destroy({ where: { id: id } });
   }
-
 }
 
 module.exports = new TaskService();

@@ -29,7 +29,7 @@ const boardController = require('../contrellers/boardController');
 router
   .get('/api/board/:id', authorize, boardController.board)
   .get('/api/boards/:id', authorize, boardController.boards)
-  // .delete('/api/board/:id', authorize, boardController.deleteBoard)
+  .delete('/api/board/:id', authorize, boardController.deleteBoard)
   .post('/api/board/create/:id', authorize, boardController.createBoard);
 
 
@@ -44,7 +44,10 @@ router
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
   .post('/api/task/update', authorize, taskController.updateTask)
-  .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder);
+  .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
+  .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
+  .get(`/api/tasks/archive/:id`, authorize, taskController.fetchAllArchive)
+  .post(`/api/task/archive`, authorize, taskController.createArchive)
 
 
 module.exports = router;

@@ -3,10 +3,7 @@ const taskService = require('../services/taskService');
 class TaskController {
   async task(req, res, next) {
     try {
-      console.log('TAKS -> id', req.params.id);
-
       const task = await taskService.fetchOne(req.params.id);
-
       return res.json(task);
     } catch (e) {
       next(e);
@@ -25,7 +22,10 @@ class TaskController {
   async createTask(req, res, next) {
     try {
       const { title, description, nameTaskList, board_id, order } = req.body;
-      const task = await taskService.create(req.params.id, {title, description, nameTaskList, board_id, order});
+      const task = await taskService.create(req.params.id, { title, description, nameTaskList, board_id, order });
+
+      console.log(task);
+
       return res.status(200).send(task);
     } catch (e) {
       next(e);
@@ -45,6 +45,35 @@ class TaskController {
     try {
       const tasks = await taskService.updateOrder(req.params.id, req.body);
       return res.json(tasks);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async updateDescription(req, res, next) {
+    try {
+      const {id, description} = req.body;
+      const task = await taskService.updateDescription(id, description);
+      return res.json('ok');
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async fetchAllArchive(req, res, next) {
+    try {
+      const tasks = await taskService.archive(req.params.id);
+      return res.json(tasks);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async createArchive(req, res, next) {
+    try {
+      const {} = req.body;
+      const task = await taskService.archiveCreate();
+      return req.json(task);
     } catch (e) {
       next(e);
     }
