@@ -60,9 +60,9 @@ class TaskController {
     }
   }
 
-  async fetchAllArchive(req, res, next) {
+  async fetchArchive(req, res, next) {
     try {
-      const tasks = await taskService.archive(req.params.id);
+      const tasks = await taskService.getArchive(req.params.id);
       return res.json(tasks);
     } catch (e) {
       next(e);
@@ -71,9 +71,8 @@ class TaskController {
 
   async createArchive(req, res, next) {
     try {
-      const {} = req.body;
-      const task = await taskService.archiveCreate();
-      return req.json(task);
+      const task = await taskService.setArchive(req.body);
+      return res.json(task);
     } catch (e) {
       next(e);
     }

@@ -70,7 +70,10 @@ class TaskService {
   }
 
   async updateDescription(id, description) {
-    const task = await Task.update({description}, {where: {id}});
+    await Task.update({description}, {where: {id}});
+    const updated = await Task.findOne({ where: { id } });
+
+    console.log(updated);
     return;
   }
 
@@ -104,27 +107,31 @@ class TaskService {
     return { id: id, "tasks": board.Tasks };
   }
 
-  async archive(id) {
-    const getTasks = await Board.findAll({
-      include: {
-        model: user_board,
-        where: {
-          user_id: id
-        },
-      },
-    });
+  async getArchive(id) {
+      const board = await Board.findByPk(id, {
+        include: [
+          {
+            model: Task,
+            where: {
+              board_id: id
+            },
+          },
+        ],
+      });
 
-    console.log('archive tasks', getTasks);
+      const tasks = board.Tasks.map((task) => {
+        if (task.archive !== false && task.archive !== null) {
+          return task;
+        }
+      }).filter((task) => task);
 
-    // const tasks = getBoards.map(({ id, title, createdAt, updatedAt }) => {
-    //   return new Boards({ id, title, createdAt, updatedAt });
-    // });
-
-    return [];
+      return { "idBoard": board.dataValues.id, "nameBoard": board.dataValues.title, "tasks": tasks };
   }
 
-  async archiveCreate() {
-    return [];
+  async setArchive(data) {
+    await Task.update({archive: !data.archive}, {where: {id: data.id}});
+    const task = await Task.findOne({where: {id: data.id}})
+    return task;
   }
 
   async delete(id) {

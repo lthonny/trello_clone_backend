@@ -20,12 +20,6 @@ class BoardService {
 
     const board = await Board.findByPk(id, {
       include: [
-        // {
-        //   model: user_board,
-        //   where: {
-        //     user_id: id,
-        //   },
-        // },
         {
           model: Task,
           where: {
@@ -56,6 +50,8 @@ class BoardService {
     const boards = getBoards.map(({ id, title, createdAt, updatedAt }) => {
       return new Boards({ id, title, createdAt, updatedAt });
     });
+
+    console.log('boards', boards);
     return boards;
   }
 

@@ -39,14 +39,14 @@ router.post('/api/board/update/:id', authorize, boardController.updateBoard);
 const taskController = require('../contrellers/taskController');
 
 router
-  .get('/api/task/:id', authorize, taskController.task)
-  .get('/api/tasks/:id', authorize, taskController.tasks)
+  // .get('/api/task/:id', authorize, taskController.task)
+  // .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
   .post('/api/task/update', authorize, taskController.updateTask)
   .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
   .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
-  .get(`/api/tasks/archive/:id`, authorize, taskController.fetchAllArchive)
+  .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
   .post(`/api/task/archive`, authorize, taskController.createArchive)
 
 
