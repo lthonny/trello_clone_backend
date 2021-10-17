@@ -14,6 +14,9 @@ const authorize = require('../middlewares/authorize');
 // const userServices = require('../services/userServices');
 
 const userController = require('../contrellers/userController');
+const GoogleController = require('../contrellers/googleController');
+const boardController = require('../contrellers/boardController');
+const taskController = require('../contrellers/taskController');
 
 router
   .post('/api/signup', userController.signup)
@@ -23,20 +26,17 @@ router
   .get('/api/isauth', userController.isauth)
   .get('/api/users', userController.users);
 
-
-const boardController = require('../contrellers/boardController');
+router
+  .post('/api/singUp', GoogleController.singUp)
+  .post('/api/singIn', GoogleController.singIn);
 
 router
-  .get('/api/board/:id', authorize, boardController.board)
   .get('/api/boards/:id', authorize, boardController.boards)
-  .delete('/api/board/:id', authorize, boardController.deleteBoard)
-  .post('/api/board/create/:id', authorize, boardController.createBoard);
+  .get('/api/board/:id', authorize, boardController.tasksBoard)
+  .post('/api/board/create/:id', authorize, boardController.createBoard)
+  .post('/api/board/update/:id', authorize, boardController.updateBoard)
+  .delete('/api/board/:id', authorize, boardController.deleteBoard);
 
-
-router.post('/api/board/update/:id', authorize, boardController.updateBoard);
-
-
-const taskController = require('../contrellers/taskController');
 
 router
   // .get('/api/task/:id', authorize, taskController.task)
@@ -44,8 +44,10 @@ router
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
   .post('/api/task/update', authorize, taskController.updateTask)
+
   .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
   .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
+
   .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
   .post(`/api/task/archive`, authorize, taskController.createArchive)
 

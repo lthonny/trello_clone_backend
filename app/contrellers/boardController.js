@@ -1,10 +1,7 @@
 const boardService = require('../services/boardService');
 
-const lists = ['To Do', 'In Process', 'Coded', 'Testing', 'Done', 'Archive'];
-
 class BoardController {
-
-  async board(req, res, next) {
+  async tasksBoard(req, res, next) {
     try {
       const board = await boardService.fetchOne(req.params.id);
       return res.json(board);
@@ -33,7 +30,6 @@ class BoardController {
 
   async updateBoard(req, res, next) {
     try {
-      console.log('req.body', req.body);
       const updated = await boardService.update(req.params.id, req.body.name);
       return res.status(200).send(updated);
     } catch (e) {

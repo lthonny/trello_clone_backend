@@ -1,6 +1,5 @@
 const userService = require('../services/userServices');
-const { User, Task } = require('../models/index');
-const { signedCookie } = require('cookie-parser');
+const { User } = require('../models/index');
 
 class UserController {
   async signup(req, res, next) {
