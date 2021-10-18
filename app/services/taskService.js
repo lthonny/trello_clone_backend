@@ -73,8 +73,9 @@ class TaskService {
     await Task.update({description}, {where: {id}});
     const updated = await Task.findOne({ where: { id } });
 
-    console.log(updated);
-    return;
+    console.log(updated)
+
+    return updated;
   }
 
   async updateOrder(id, data) {

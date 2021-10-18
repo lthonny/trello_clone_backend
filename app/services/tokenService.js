@@ -1,13 +1,10 @@
 const jwt = require('jsonwebtoken');
 const { RefreshToken } = require("../models/index");
 
-const JWT_ACCESS_SECRET = 'JWT_ACCESS_SECRET';
-const JWT_REFRESH_SECRET = 'JWT_REFRESH_SECRET';
-
 class TokenService {
     generateTokens(payload) {
-        const accessToken = jwt.sign(payload, JWT_ACCESS_SECRET, { expiresIn: '1d' });
-        const refreshToken = jwt.sign(payload, JWT_REFRESH_SECRET, { expiresIn: '30d' });
+        const accessToken = jwt.sign(payload, process.env.JWT_ACCESS_SECRET, { expiresIn: '1d' });
+        const refreshToken = jwt.sign(payload, process.env.JWT_REFRESH_SECRET, { expiresIn: '30d' });
         return {
             accessToken,
             refreshToken
@@ -16,7 +13,7 @@ class TokenService {
 
     validateAcсessToken(token) {
         try {
-            const userData = jwt.verify(token, JWT_ACCESS_SECRET);
+            const userData = jwt.verify(token, process.env.JWT_ACCESS_SECRET);
             return userData;
         } catch (e) {
             return null;
@@ -25,7 +22,7 @@ class TokenService {
 
     validateRefreshToken(token) {
         try {
-            const userData = jwt.verify(token, JWT_REFRESH_SECRET);
+            const userData = jwt.verify(token, process.env.JWT_REFRESH_SECRET);
             return userData;
         } catch (e) {
             return null;

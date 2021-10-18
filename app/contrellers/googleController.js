@@ -3,8 +3,9 @@ const googleService = require('../services/googleService');
 class GoogleController {
   async singUp(req, res, next) {
     try {
-      const {} = req.body;
-      const user = await googleService.sign_up();
+      console.log(req.body);
+      // const {} = req.body;
+      // const user = await googleService.sign_up();
       return;
     } catch (e) {
       next(e);

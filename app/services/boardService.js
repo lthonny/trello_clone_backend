@@ -51,7 +51,7 @@ class BoardService {
       return new Boards({ id, title, createdAt, updatedAt });
     });
 
-    console.log('boards', boards);
+    // console.log('boards', boards);
     return boards;
   }
 
