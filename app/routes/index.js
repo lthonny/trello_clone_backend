@@ -26,31 +26,37 @@ router
   .get('/api/isauth', userController.isauth)
   .get('/api/users', userController.users);
 
-router
-  .post('/api/singUp', GoogleController.singUp)
-  .post('/api/singIn', GoogleController.singIn);
+// router
+//   .post('/api/singUp', GoogleController.singUp)
+//   .post('/api/singIn', GoogleController.singIn);
 
 router
   .get('/api/boards/:id', authorize, boardController.boards)
-  .get('/api/board/:id', authorize, boardController.tasksBoard)
+  .get('/api/tasks/board/:id', authorize, boardController.tasksBoard)
   .post('/api/board/create/:id', authorize, boardController.createBoard)
   .post('/api/board/update/:id', authorize, boardController.updateBoard)
   .delete('/api/board/:id', authorize, boardController.deleteBoard);
 
 
 router
-  // .get('/api/task/:id', authorize, taskController.task)
-  // .get('/api/tasks/:id', authorize, taskController.tasks)
+  .get('/api/task/:id', authorize, taskController.task)
+  .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
-  .post('/api/task/update', authorize, taskController.updateTask)
-
-  .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
-  .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
-
+  // .post('/api/task/update', authorize, taskController.updateTask)
+  //
+  // .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
+  // .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
   .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
   .post(`/api/task/archive`, authorize, taskController.createArchive)
 
+
+const InviteController = require('../contrellers/inviteController');
+
+router
+    .get('/api/board/invite/:id', InviteController.createInvite)
+    .post('/api/board/key/:key', InviteController.invite)
+    .post('/api/invite', InviteController.getBoard)
 
 module.exports = router;
 

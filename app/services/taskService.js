@@ -1,7 +1,4 @@
-const { Task, user_tasks, Board, User, user_board } = require('../models/index');
-const boardService = require('../services/boardService');
-const { where } = require('sequelize');
-
+const { Task, user_tasks, Board } = require('../models/index');
 
 class Tasks {
   id;
@@ -30,23 +27,7 @@ class TaskService {
   }
 
   async fetchAll(id) {
-    const tasks = await Board.findByPk(id, {
-      // include: [
-      //   // {
-      //   //   model: user_board,
-      //   //   where: {
-      //   //     user_id: id,
-      //   //   },
-      //   // },
-      //   {
-      //     model: Task,
-      //     where: {
-      //       board_id: id
-      //     },
-      //   },
-      // ],
-    });
-
+    const tasks = await Board.findByPk(id, {});
     return tasks;
   }
 
@@ -59,33 +40,41 @@ class TaskService {
     return task;
   }
 
-  async update(id, data) {
+  // async update(id, data) {
+  //
+  //   const { nameList, order } = data;
+  //
+  //   const task = await Task.update({ nameTaskList: nameList, order: order }, { where: { id: data.data.id } });
+  //   const updated = await Task.findOne({ where: { id: data.data.id } });
+  //
+  //   return updated;
+  // }
 
-    const { nameList, order } = data;
+  // async update(boardId, data) {
+  //   const { id, description, nameList, order } = data;
+  //
+  //   const task = await Task.findOne()
+  //
+  //   if(task) {
+  //
+  //   }
+  //
+  //   // const task = Task.update({})
+  //
+  //   return task;
+  // }
 
-    const task = await Task.update({ nameTaskList: nameList, order: order }, { where: { id: data.data.id } });
-    const updated = await Task.findOne({ where: { id: data.data.id } });
-
-    return updated;
-  }
-
-  async updateDescription(id, description) {
-    await Task.update({description}, {where: {id}});
-    const updated = await Task.findOne({ where: { id } });
-
-    console.log(updated)
-
-    return updated;
-  }
+  // async updateDescription(id, description) {
+  //   await Task.update({description}, {where: {id}});
+  //   const updated = await Task.findOne({ where: { id } });
+  //
+  //   return updated;
+  // }
 
   async updateOrder(id, data) {
     const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order }) => {
       return new Tasks({ id, title, description, createdAt, updatedAt, board_id, order });
     });
-
-    // await updateTasks.forEach((task) => {
-    //   return Task.update({order: task.order}, {where: {id: task.id}});
-    // })
 
     async function processArray(updateTasks) {
       for (const task of updateTasks) {

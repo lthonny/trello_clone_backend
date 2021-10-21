@@ -24,17 +24,34 @@ class TaskController {
       const { title, description, nameTaskList, board_id, order } = req.body;
       const task = await taskService.create(req.params.id, { title, description, nameTaskList, board_id, order });
 
-      console.log(task);
-
       return res.status(200).send(task);
     } catch (e) {
       next(e);
     }
   }
 
-  async updateTask(req, res, next) {
+  // async updateTask(req, res, next) {
+  //   try {
+  //     const task = await taskService.update(req.params.id, req.body );
+  //     return res.json(task);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
+  //
+  // async updateDescription(req, res, next) {
+  //   try {
+  //     const {id, description} = req.body;
+  //     const task = await taskService.updateDescription(id, description);
+  //     return res.json(task);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
+
+  async update(req, res, next) {
     try {
-      const task = await taskService.update(req.params.id, req.body );
+      const task = await taskService.update(req.params.id, req.body);
       return res.json(task);
     } catch (e) {
       next(e);
@@ -45,17 +62,6 @@ class TaskController {
     try {
       const tasks = await taskService.updateOrder(req.params.id, req.body);
       return res.json(tasks);
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async updateDescription(req, res, next) {
-    try {
-      const {id, description} = req.body;
-      console.log('GGGGGGGGGGGGGGGGG', req.body);
-      const task = await taskService.updateDescription(id, description);
-      return res.json(task);
     } catch (e) {
       next(e);
     }

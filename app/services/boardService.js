@@ -16,8 +16,6 @@ class Boards {
 
 class BoardService {
   async fetchOne(id) {
-    // const board = await Board.findOne({ where: { id } });
-
     const board = await Board.findByPk(id, {
       include: [
         {
@@ -29,11 +27,7 @@ class BoardService {
       ],
     });
 
-    // const boardA = board.Tasks;
     const title = board.dataValues.title;
-
-    // console.log(board.dataValues.title)
-
     return { id: id, title, "tasks": board.Tasks };
   }
 
@@ -51,13 +45,14 @@ class BoardService {
       return new Boards({ id, title, createdAt, updatedAt });
     });
 
-    // console.log('boards', boards);
     return boards;
   }
 
   async create(id, name) {
-    const board = (await Board.create({ title: name })).get();
-    const userBoard = await user_board.create({ board_id: board.id, user_id: id });
+    const board = await Board.create({ title: name });
+    const userBoard = await user_board.create({ board_id: board.id, user_id: id, owner: true });
+
+    // await board.addUser()
 
     return board;
   }

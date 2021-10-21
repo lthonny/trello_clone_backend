@@ -3,7 +3,9 @@ const boardService = require('../services/boardService');
 class BoardController {
   async tasksBoard(req, res, next) {
     try {
-      const board = await boardService.fetchOne(req.params.id);
+      console.log()
+      const {id} = req.params;
+      const board = await boardService.fetchOne(id);
       return res.json(board);
     } catch (e) {
       next(e);
