@@ -44,6 +44,7 @@ class InviteService {
         }
 
         await user_board.update({owner: false},{where: {id}});
+        await user_board.findOne({ where: { user_id: id, owner: false}});
 
         return board;
     }
