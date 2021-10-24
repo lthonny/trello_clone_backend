@@ -1,4 +1,5 @@
 const { Task, user_tasks, Board } = require('../models/index');
+const { where } = require('sequelize');
 
 class Tasks {
   id;
@@ -33,6 +34,7 @@ class TaskService {
 
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
+
     const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
 
     const userTask = await user_tasks.create({ task_id: task.id, user_id: id });

@@ -56,7 +56,8 @@ const InviteController = require('../contrellers/inviteController');
 router
     .get('/api/board/invite/:id', InviteController.createInvite)
     .post('/api/board/key/:key', InviteController.invite)
-    .post('/api/invite', authorize, InviteController.getBoard)
+    .post('/api/invite', InviteController.getBoard)
+    .post('/api/invited/users/:id', InviteController.invitedUsers);
 
 module.exports = router;
 

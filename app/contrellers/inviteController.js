@@ -29,6 +29,17 @@ class InviteController {
             next(e);
         }
     }
+
+    async invitedUsers(req, res, next) {
+        try {
+            const { id } = req.params;
+            const { name } = req.body;
+            const users = await inviteService.users(id, name);
+            return res.json(users);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 module.exports = new InviteController();

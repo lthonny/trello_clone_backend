@@ -6,8 +6,6 @@ class UserController {
     try {
       const {name, email, password} = req.body;
 
-      console.log(req.body);
-
       const userData = await userService.sign_up(name, email, password);
       res.cookie('refreshToken', userData.refreshToken, { 
         maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false 
@@ -25,7 +23,6 @@ class UserController {
 
       const userData = await userService.sign_in(email, password);
       res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false });
-      console.log('req.cookies', req.cookies);
       return res.json(userData);
     } catch (e) {
       next(e);
