@@ -1,4 +1,4 @@
-const { Board, user_board, Task } = require('../models/index');
+const { Board, user_board, Task, User } = require('../models/index');
 const { Op } = require('sequelize');
 
 class Boards {
@@ -56,27 +56,26 @@ class BoardService {
     return board;
   }
 
-  async update(id, title) {
-    const user = await user_board.findOne({ where: { board_id: id } });
+  async update(id, title, idUser) {
+    // console.log('BOARD ID->>', id);
+    const user = await User.findOne({where: {id: idUser}});
+    // console.log('USER ID->>', user);
+    const board = await user_board.findOne({where: {user_id: user.id}});
 
-    console.log('user', user.user_id);
-
-    const admin = await user_board.findAll({
-      where: {
-        [Op.and]: [
-          { user_id: user.user_id },
-          { board_id: id },
-          { owner: true },
-        ],
-      },
-    });
-
-    if (admin[0].dataValues.owner) {
+    if(!board.owner)
+    {
+      console.log('false');
       await Board.update({ title }, { where: { id } });
-      return Board.findOne({ where: { id } });
-    } else {
-      console.log(admin[0].dataValues.owner);
-      return 'Вы не админ доски';
+      return { id: id, title: title, owner: true };
+    }
+    else
+    {
+      const board = await Board.findOne({where: {id}});
+      if(board.title !== title)
+      {
+        console.log('true');
+        return { id: id, title: title, owner: false };
+      }
     }
   }
 

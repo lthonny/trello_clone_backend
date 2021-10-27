@@ -32,8 +32,8 @@ class BoardController {
 
   async updateBoard(req, res, next) {
     try {
-      const updated = await boardService.update(req.params.id, req.body.name);
-      console.log('updated', updated);
+      const {title, idUser} = req.body;
+      const updated = await boardService.update(req.params.id, title, idUser);
       return res.status(200).send(updated);
     } catch (e) {
       next(e);

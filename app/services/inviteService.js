@@ -1,85 +1,88 @@
-const { v1 } = require('uuid');
-const { Invites, user_board, User, Board } = require('../models/index');
+const {v1} = require('uuid');
+const {Invites, user_board, User, Board} = require('../models/index');
 
 class InviteService {
-  async create(id) {
-    let inviteKey = await Invites.findOne({ where: { id } });
+    async create(id) {
+        let inviteKey = await Invites.findOne({where: {id}});
 
-    if (!inviteKey) {
-      inviteKey = await Invites.create({ board_id: id, key: v1() });
+        if (!inviteKey) {
+            inviteKey = await Invites.create({board_id: id, key: v1()});
+        }
+
+        return {key: inviteKey.key};
     }
 
-    return { key: inviteKey.key };
-  }
+    async invite(key) {
+        const inviteKey = await Invites.findOne({where: {key}});
 
-  async invite(key) {
-    const inviteKey = await Invites.findOne({ where: { key } });
+        const owner = await user_board.findOne({
+            where: {
+                board_id: inviteKey.board_id, owner: true,
+            },
+        });
 
-    const owner = await user_board.findOne({
-      where: {
-        board_id: inviteKey.board_id, owner: true,
-      },
-    });
+        console.log('owner', owner);
 
-    console.log('owner', owner);
-
-    return owner;
-  }
-
-  async inviteBoard(userId, key) {
-    const inviteKey = await Invites.findOne({ where: { key } });
-
-    if (!inviteKey) {
-      console.log('Key not found');
+        return owner;
     }
 
-    const user = await User.findByPk(userId);
-    console.log(user);
+    async inviteBoard(userId, key) {
+        const inviteKey = await Invites.findOne({where: {key}});
+        if (!inviteKey) {
+            console.log('Key not found');
+        }
 
-    if (!user) {
-      console.log('User not found');
+        const user = await User.findByPk(userId);
+        if (!user) {
+            console.log('User not found');
+        }
+
+        const board = await Board.findByPk(inviteKey.board_id);
+        if (!board) {
+            console.log('Board not found');
+        }
+
+        await user_board.create({board_id: board.id, owner: false, user_id: userId});
+        return board;
     }
 
-    const board = await Board.findByPk(inviteKey.board_id);
-    // console.log(board);
-    if (!board) {
-      console.log('Board not found');
+    async users(userId, name, boardId) {
+        const board = await user_board.findAll({where: {board_id: boardId.id}});
+
+        const names = [];
+        const owner = [];
+        for (let i = 0; i < board.length; i++) {
+            let ids = board[i].user_id;
+
+            const user = await User.findOne({where: {id: ids}});
+            if(user.name !== name) {
+                names.push({
+                    id: user.id,
+                    name: user.name,
+                    owner: board[i].owner
+                })
+            }
+            if(board[i].dataValues.owner) {
+                owner.push({
+                    id: board[i].user_id,
+                    name: user.name,
+                    owner: board[i].owner
+                })
+            }
+        }
+
+        return {owner: owner, names: names};
     }
 
-    // await user_board.create({owner: false,},{where: {user_id: userId}});
-    // await user_board.findOne({
-    //     where: { user_id: userId, owner: false}
-    // });
-
-    // await user_board
-
-    await user_board.create({ board_id: board.id, owner: false, user_id: userId });
-    return board;
-  }
-
-  async users(board_id, name) {
-    const users_board = await user_board.findAll({ where: { board_id } });
-    const usersId = users_board.map((user) => user.dataValues.user_id);
-
-    let users = [];
-    for (let i = 0; i < usersId.length; i++) {
-      const user = await User.findOne({ where: { id: usersId[i] } });
-      const userName = user.dataValues.name;
-      console.log('userName', userName);
-
-      if(userName !== name && userName ) {
-        users.push({ name: userName });
-      }
+    async owner(data) {
+        const board = await user_board.findOne({ where: {
+            user_id: data.userId, board_id: data.boardId
+        }});
+        return {
+            userId: Number(data.userId),
+            owner: board.owner
+        };
     }
-
-    // if () {
-    //
-    // } else {
-    //
-    // }
-
-    return users;
-  }
 }
 
 module.exports = new InviteService();

@@ -44,7 +44,6 @@ router
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
   // .post('/api/task/update', authorize, taskController.updateTask)
-  //
   // .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
   // .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
   .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
@@ -57,7 +56,8 @@ router
     .get('/api/board/invite/:id', InviteController.createInvite)
     .post('/api/board/key/:key', InviteController.invite)
     .post('/api/invite', InviteController.getBoard)
-    .post('/api/invited/users/:id', InviteController.invitedUsers);
+    .post('/api/invited/users/:id', InviteController.invitedUsers)
+    .post('/api/invite/owner', InviteController.owner)
 
 module.exports = router;
 
