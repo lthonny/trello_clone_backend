@@ -35,9 +35,11 @@ class TaskService {
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
-    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
+    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false  });
 
-    const userTask = await user_tasks.create({ task_id: task.id, user_id: id });
+    const userTask = await user_tasks.create({ task_id: task.id, user_id: id,  assigned: false});
+
+    console.log('userTask', userTask);
 
     return task;
   }
