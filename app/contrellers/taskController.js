@@ -39,15 +39,15 @@ class TaskController {
   //   }
   // }
   //
-  // async updateDescription(req, res, next) {
-  //   try {
-  //     const {id, description} = req.body;
-  //     const task = await taskService.updateDescription(id, description);
-  //     return res.json(task);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
+  async updateDescription(req, res, next) {
+    try {
+      const {id, description} = req.body;
+      const task = await taskService.updateDescription(id, description);
+      return res.json(task);
+    } catch (e) {
+      next(e);
+    }
+  }
 
   async update(req, res, next) {
     try {

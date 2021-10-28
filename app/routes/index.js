@@ -45,7 +45,7 @@ router
   .post('/api/task/create/:id', authorize, taskController.createTask)
   // .post('/api/task/update', authorize, taskController.updateTask)
   // .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
-  // .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
+  .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
   .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
   .post(`/api/task/archive`, authorize, taskController.createArchive)
 
@@ -57,7 +57,12 @@ router
     .post('/api/board/key/:key', InviteController.invite)
     .post('/api/invite', InviteController.getBoard)
     .post('/api/invited/users/:id', InviteController.invitedUsers)
-    .post('/api/invite/owner', InviteController.owner)
+    .post('/api/invite/owner', InviteController.owner);
+
+const AssignedUsers = require('../contrellers/assignedController');
+
+router
+  .delete(`/api/assigned/users/:id`, AssignedUsers.removeAssignedUser)
 
 module.exports = router;
 

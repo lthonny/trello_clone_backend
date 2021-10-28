@@ -66,12 +66,12 @@ class TaskService {
   //   return task;
   // }
 
-  // async updateDescription(id, description) {
-  //   await Task.update({description}, {where: {id}});
-  //   const updated = await Task.findOne({ where: { id } });
-  //
-  //   return updated;
-  // }
+  async updateDescription(id, description) {
+    await Task.update({description}, {where: {id}});
+    const updated = await Task.findOne({ where: { id } });
+
+    return updated;
+  }
 
   async updateOrder(id, data) {
     const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order }) => {
