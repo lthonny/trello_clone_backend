@@ -29,17 +29,17 @@ class InviteService {
     async inviteBoard(userId, key) {
         const inviteKey = await Invites.findOne({where: {key}});
         if (!inviteKey) {
-            console.log('Key not found');
+            return 'Key not found';
         }
 
         const user = await User.findByPk(userId);
         if (!user) {
-            console.log('User not found');
+            return 'User not found';
         }
 
         const board = await Board.findByPk(inviteKey.board_id);
         if (!board) {
-            console.log('Board not found');
+            return 'Board not found';
         }
 
         await user_board.create({board_id: board.id, owner: false, user_id: userId});

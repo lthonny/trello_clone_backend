@@ -63,8 +63,9 @@ const AssignedUsers = require('../contrellers/assignedController');
 
 router
   .get(`/api/assigned/users/:id`, AssignedUsers.assignedUsers)
-  .post(`/api/assigned/users/:id`, AssignedUsers.addAssignedUser)
-  .delete(`/api/assigned/users/:id`, AssignedUsers.removeAssignedUser)
+  .post(`/api/assigned/users/:id`, AssignedUsers.createAssignedUser)
+  .put(`/api/assigned/users/:id`, AssignedUsers.updateAssignedUser)
+  // .post(`/api/noAssigned/users/:id`, AssignedUsers.removeAssignedUser)
 
 module.exports = router;
 

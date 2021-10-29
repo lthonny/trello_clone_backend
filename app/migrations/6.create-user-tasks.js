@@ -5,7 +5,7 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       task_id: {
         type: Sequelize.INTEGER,
@@ -14,7 +14,7 @@ module.exports = {
         //   model: 'Tasks',
         //   key: 'id'
         // },
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       user_id: {
         type: Sequelize.INTEGER,
@@ -23,17 +23,20 @@ module.exports = {
         //   model: 'Users',
         //   key: 'id'
         // },
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
+      },
+      assigned: {
+        type: Sequelize.BOOLEAN,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
-  down: (queryInterface) => queryInterface.dropTable('user_tasks')
+  down: (queryInterface) => queryInterface.dropTable('user_tasks'),
 };
