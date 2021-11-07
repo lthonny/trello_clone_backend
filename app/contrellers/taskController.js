@@ -30,6 +30,16 @@ class TaskController {
     }
   }
 
+  async titleUpdate(req, res, next) {
+    try {
+      const {id, title} = req.body;
+      const task = await taskService.updateTitle(id, title);
+      return res.json(task);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   // async updateTask(req, res, next) {
   //   try {
   //     const task = await taskService.update(req.params.id, req.body );

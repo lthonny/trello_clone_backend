@@ -1,5 +1,5 @@
-const { Board, user_board, Task, User } = require('../models/index');
-const { Op } = require('sequelize');
+const { Board, user_board, Task, User, Invites } = require('../models/index');
+const { Op, where} = require('sequelize');
 
 class Boards {
   id;
@@ -28,6 +28,10 @@ class BoardService {
       ],
     });
 
+    if(board === null) {
+      return {error: 'в таблице нет задач'};
+    }
+
     const title = board.dataValues.title;
     return { id: id, title, 'tasks': board.Tasks };
   }
@@ -49,6 +53,11 @@ class BoardService {
     return boards;
   }
 
+  async getBoard(id) {
+    const board = await Board.findOne({where: {id}});
+    return board;
+  }
+
   async create(id, name) {
     const board = await Board.create({ title: name });
     const userBoard = await user_board.create({ board_id: board.id, user_id: id, owner: true });
@@ -57,19 +66,16 @@ class BoardService {
   }
 
   async update(id, title, idUser) {
-    // console.log('BOARD ID->>', id);
     const user = await User.findOne({where: {id: idUser}});
-    // console.log('USER ID->>', user);
     const board = await user_board.findOne({where: {user_id: user.id}});
+    console.log(board.owner)
 
-    if(!board.owner)
-    {
+    if(board.owner) {
       console.log('false');
       await Board.update({ title }, { where: { id } });
       return { id: id, title: title, owner: true };
     }
-    else
-    {
+    else {
       const board = await Board.findOne({where: {id}});
       if(board.title !== title)
       {
@@ -80,6 +86,12 @@ class BoardService {
   }
 
   async delete(id) {
+    const board = await Invites.findOne({where: {board_id: id}});
+
+    if (board) {
+      await Invites.destroy({where: { board_id: id}});
+    }
+
     return await Board.destroy({ where: { id } });
   }
 }

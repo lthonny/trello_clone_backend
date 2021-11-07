@@ -31,6 +31,7 @@ router
 //   .post('/api/singIn', GoogleController.singIn);
 
 router
+    .get('/api/board/:id', authorize, boardController.board)
   .get('/api/boards/:id', authorize, boardController.boards)
   .get('/api/tasks/board/:id', authorize, boardController.tasksBoard)
   .post('/api/board/create/:id', authorize, boardController.createBoard)
@@ -43,6 +44,7 @@ router
   .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
   .post('/api/task/create/:id', authorize, taskController.createTask)
+    .post('/api/task/updateTitle', authorize, taskController.titleUpdate)
   // .post('/api/task/update', authorize, taskController.updateTask)
   // .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
   .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
@@ -62,9 +64,9 @@ router
 const AssignedUsers = require('../contrellers/assignedController');
 
 router
-  .get(`/api/assigned/users/:id`, AssignedUsers.assignedUsers)
-  .post(`/api/assigned/users/:id`, AssignedUsers.createAssignedUser)
-  .put(`/api/assigned/users/:id`, AssignedUsers.updateAssignedUser)
+  .post(`/api/assigned/users/:id`, authorize, AssignedUsers.assignedUsers)
+  .post(`/api/assigned/user/create/:id`, authorize, AssignedUsers.createAssignedUser)
+  .post(`/api/assigned/user/remove/:id`, authorize, AssignedUsers.removeAssignedUser)
   // .post(`/api/noAssigned/users/:id`, AssignedUsers.removeAssignedUser)
 
 module.exports = router;

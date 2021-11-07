@@ -68,6 +68,12 @@ class TaskService {
   //   return task;
   // }
 
+  async updateTitle(id, title) {
+    await Task.update({title: title}, {where: {id}});
+    const task = await Task.findOne({where: {id}});
+    return task;
+  }
+
   async updateDescription(id, description) {
     await Task.update({description}, {where: {id}});
     const updated = await Task.findOne({ where: { id } });
@@ -113,6 +119,7 @@ class TaskService {
         ],
       });
 
+    if (board !== null) {
       const tasks = board.Tasks.map((task) => {
         if (task.archive !== false && task.archive !== null) {
           return task;
@@ -120,6 +127,9 @@ class TaskService {
       }).filter((task) => task);
 
       return { "idBoard": board.dataValues.id, "nameBoard": board.dataValues.title, "tasks": tasks };
+    } else {
+      return { error: 'задач для архивации нет' }
+    }
   }
 
   async setArchive(data) {

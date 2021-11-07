@@ -11,6 +11,15 @@ class BoardController {
     }
   }
 
+  async board(req, res, next) {
+    try {
+      const data = await boardService.getBoard(req.params.id);
+      return res.json(data);
+    } catch (e) {
+      next(e);
+    }
+  }
+
   async boards(req, res, next) {
     try {
       const boards = await boardService.fetchAll(req.params.id);
