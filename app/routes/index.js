@@ -68,7 +68,6 @@ router
   .post(`/api/assigned/users/:id`, AssignedUsers.assignedUsers)
   .post(`/api/assigned/user/create/:id`, AssignedUsers.createAssignedUser)
   .post(`/api/assigned/user/remove/:id`, AssignedUsers.removeAssignedUser)
-  // .post(`/api/noAssigned/users/:id`, AssignedUsers.removeAssignedUser)
 
 const Transaction = require('../contrellers/transactionController');
 

@@ -21,21 +21,10 @@ class AssignedController {
     }
   }
 
-  // async updateAssignedUser(req, res, next) {
-  //   try {
-  //     const { userId, assigned } = req.body;
-  //     console.log(userId, req.params.id, assigned);
-  //     const users = await assignedService.update(userId, req.params.id, assigned);
-  //     return res.json(users);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
-
   async removeAssignedUser(req, res, next) {
     try {
       const { userId } = req.body;
-      const users = await assignedService.update(userId, Number(req.params.id));
+      const users = await assignedService.remove(userId, req.params.id);
       return res.json(users);
     } catch (e) {
       next(e);
