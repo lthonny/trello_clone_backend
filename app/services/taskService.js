@@ -1,4 +1,4 @@
-const { Task, user_tasks, Board } = require('../models/index');
+const { Task, user_tasks, Board, Transaction, User } = require('../models/index');
 const { where } = require('sequelize');
 
 class Tasks {
@@ -35,9 +35,18 @@ class TaskService {
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
-    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false  });
+    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
 
-    const userTask = await user_tasks.create({ task_id: task.id, user_id: id,  assigned: false});
+    const userTask = await user_tasks.create({ task_id: task.id, user_id: id, assigned: false });
+
+    const user = await User.findOne({ where: { id } });
+    await Transaction.create({
+      task_id: task.id,
+      column: nameTaskList,
+      name_user: user.name,
+      board_id,
+      transaction: 'creation',
+    });
 
     console.log('userTask', userTask);
 
@@ -69,14 +78,28 @@ class TaskService {
   // }
 
   async updateTitle(id, title) {
-    await Task.update({title: title}, {where: {id}});
-    const task = await Task.findOne({where: {id}});
+    await Task.update({ title: title }, { where: { id } });
+    const task = await Task.findOne({ where: { id } });
+
     return task;
   }
 
   async updateDescription(id, description) {
-    await Task.update({description}, {where: {id}});
+    await Task.update({ description }, { where: { id } });
     const updated = await Task.findOne({ where: { id } });
+
+    const task = await Task.findOne({ where: { id } });
+    const userTasksModel = await user_tasks.findOne({ where: { task_id: task.id } });
+    // console.log(user_tasks);
+    const user = await User.findOne({ where: { id: userTasksModel.user_id } });
+
+    const fixing = await Transaction.create({
+      task_id: task.id,
+      column: task.nameTaskList,
+      name_user: user.name,
+      board_id: task.board_id,
+      transaction: 'fixing_a_task',
+    });
 
     return updated;
   }
@@ -88,9 +111,11 @@ class TaskService {
 
     async function processArray(updateTasks) {
       for (const task of updateTasks) {
-        await Task.update({order: task.order}, {where: {id: task.id}});;
+        await Task.update({ order: task.order }, { where: { id: task.id } });
+        ;
       }
     }
+
     await processArray(updateTasks);
 
     const board = await Board.findByPk(id, {
@@ -98,26 +123,26 @@ class TaskService {
         {
           model: Task,
           where: {
-            board_id: data[0].board_id
+            board_id: data[0].board_id,
           },
         },
       ],
     });
 
-    return { id: id, "tasks": board.Tasks };
+    return { id: id, 'tasks': board.Tasks };
   }
 
   async getArchive(id) {
-      const board = await Board.findByPk(id, {
-        include: [
-          {
-            model: Task,
-            where: {
-              board_id: id
-            },
+    const board = await Board.findByPk(id, {
+      include: [
+        {
+          model: Task,
+          where: {
+            board_id: id,
           },
-        ],
-      });
+        },
+      ],
+    });
 
     if (board !== null) {
       const tasks = board.Tasks.map((task) => {
@@ -126,20 +151,25 @@ class TaskService {
         }
       }).filter((task) => task);
 
-      return { "idBoard": board.dataValues.id, "nameBoard": board.dataValues.title, "tasks": tasks };
+      return { 'idBoard': board.dataValues.id, 'nameBoard': board.dataValues.title, 'tasks': tasks };
     } else {
-      return { error: 'задач для архивации нет' }
+      return { error: 'задач для архивации нет' };
     }
   }
 
   async setArchive(data) {
-    await Task.update({archive: !data.archive}, {where: {id: data.id}});
-    const task = await Task.findOne({where: {id: data.id}})
+    await Task.update({ archive: !data.archive }, { where: { id: data.id } });
+    const task = await Task.findOne({ where: { id: data.id } });
     return task;
   }
 
   async delete(id) {
     return await Task.destroy({ where: { id: id } });
+  }
+
+  async removeAll(id, nameTaskList) {
+    await Task.destroy({ where: { board_id: id, nameTaskList } });
+    return {ok: 'all tasks in this column have been deleted'}
   }
 }
 

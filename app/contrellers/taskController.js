@@ -104,6 +104,15 @@ class TaskController {
       next(e);
     }
   }
+
+  async removeTasks(req, res, next) {
+    try {
+      const tasks = await taskService.removeAll(req.params.id, req.body.nameTaskList);
+      return res.json(tasks);
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 module.exports = new TaskController();

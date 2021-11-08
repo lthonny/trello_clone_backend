@@ -43,6 +43,7 @@ router
   .get('/api/task/:id', authorize, taskController.task)
   .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
+  .post(`/api/tasks/board/:id`, taskController.removeTasks)
   .post('/api/task/create/:id', authorize, taskController.createTask)
     .post('/api/task/updateTitle', authorize, taskController.titleUpdate)
   // .post('/api/task/update', authorize, taskController.updateTask)
@@ -68,6 +69,11 @@ router
   .post(`/api/assigned/user/create/:id`, authorize, AssignedUsers.createAssignedUser)
   .post(`/api/assigned/user/remove/:id`, authorize, AssignedUsers.removeAssignedUser)
   // .post(`/api/noAssigned/users/:id`, AssignedUsers.removeAssignedUser)
+
+const Transaction = require('../contrellers/transactionController');
+
+router
+  .post(`/api/task/transaction/:id`, Transaction.getTransactions);
 
 module.exports = router;
 
