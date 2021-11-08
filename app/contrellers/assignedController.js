@@ -34,8 +34,8 @@ class AssignedController {
 
   async removeAssignedUser(req, res, next) {
     try {
-      const { userId, assigned } = req.body;
-      const users = await assignedService.update(userId, req.params.id, assigned);
+      const { userId } = req.body;
+      const users = await assignedService.update(userId, Number(req.params.id));
       return res.json(users);
     } catch (e) {
       next(e);
