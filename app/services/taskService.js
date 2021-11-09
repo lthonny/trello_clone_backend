@@ -1,4 +1,4 @@
-const { Task, user_tasks, Board, Transaction, User } = require('../models/index');
+const { Task, user_tasks, Board, Transaction, User, user_board } = require('../models/index');
 const { where } = require('sequelize');
 
 class Tasks {
@@ -53,15 +53,47 @@ class TaskService {
     return task;
   }
 
-  // async update(id, data) {
-  //
-  //   const { nameList, order } = data;
-  //
-  //   const task = await Task.update({ nameTaskList: nameList, order: order }, { where: { id: data.data.id } });
-  //   const updated = await Task.findOne({ where: { id: data.data.id } });
-  //
-  //   return updated;
-  // }
+  async updateTask(id, data) {
+    const { nameList, order } = data;
+
+    const taskUpdate = await Task.update({
+      nameTaskList: nameList, order: order,
+    }, {
+      where: { id: data.data.id },
+    });
+
+    const task = await Task.findOne({
+      where: { nameTaskList: nameList, id: data.data.id },
+    });
+
+    console.log(task);
+
+    const updated = await Task.findOne({
+      where: { id: data.data.id },
+    });
+
+    const userTasks = await user_tasks.findOne({
+      where: {task_id: task.id}
+    });
+
+    const user = await User.findOne({ where: { id: userTasks.user_id } });
+
+    // const user_boards = await user_board.findOne({
+    //   where: { board_id: task.board_id, owner: true },
+    // });
+    //
+    // console.log(user_boards);
+
+    await Transaction.create({
+      task_id: task.id,
+      column: task.nameTaskList,
+      name_user: user.name,
+      board_id: task.board_id,
+      transaction: 'moving',
+    });
+
+    return updated;
+  }
 
   // async update(boardId, data) {
   //   const { id, description, nameList, order } = data;
@@ -93,7 +125,7 @@ class TaskService {
     // console.log(user_tasks);
     const user = await User.findOne({ where: { id: userTasksModel.user_id } });
 
-    const fixing = await Transaction.create({
+    await Transaction.create({
       task_id: task.id,
       column: task.nameTaskList,
       name_user: user.name,
@@ -169,7 +201,7 @@ class TaskService {
 
   async removeAll(id, nameTaskList) {
     await Task.destroy({ where: { board_id: id, nameTaskList } });
-    return {ok: 'all tasks in this column have been deleted'}
+    return { ok: 'all tasks in this column have been deleted' };
   }
 }
 

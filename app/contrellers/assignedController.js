@@ -3,8 +3,8 @@ const assignedService = require('../services/assignedService');
 class AssignedController {
   async assignedUsers(req, res, next) {
     try {
-      const {userId, boardId} = req.body;
-      const users = await assignedService.fetch(req.params.id, userId, boardId);
+      const { data } = req.body;
+      const users = await assignedService.fetch(data);
       return res.json(users);
     } catch (e) {
       next(e);
@@ -13,8 +13,8 @@ class AssignedController {
 
   async createAssignedUser(req, res, next) {
     try {
-      const { userId } = req.body;
-      const user = await assignedService.create(userId, req.params.id);
+      const { data } = req.body;
+      const user = await assignedService.create(data);
       return res.json(user);
     } catch (e) {
       next(e);
@@ -23,8 +23,8 @@ class AssignedController {
 
   async removeAssignedUser(req, res, next) {
     try {
-      const { userId } = req.body;
-      const users = await assignedService.remove(userId, req.params.id);
+      const { data } = req.body;
+      const users = await assignedService.remove(data);
       return res.json(users);
     } catch (e) {
       next(e);

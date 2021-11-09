@@ -43,11 +43,11 @@ router
   .get('/api/task/:id', authorize, taskController.task)
   .get('/api/tasks/:id', authorize, taskController.tasks)
   .delete('/api/task/:id', authorize, taskController.deleteTask)
-  .post(`/api/tasks/board/:id`, taskController.removeTasks)
+  .post(`/api/tasks/board/:id`, authorize, taskController.removeTasks)
   .post('/api/task/create/:id', authorize, taskController.createTask)
     .post('/api/task/updateTitle', authorize, taskController.titleUpdate)
-  // .post('/api/task/update', authorize, taskController.updateTask)
-  // .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
+  .post('/api/task/update', authorize, taskController.updateTask)
+  .post(`/api/tasks/updateOrder/:id`, authorize, taskController.updateOrder)
   .post(`/api/task/updateDescription`, authorize, taskController.updateDescription)
   .get(`/api/tasks/archive/:id`, authorize, taskController.fetchArchive)
   .post(`/api/task/archive`, authorize, taskController.createArchive)
@@ -65,14 +65,14 @@ router
 const AssignedUsers = require('../contrellers/assignedController');
 
 router
-  .post(`/api/assigned/users/:id`, AssignedUsers.assignedUsers)
-  .post(`/api/assigned/user/create/:id`, AssignedUsers.createAssignedUser)
-  .post(`/api/assigned/user/remove/:id`, AssignedUsers.removeAssignedUser)
+  .post(`/api/assigned/users/:id`, authorize, AssignedUsers.assignedUsers)
+  .post(`/api/assigned/user/create/:id`, authorize, AssignedUsers.createAssignedUser)
+  .post(`/api/assigned/user/remove/:id`, authorize, AssignedUsers.removeAssignedUser)
 
 const Transaction = require('../contrellers/transactionController');
 
 router
-  .post(`/api/task/transaction/:id`, Transaction.getTransactions);
+  .post(`/api/task/transaction/:id`, authorize, Transaction.getTransactions);
 
 module.exports = router;
 
