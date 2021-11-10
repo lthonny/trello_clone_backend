@@ -1,6 +1,6 @@
 class GoogleService {
   async sign_up() {
-
+    const { name, email } = req.body;
     return;
   }
 

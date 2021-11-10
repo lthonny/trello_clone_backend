@@ -1,4 +1,4 @@
-const { Board, user_board, Task, User, Invites } = require('../models/index');
+const { Board, user_board, Task, User, Invites, user_tasks } = require('../models/index');
 const { Op, where} = require('sequelize');
 
 class Boards {
@@ -31,9 +31,21 @@ class BoardService {
     if(board === null) {
       return {error: 'в таблице нет задач'};
     }
+    // if() {
+
+    // const usersTask = await user_tasks.findAll({
+    //   where: { task_id: taskId },
+    // });
+
+    // let users_task = [];
+    // for (let i = 0; i < usersTask.length; i++) {
+    //   const user = await User.findOne({ where: { id: usersTask[i].dataValues.user_id } });
+    //   users_task.push({ id: user.id, name: user.name });
+    // }
 
     const title = board.dataValues.title;
     return { id: id, title, 'tasks': board.Tasks };
+    // }
   }
 
   async fetchAll(id) {

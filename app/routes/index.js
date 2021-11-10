@@ -26,13 +26,13 @@ router
   .get('/api/isauth', userController.isauth)
   .get('/api/users', userController.users);
 
-// router
-//   .post('/api/singUp', GoogleController.singUp)
+router
+  .post('/api/singUpGoogle', GoogleController.singUp);
 //   .post('/api/singIn', GoogleController.singIn);
 
 router
-    .get('/api/board/:id', authorize, boardController.board)
-  .get('/api/boards/:id', authorize, boardController.boards)
+  .get('/api/board/:id', authorize, boardController.board)
+  .get('/api/boards/:id', boardController.boards)
   .get('/api/tasks/board/:id', authorize, boardController.tasksBoard)
   .post('/api/board/create/:id', authorize, boardController.createBoard)
   .post('/api/board/update/:id', authorize, boardController.updateBoard)

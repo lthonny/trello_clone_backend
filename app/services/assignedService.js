@@ -10,12 +10,12 @@ class AssignedService {
     });
 
     const owner = await user_board.findOne({ where: { owner: true, board_id: boardId } });
-    const user = await User.findOne({ where: { id: owner.id } });
+    const user = await User.findOne({ where: { id: owner.user_id } });
 
     let users_task = [];
     for (let i = 0; i < usersTask.length; i++) {
       const user = await User.findOne({ where: { id: usersTask[i].dataValues.user_id } });
-      users_task.push({ id: user.id, name: user.name });
+      users_task.push({ id: user.id, name: user.name, task_id: usersTask[i].dataValues.task_id });
     }
 
     let users_board = [];
