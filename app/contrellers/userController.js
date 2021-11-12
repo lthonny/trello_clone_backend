@@ -65,14 +65,14 @@ class UserController {
     }
   }
 
-  async users(req, res, next) {
-    try {
-      const users = await User.findAll();
-      return res.json(users);
-    } catch (e) {
-      next(e);
-    }
-  }
+  // async users(req, res, next) {
+  //   try {
+  //     const users = await User.findAll();
+  //     return res.json(users);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 }
 
 module.exports = new UserController();

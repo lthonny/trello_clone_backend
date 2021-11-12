@@ -8,7 +8,7 @@ module.exports = (sequelize, DataTypes) => {
     archive: {
       type: DataTypes.BOOLEAN,
       // allowNull: false
-    }
+    },
   }, {});
   Task.associate = (models) => {
     // Task.hasMany(models.user_tasks, {

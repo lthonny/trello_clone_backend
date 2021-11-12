@@ -1,27 +1,30 @@
 const googleService = require('../services/googleService');
 const userGoogleService = require('../services/userGoogleService');
+const taskService = require('../services/taskService');
 
 class GoogleController {
-  async singUp(req, res, next) {
+  async user(req, res, next) {
     try {
-      const { name, email } = req.body;
-
-      const userData = await userGoogleService.sign_up(name, email);
-      res.cookie('refreshToken', userData.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false
-      });
-
-      return res.json(userData);
+      const user = 'Василий';
+      return res.json(user);
     } catch (e) {
       next(e);
     }
   }
 
-  async singIn(req, res, next) {
+  async authGoogle() {
+  //   try {
+  //     const user = await taskService.fetchOne(req.params.id);
+  //     return res.json(task);
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  }
+
+  async logoutUser(req, res, next) {
     try {
-      const {} = req.body;
-      const user = await googleService.sign_in();
-      return;
+      const user = await googleService.logoutDb();
+      return res.json(user);
     } catch (e) {
       next(e);
     }
@@ -29,3 +32,5 @@ class GoogleController {
 }
 
 module.exports = new GoogleController();
+
+
