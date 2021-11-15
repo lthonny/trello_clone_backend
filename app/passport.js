@@ -1,6 +1,12 @@
 const GoogleStrategy = require('passport-google-oauth20').Strategy;
+const JwtStrategy = require('passport-jwt').Strategy,
+  ExtractJwt = require('passport-jwt').ExtractJwt;
+
 const passport = require('passport');
 const { User, RefreshToken } = require('./models/index');
+const tokenService = require('./services/tokenService');
+const path = require('path');
+const fs = require('fs');
 
 passport.use(
   new GoogleStrategy(
@@ -10,58 +16,76 @@ passport.use(
       callbackURL: process.env.CALLBACKURL,
     },
     async function(accessToken, refreshToken, profile, done) {
-      // try {
-        // const user = await User.findOne({
-        //   where: {
-        //     email: profile.emails[0].value,
-        //     name: profile.displayName,
-        //     auth_via: 'google'
-        //   },
-        // });
-        //
-        // if (user) {
-        //   console.log('user существует');
-        //   done(null, user);
-        // } else {
-        //   console.log('создание нового пользователя');
-        //
-        //   const newUser = await User.create({
-        //     name: profile.displayName,
-        //     email: profile.emails[0].value,
-        //     password: 'killmenot',
-        //     auth_via: 'google',
-        //   });
-        //
-        //   const user = await User.findOne({
-        //     where: { email: profile.emails[0].value },
-        //   });
+      try {
+        // console.log('accessToken', accessToken);
+        // console.log('refreshToken', refreshToken);
 
-          // console.log('refreshToken', refreshToken);
+        const user = await User.findOne({
+          where: {
+            email: profile.emails[0].value,
+            name: profile.displayName,
+            auth_via: 'google',
+          },
+        });
 
-          // const refreshToken = await RefreshToken.create({
-          //   refreshToken: refreshToken,
-          //   user_id: user.id,
-          // });
+        if (user) {
+          console.log('user существует');
+          done(null, user);
+        } else {
+          console.log('создание нового пользователя');
+          console.log('req', refreshToken);
 
-          // const tokenData = await RefreshToken.findOne({ where: { user_id: user.id } });
+          const newUser = await User.create({
+            name: profile.displayName,
+            email: profile.emails[0].value,
+            password: 'killmenot',
+            auth_via: 'google',
+          });
 
-          // if (tokenData) {
-          //   tokenData.refreshToken = refreshToken;
-          //   return tokenData.save();
-          // }
-          //
-          // const token = await RefreshToken.create({ refreshToken, user_id:  user.id});
-          // return token;
+          const user = await User.findOne({
+              where: { email: profile.emails[0].value },
+            });
 
-          console.log('user', profile);
-          done(null, profile);
-      //   }
-      // } catch (error) {
-      //   console.log('error GoogleStrategy', error);
-      // }
+          const tokens = tokenService.generateTokens({ ...user });
+          await tokenService.saveToken(user.id, tokens.refreshToken);
+
+          done(null, { user: user, tokens: tokens });
+        }
+      } catch (error) {
+        console.log('error GoogleStrategy', error);
+      }
+      // done(null, profile);
     },
   ),
 );
+
+// const pathToKey = path.join(__dirname, '..', 'id_rsa_pub.pem');
+// const PUB_KEY = fs.readFileSync(pathToKey, 'utf8');
+
+// const options = {
+//   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+//   secretOrKey: PUB_KEY,
+//   algorithms: ['RS256'],
+// };
+
+// const opts = {}
+// opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
+// opts.secretOrKey = 'secret';
+// opts.issuer = 'accounts.examplesoft.com';
+// opts.audience = 'yoursite.net';
+// passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
+//   User.findOne({id: jwt_payload.sub}, function(err, user) {
+//     if (err) {
+//       return done(err, false);
+//     }
+//     if (user) {
+//       return done(null, user);
+//     } else {
+//       return done(null, false);
+//       // or you could create a new account
+//     }
+//   });
+// }));
 
 passport.serializeUser((user, done) => {
   done(null, user);
@@ -70,3 +94,7 @@ passport.serializeUser((user, done) => {
 passport.deserializeUser((user, done) => {
   done(null, user);
 });
+
+module.exports = (passport) => {
+
+}

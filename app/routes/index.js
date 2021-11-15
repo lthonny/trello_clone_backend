@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const authorize = require('../middlewares/authorize');
 // const userServices = require('../services/userServices');
+const flash = require("connect-flash");
 
 const userController = require('../contrellers/userController');
 const GoogleController = require('../contrellers/googleController');
@@ -18,7 +19,7 @@ router
 
 router
   .get('/api/board/:id', authorize, boardController.board)
-  .get('/api/boards/:id', boardController.boards)
+  .get('/api/boards/:id', authorize, boardController.boards)
   .get('/api/tasks/board/:id', authorize, boardController.tasksBoard)
   .post('/api/board/create/:id', authorize, boardController.createBoard)
   .post('/api/board/update/:id', authorize, boardController.updateBoard)
@@ -63,29 +64,34 @@ router
   .post(`/api/task/transaction/:id`, authorize, Transaction.getTransactions);
 
 const authCheck = (req, res, next) => {
-  if(!req.user) {
+  if (!req.user) {
     res.redirect(`${process.env.CLIENT_URL}/admin/boards/`);
   } else {
     next();
   }
-}
+};
 
 const googleController = require('../contrellers/googleController');
+const userService = require('../services/userServices');
+const tokenService = require('../services/tokenService');
 
 router
-  // .get('/api/auth/google/user', googleController.user)
-  .get('/login/success', (req, res) => {
+  .get('/success/redirect', (req, res) => {
     //   // req.login(user, function(err) {
     //   //   if (err) { return next(err); }
+    console.log('req', req);
+    res.cookie('id', req.user.id, {
+      maxAge: 30 * 24 * 60 * 60 * 1000, secure: false
+    });
+    res.cookie('name', req.user.name, {
+      maxAge: 30 * 24 * 60 * 60 * 1000, secure: false
+    });
 
-    // console.log();
+    res.cookie('refreshToken', req.refreshToken, {
+      maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false
+    });
 
-    // return res.redirect(`${process.env.CLIENT_URL}/admin/boards/`);
-    //   // ${process.env.CLIENT_URL}/admin/boards/
-    //   // });
-    //   // /api/boards/:id'
-    //   // console.log(`http://localhost:5000/api/boards/${req.user.id}`);
-    //   // console.log(`${process.env.CLIENT_URL}/api/boards/${req.user.id}`);
+    return res.redirect(`${process.env.CLIENT_URL}/admin/boards/`);
   });
 
 router.get('/login/success', (req, res) => {
@@ -103,36 +109,37 @@ router.get('/login/success', (req, res) => {
     scope: ['profile', 'email'],
   }))
 
+.get('/auth/google/callback', passport.authenticate('google', {
+        // seccessRedirect: '/login/success',
+        successRedirect: '/success/redirect',
+        failureRedirect: '/login/failed',
+      }), async (req, res) => {
+          // req.send('dsad');
+          // req.flash('id', req.user.id);
+              // console.log('Google user data');
+          //       req.logIn('ВАсилий', () => {
+          //         return res.json({ message: 'logged in with Google!' });
+          //       });
+          //     }
+          //   // };
+          //   )(req, res, next)
+          // )
+    // console.log(req.refreshToken);
+    console.log('refreshToken', req.refreshToken);
+        }
+    )
+// )
+// .get('/logout', googleController.logoutUser)
+// .get('/logout', (req, res) => {
+//   req.logout();
+//   res.redirect('/');
+// })
 
-.get('/auth/google/callback',
-  passport.authenticate('google', { failureRedirect: '/login' }),
-  function(req, res) {
-    // Successful authentication, redirect home.
-    res.redirect(`${process.env.CLIENT_URL}/admin/boards/1`);
-  })
-
-  // .get('/auth/google/callback', passport.authenticate('google', { seccessRedirect: '/login/success'
-  //       //   successRedirect: `${process.env.CLIENT_URL}/admin/boards`,
-  //       //   failureRedirect: '/login/failed',
-  //       }), async (req, res) => {
-  //           // req.send('dsad');
-  //
-  //               console.log('Google user data');
-  //           //       req.logIn('ВАсилий', () => {
-  //           //         return res.json({ message: 'logged in with Google!' });
-  //           //       });
-  //           //     }
-  //           //   // };
-  //           //   )(req, res, next)
-  //           // )
-  //         }
-  //     )
-  // // )
-  .get('/logout', googleController.logoutUser)
-  .get('/logout', (req, res) => {
-    req.logout();
-    res.redirect('/');
-  })
+// app.use((req, res, next) => {
+//   console.log(req.session);
+//   console.log(req.user);
+//   next();
+// });
 
 module.exports = router;
 
