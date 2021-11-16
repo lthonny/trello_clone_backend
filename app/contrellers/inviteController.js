@@ -3,7 +3,7 @@ const inviteService = require('../services/inviteService');
 class InviteController {
     async createInvite(req, res, next) {
         try {
-            const inviteKey = await inviteService.create(Number(req.params.id));
+            const inviteKey = await inviteService.create(req.params.id);
             return res.json(inviteKey);
         } catch (e) {
             next(e);
@@ -45,6 +45,24 @@ class InviteController {
             const { data } = req.body;
             const owner = await inviteService.owner(data);
             return res.json(owner);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async removeInvited(req, res, next) {
+        try {
+            const user = await inviteService.remove(req.body);
+            return res.json(user);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    async leaveBoard(req, res, next) {
+        try {
+            const user = await inviteService.leave(req.body);
+            return res.json(user);
         } catch (e) {
             next(e);
         }

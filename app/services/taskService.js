@@ -37,8 +37,6 @@ class TaskService {
 
     const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
 
-    const userTask = await user_tasks.create({ task_id: task.id, user_id: id });
-
     const user = await User.findOne({ where: { id } });
     await Transaction.create({
       task_id: task.id,
@@ -47,8 +45,6 @@ class TaskService {
       board_id,
       transaction: 'creation',
     });
-
-    console.log('userTask', userTask);
 
     return task;
   }

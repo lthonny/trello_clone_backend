@@ -1,5 +1,6 @@
 const path = require('path');
 require('dotenv').config({ path: path.resolve(process.cwd(), `env/.env.${process.env.NODE_ENV}`) });
+require("./app/passport");
 
 const express = require("express");
 const app = express();
@@ -8,17 +9,20 @@ const passport = require("passport");
 const cors = require("cors");
 const cookieSession = require("cookie-session");
 const cookieParser = require('cookie-parser');
-require("./app/passport");
 
 const router = require('./app/routes/index');
 const authRoute = require("./app/routes/google");
 
-app.use(
-  cookieSession({ name: "session", keys: ["lama"], maxAge: 24 * 60 * 60 * 100 })
-);
+// app.use(
+//   cookieSession({
+//     name: "session",
+//     keys: ["lama"],
+//     maxAge: 24 * 60 * 60 * 100
+//   })
+// );
 
-app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.initialize());
+// app.use(passport.session());
 
 app.use(
   cors({
