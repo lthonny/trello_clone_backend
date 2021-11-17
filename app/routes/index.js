@@ -24,7 +24,6 @@ router
   .post('/api/board/update/:id', authorize, boardController.updateBoard)
   .delete('/api/board/:id', authorize, boardController.deleteBoard);
 
-
 router
   .get('/api/task/:id', authorize, taskController.task)
   .get('/api/tasks/:id', authorize, taskController.tasks)

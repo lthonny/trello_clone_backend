@@ -28,6 +28,14 @@ module.exports = {
       // assigned: {
       //   type: Sequelize.BOOLEAN,
       // },
+      active: {
+        type: Sequelize.BOOLEAN
+      },
+      board_id: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+        onDelete: 'CASCADE'
+      },
       createdAt: {
         allowNull: false,
         type: Sequelize.DATE,

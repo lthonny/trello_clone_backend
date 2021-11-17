@@ -1,6 +1,5 @@
 const { v1 } = require('uuid');
 const { Invites, user_board, User, Board } = require('../models/index');
-const { where } = require('sequelize');
 
 class InviteService {
   async create(id) {
@@ -90,17 +89,12 @@ class InviteService {
   }
 
   async leave(data) {
-    const {user_id, board_id} = data;
-
-    console.log(user_id);
-
-    // await user_board.destroy({
-    //   where: {
-    //     user_id: data.user_id,
-    //     board_id: data.board_id,
-    //     owner: false
-    //   },
-    // });
+    const { user_id, board_id } = data.data;
+    await user_board.destroy({
+      where: { user_id, board_id,
+        owner: false
+      },
+    });
     return 'user left the board';
   }
 
@@ -114,7 +108,7 @@ class InviteService {
       where: {
         user_id: data.data.user.id,
         board_id: data.data.board_id,
-        owner: false
+        owner: false,
       },
     });
     return 'user removed from board';

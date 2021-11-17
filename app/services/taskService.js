@@ -38,6 +38,17 @@ class TaskService {
     const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
 
     const user = await User.findOne({ where: { id } });
+
+    // console.log(user.id);
+
+    // await user_tasks.create({
+    //   where: {
+    //     task_id: task.id,
+    //     user_id: user.id,
+    //     active: false
+    //   }
+    // });
+
     await Transaction.create({
       task_id: task.id,
       column: nameTaskList,
@@ -69,7 +80,7 @@ class TaskService {
     });
 
     const userTasks = await user_tasks.findOne({
-      where: {task_id: task.id}
+      where: { task_id: task.id }
     });
 
     const user = await User.findOne({ where: { id: userTasks.user_id } });

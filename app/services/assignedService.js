@@ -39,7 +39,7 @@ class AssignedService {
     const exists = await user_tasks.findOne({
       where: {
         task_id: taskId,
-        user_id: user.id,
+        user_id: user.id
       },
     });
 
@@ -53,6 +53,8 @@ class AssignedService {
       await user_tasks.create({
         task_id: taskId,
         user_id: userId,
+        active: true,
+        board_id: boardId
       });
 
       await Transaction.create({

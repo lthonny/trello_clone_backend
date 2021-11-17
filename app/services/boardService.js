@@ -1,5 +1,5 @@
 const { Board, user_board, Task, User, Invites, user_tasks } = require('../models/index');
-const { Op, where} = require('sequelize');
+const { Op, where } = require('sequelize');
 
 class Boards {
   id;
@@ -17,7 +17,7 @@ class Boards {
 
 class BoardService {
   async fetchOne(id) {
-    const board = await Board.findByPk(id, {
+    let board = await Board.findByPk(id, {
       include: [
         {
           model: Task,
@@ -28,24 +28,65 @@ class BoardService {
       ],
     });
 
-    if(board === null) {
-      return {error: 'в таблице нет задач'};
+    if (board === null) {
+      return { error: 'в таблице нет задач' };
     }
-    // if() {
 
-    // const usersTask = await user_tasks.findAll({
-    //   where: { task_id: taskId },
-    // });
+    let activeTasks = [];
+    (await user_tasks.findAll()).forEach((task, index) => {
+      if(task.active) {
+        if (task.board_id === Number(id)) {
+          if (task.board_id === board.Tasks[index].dataValues.board_id) {
+            activeTasks.push(task.dataValues);
+          }
+        }
+      }
+    });
 
-    // let users_task = [];
-    // for (let i = 0; i < usersTask.length; i++) {
-    //   const user = await User.findOne({ where: { id: usersTask[i].dataValues.user_id } });
-    //   users_task.push({ id: user.id, name: user.name });
-    // }
+    console.log('activeTasks', activeTasks);
+
+    const arr = [];
+    for (let i = 0; i < activeTasks.length; i++) {
+      const task = await Task.findOne({ where: { id: activeTasks[i].task_id } });
+      const userModal = await User.findOne({ where: {id: activeTasks[i].user_id }});
+      const user = {
+        id: userModal.dataValues.id,
+        name: userModal.dataValues.name,
+        email: userModal.dataValues.email
+      }
+      arr.push({
+          id: activeTasks[i].task_id,
+          title: task.dataValues.title,
+          description: task.dataValues.description,
+          nameTaskList: task.dataValues.nameTaskList,
+          board_id: task.dataValues.board_id,
+          order: task.dataValues.order,
+          active: [ user ],
+        },
+      );
+    }
+
+    console.log('arr', arr);
+
+    // board.Tasks = board.Tasks.map((task, i) => {
+    //   if(activeTasks[i].task_id === arr[i].id) {
+    //     // console.log(task);
+    //     return task;
+    //   } else {
+    //     return;
+    //   }
+    //   // if(task.id === activeTasks[i].id) {
+    //   //   console.log(task);
+    //   // }
+    //   // if(task.active === undefined || task.id === activeTasks[i].id) {
+    //   //   return activeTasks[i];
+    //   // }
+    // })
+
+    // console.log(f);
 
     const title = board.dataValues.title;
     return { id: id, title, 'tasks': board.Tasks };
-    // }
   }
 
   async fetchAll(id) {
@@ -66,7 +107,7 @@ class BoardService {
   }
 
   async getBoard(id) {
-    const board = await Board.findOne({where: {id}});
+    const board = await Board.findOne({ where: { id } });
     return board;
   }
 
@@ -78,19 +119,17 @@ class BoardService {
   }
 
   async update(id, title, idUser) {
-    const user = await User.findOne({where: {id: idUser}});
-    const board = await user_board.findOne({where: {user_id: user.id}});
-    console.log(board.owner)
+    const user = await User.findOne({ where: { id: idUser } });
+    const board = await user_board.findOne({ where: { user_id: user.id } });
+    console.log(board.owner);
 
-    if(board.owner) {
+    if (board.owner) {
       console.log('false');
       await Board.update({ title }, { where: { id } });
       return { id: id, title: title, owner: true };
-    }
-    else {
-      const board = await Board.findOne({where: {id}});
-      if(board.title !== title)
-      {
+    } else {
+      const board = await Board.findOne({ where: { id } });
+      if (board.title !== title) {
         console.log('true');
         return { id: id, title: title, owner: false };
       }
@@ -98,10 +137,10 @@ class BoardService {
   }
 
   async delete(id) {
-    const board = await Invites.findOne({where: {board_id: id}});
+    const board = await Invites.findOne({ where: { board_id: id } });
 
     if (board) {
-      await Invites.destroy({where: { board_id: id}});
+      await Invites.destroy({ where: { board_id: id } });
     }
 
     return await Board.destroy({ where: { id } });
