@@ -61,9 +61,10 @@ class TaskService {
   }
 
   async updateTask(id, data) {
-    const { nameList, order } = data;
+    const { nameList, order, userId } = data;
+    console.log('userId', userId);
 
-    const taskUpdate = await Task.update({
+    await Task.update({
       nameTaskList: nameList, order: order,
     }, {
       where: { id: data.data.id },
@@ -73,21 +74,27 @@ class TaskService {
       where: { nameTaskList: nameList, id: data.data.id },
     });
 
-    console.log(task);
+    if(!task) {
+      return 'такой задачи нет';
+    }
+
+    // console.log(task);
 
     const updated = await Task.findOne({
       where: { id: data.data.id },
     });
 
-    const userTasks = await user_tasks.findOne({
-      where: { task_id: task.id }
-    });
+    console.log('task.id', task.id);
 
-    const user = await User.findOne({ where: { id: userTasks.user_id } });
-
-    // const user_boards = await user_board.findOne({
-    //   where: { board_id: task.board_id, owner: true },
+    // const userTasks = await user_tasks.findOne({
+    //   where: { task_id: task.id }
     // });
+
+    const user = await User.findOne({ where: { id: userId } });
+
+    const user_boards = await user_board.findOne({
+      where: { board_id: task.board_id, owner: true },
+    });
     //
     // console.log(user_boards);
 
@@ -98,6 +105,8 @@ class TaskService {
       board_id: task.board_id,
       transaction: 'moving',
     });
+
+    console.log('updated', updated);
 
     return updated;
   }
