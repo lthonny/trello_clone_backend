@@ -34,56 +34,113 @@ class BoardService {
       return { error: 'в таблице нет задач' };
     }
 
-    const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
-      if (data.active) {
-        if (data.board_id === Number(id)) {
-          return data.dataValues;
-        }
-      }
-    }).filter((task) => task);
-    console.log('activeTasks', activeTasks);
+    // const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
+    //   if (data.active) {
+    //     if (data.board_id === Number(id)) {
+    //       return data.dataValues;
+    //     }
+    //   }
+    // }).filter((task) => task);
+    // console.log('activeTasks', activeTasks);
 
-    let ind = [];
-    const joinTasks = [];
-    for (let i = 0; i < activeTasks.length; i++) {
-      const task = await Task.findOne({ where: { id: activeTasks.task_id } });
-
-      console.log('task', task);
-
-      // console.log(activeTasks[i].task_id);
-      const userModal = await User.findOne({ where: { id: activeTasks[i].user_id } });
-      // console.log(userModal);
-      if (userModal.dataValues) {
-        const user = {
-          id: userModal.dataValues.id,
-          name: userModal.dataValues.name,
-          email: userModal.dataValues.email,
-        };
-
-        // console.log(user);
-        // if (task) {
-      //     ind.push(task.id);
-      //
-
-          // console.log(task);
-
-          // joinTasks.push({
-          //     id: task.id,
-          //     title: task.title,
-          //     description: task.description,
-          //     nameTaskList: task.nameTaskList,
-          //     board_id: task.board_id,
-          //     order: task.order,
-          //     active: [user],
-          //   },
-          // );
-        // }
-      }
-    }
-    console.log('joinTasks', joinTasks);
-    // console.log('ind', ind);
+    // let idx = activeTasks.map((task, i) => {
+    //   return { task_id: task.task_id, user_id: task.user_id };
+    // });
+    // // console.log(idx);
+    // const joinTasks = [];
     //
+    // for (let i = 0; i < idx.length; i++) {
+    //   const task = await Task.findOne({ where: { id: idx[i].task_id } });
+    //   // console.log('task', task.dataValues);
+    //
+    //   const userModal = await User.findOne({ where: { id: idx[i].user_id } });
+    //   // console.log(userModal.dataValues);
+    //
+    //   if (userModal.dataValues) {
+    //     const user = {
+    //       id: userModal.dataValues.id,
+    //       name: userModal.dataValues.name,
+    //       email: userModal.dataValues.email,
+    //     };
+    //     if (task) {
+    //       joinTasks.push({
+    //         id: task.id,
+    //         title: task.title,
+    //         description: task.description,
+    //         nameTaskList: task.nameTaskList,
+    //         board_id: task.board_id,
+    //         order: task.order,
+    //         active: [user],
+    //       });
+    //     }
+    //   }
+    // }
+
+    // console.log('joinTasks', joinTasks);
+    // // console.log('ind', ind);
+    /*
+    *
+    *
+    *
+    * */
     // board.Tasks = board.Tasks.map((task, i) => {
+    //   if(activeTasks[i]) {
+    //     if(task.dataValues.id !== joinTasks.task_id) {
+    //       return joinTasks[i];
+    //     }
+    //     // else {
+    //     //   console.log('else');
+    //     // }
+    // //
+    // //     // console.log('task.dataValues', task.dataValues);
+    // //     // console.log('activeTasks[i].task_id', activeTasks[i].task_id);
+    // //     // if(task.dataValues === activeTasks[i].task_id) {
+    // //       // console.log('task.dataValues', activeTasks[i]);
+    // //       // return activeTasks[i];
+    // //     // }
+    // //     // console.log(task.dataValues !== idx[i].task_id);
+    // //
+    // //     // return task.dataValues !== idx[i].task_id
+    //   }
+    //   else {
+    //     // console.log('else');
+    //     // activeTasks.forEach((data, i) => {
+    //     //   // if(data) {
+    //     //   //   console.log(data.id);
+    //     //   // }
+    //     //   console.log(data.task_id);
+    //     //   // if(data.dataValues.id !== !task.dataValues.id) {
+    //     //   //   return task.dataValues.id
+    //     //   // }
+    //     // })
+    //     // if(!task.dataValues.active) {
+    //     //   console.log('activeTasks', activeTasks);
+    //     //   // console.log(task.dataValues);
+    //     //   return task.dataValues.id
+    //     // }
+    // //     // console.log('task.dataValues', task.dataValues);
+    //     return task.dataValues;
+    //   }
+    // });
+    /*
+    *
+    *
+    *
+    * */
+    //
+    // const index = this.taskListToDo.findIndex((task: any) => task.id === result.item.id);
+    // if (index !== -1) {
+    //   this.taskListToDo.splice(index, 1);
+    // }
+
+      // board.Tasks = board.Tasks.filter((task, i) => {
+      //   if(joinTasks) {
+      //     console.log('joinTasks.id', joinTasks[i].id);
+      //   }
+      //   console.log(task.dataValues.id);
+      // })
+
+      // return task.dataValues !== idx.task_id
     //   if (ind[i]) {
     //     console.log('task.dataValues.id === ind', task);
     //
@@ -95,7 +152,6 @@ class BoardService {
     //   } else {
     //     return task.dataValues;
     //   }
-    // });
     // // const array3 = joinTasks.concat(board.Tasks);
     //
     // console.log('board.Tasks', board.Tasks);
@@ -166,19 +222,19 @@ class BoardService {
     // // });
     //
     // // console.log('dd', dd);
-    // // let newArr = [];
-    // // board.Tasks = board.Tasks.map((task, i) => {
-    // //   // if (activeTasks[i]) {
-    // //   //   if(task.dataValues.id !== activeTasks[i].id) {
-    // //   //       console.log('task', activeTasks);
-    // //   //     newArr.push(activeTasks[i].dataValues);
-    // //   //   }
-    // //   //   else {
-    // //   //     newArr.push(task);
-    // //   //   }
-    // //   // } else {
-    // //   //   newArr.push(task);
-    // //   // }
+    // let newArr = [];
+    // board.Tasks = board.Tasks.map((task, i) => {
+    //   if (activeTasks[i]) {
+    //     if (task.dataValues.id !== activeTasks[i].id) {
+    //       console.log('task', activeTasks);
+    //       newArr.push(activeTasks[i].dataValues);
+    //     } else {
+    //       newArr.push(task);
+    //     }
+    //   } else {
+    //     newArr.push(task);
+    //   }
+    // })
     // //
     // //   if (joinTasks[i]) {
     // //     if (!task.active) {
@@ -196,15 +252,15 @@ class BoardService {
     // //   }
     // //   else {
     // //       newArr.push(task.dataValues);
-    // //   }
-    // // });
+    //   }
+    // });
     //
     // console.log('task', newArr);
 
     return {
       id: id,
       title: board.dataValues.title,
-      'tasks': tasks,
+      'tasks': board.Tasks,
       // activeTasks: joinTasks
     };
   }
