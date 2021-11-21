@@ -1,5 +1,4 @@
 const userService = require('../services/userServices');
-const { User } = require('../models/index');
 
 class UserController {
   async signup(req, res, next) {
@@ -11,7 +10,7 @@ class UserController {
         maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false 
       });
 
-      return res.json(userData);
+      return res.status(200).json(userData);
     } catch (e) {
       next(e);
     }
@@ -23,7 +22,8 @@ class UserController {
 
       const userData = await userService.sign_in(email, password);
       res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false });
-      return res.json(userData);
+
+      return res.status(200).json(userData);
     } catch (e) {
       next(e);
     }
@@ -33,7 +33,7 @@ class UserController {
     try {
       const { refreshToken } = req.cookies;
 
-      const token = await userService.logout(refreshToken);
+      await userService.logout(refreshToken);
       res.clearCookie('refreshToken');
 
       return res.status(200).send({message: 'Complete cleaning'});
@@ -51,7 +51,7 @@ class UserController {
         maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: false, secure: false
       });
 
-      return res.json(token);
+      return res.status(200).json(token);
     } catch(e) {
       next(e);
     }
@@ -64,15 +64,6 @@ class UserController {
       next(e);
     }
   }
-
-  // async users(req, res, next) {
-  //   try {
-  //     const users = await User.findAll();
-  //     return res.json(users);
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
 }
 
 module.exports = new UserController();

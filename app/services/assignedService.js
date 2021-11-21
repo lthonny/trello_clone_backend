@@ -1,4 +1,4 @@
-const { user_tasks, user_board, User, Transaction, Task } = require('../models/index');
+const { User_Tasks, User_Boards, User, Transaction, Task } = require('../models/index');
 
 class AssignedService {
   async fetch({ taskId, boardId }) {

@@ -4,7 +4,6 @@ const { Invites, user_board, User, Board } = require('../models/index');
 class InviteService {
   async create(id) {
     let inviteKey = await Invites.findOne({ where: { id } });
-
     if (!inviteKey) {
       inviteKey = await Invites.create({ board_id: id, key: v1() });
     }
@@ -24,8 +23,6 @@ class InviteService {
   }
 
   async inviteBoard(userId, key) {
-    console.log('dd', userId);
-
     const inviteKey = await Invites.findOne({ where: { key } });
 
     if (!inviteKey) {
@@ -36,8 +33,6 @@ class InviteService {
     if (!user) {
       return 'User not found';
     }
-
-    // console.log(user);
 
     const board = await Board.findByPk(inviteKey.board_id);
     if (!board) {
@@ -82,6 +77,7 @@ class InviteService {
         user_id: data.userId, board_id: data.boardId,
       },
     });
+
     return {
       userId: Number(data.userId),
       owner: board.owner,
@@ -99,11 +95,6 @@ class InviteService {
   }
 
   async remove(data) {
-    // await Board.destroy({
-    //   where: {
-    //     id: data.data.board_id
-    //   }
-    // });
     await user_board.destroy({
       where: {
         user_id: data.data.user.id,

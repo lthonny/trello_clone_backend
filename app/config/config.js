@@ -1,9 +1,3 @@
-// console.log(
-//     process.env.POSTGRES_USER,
-//     // process.env.POSTGRES_
-//     process.env.POSTGRES_DIALECT
-// );
-
 module.exports = {
   development: {
     username: "postgres",

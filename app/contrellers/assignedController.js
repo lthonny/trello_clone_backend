@@ -3,9 +3,7 @@ const assignedService = require('../services/assignedService');
 class AssignedController {
   async assignedUsers(req, res, next) {
     try {
-      const { data } = req.body;
-      const users = await assignedService.fetch(data);
-      return res.json(users);
+      return res.status(200).json(await assignedService.fetch(req.body));
     } catch (e) {
       next(e);
     }
@@ -13,9 +11,7 @@ class AssignedController {
 
   async createAssignedUser(req, res, next) {
     try {
-      const { data } = req.body;
-      const user = await assignedService.create(data);
-      return res.json(user);
+      return res.status(200).json(await assignedService.create(req.body));
     } catch (e) {
       next(e);
     }
@@ -23,9 +19,7 @@ class AssignedController {
 
   async removeAssignedUser(req, res, next) {
     try {
-      const { data } = req.body;
-      const users = await assignedService.remove(data);
-      return res.json(users);
+      return res.status(200).json(await assignedService.remove(req.body));
     } catch (e) {
       next(e);
     }

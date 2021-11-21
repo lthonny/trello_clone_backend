@@ -28,7 +28,7 @@ class BoardService {
       ],
     });
     let tasks = board.Tasks.map((task) => task.dataValues);
-    console.log('tasks', tasks);
+    // console.log('tasks', tasks);
 
     if (board === null) {
       return { error: 'в таблице нет задач' };
@@ -297,16 +297,16 @@ class BoardService {
   async update(id, title, idUser) {
     const user = await User.findOne({ where: { id: idUser } });
     const board = await user_board.findOne({ where: { user_id: user.id } });
-    console.log(board.owner);
+    // console.log(board.owner);
 
     if (board.owner) {
-      console.log('false');
+      // console.log('false');
       await Board.update({ title }, { where: { id } });
       return { id: id, title: title, owner: true };
     } else {
       const board = await Board.findOne({ where: { id } });
       if (board.title !== title) {
-        console.log('true');
+        // console.log('true');
         return { id: id, title: title, owner: false };
       }
     }
