@@ -42,4 +42,4 @@ In order to run e2e tests that are written on the frontend, you need to run:
 
 ## 3) Run npm start
 
-    `npm run start`
+    npm run start
