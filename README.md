@@ -28,7 +28,7 @@ In order to run e2e tests that are written on the frontend, you need to run:
 
 ## 1) To download all project dependencies, white:
     
-    `npm ci`
+    npm ci
 
 ## 2) Prepare db(Postgresql) 
 
