@@ -15,7 +15,7 @@ Rename
 
 ### Testings
 
-```npm run test```
+    `npm run test`
 
 <!--  
 In order to run e2e tests that are written on the frontend, you need to run:
