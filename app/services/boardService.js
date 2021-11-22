@@ -27,7 +27,7 @@ class BoardService {
         },
       ],
     });
-    let tasks = board.Tasks.map((task) => task.dataValues);
+    // let tasks = board.Tasks.map((task) => task.dataValues);
     // console.log('tasks', tasks);
 
     if (board === null) {
@@ -284,14 +284,13 @@ class BoardService {
 
   async getBoard(id) {
     const board = await Board.findOne({ where: { id } });
-    return board;
+    return board.dataValues;
   }
 
   async create(id, name) {
     const board = await Board.create({ title: name });
     const userBoard = await user_board.create({ board_id: board.id, user_id: id, owner: true });
-
-    return board;
+    return board.dataValues;
   }
 
   async update(id, title, idUser) {
@@ -319,7 +318,9 @@ class BoardService {
       await Invites.destroy({ where: { board_id: id } });
     }
 
-    return await Board.destroy({ where: { id } });
+    await Board.destroy({ where: { id } });
+
+    return 'board removed';
   }
 }
 

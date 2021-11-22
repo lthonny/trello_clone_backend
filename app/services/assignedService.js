@@ -1,7 +1,8 @@
-const { User_Tasks, User_Boards, User, Transaction, Task } = require('../models/index');
+const { user_tasks, user_board, User, Transaction, Task } = require('../models/index');
 
 class AssignedService {
-  async fetch({ taskId, boardId }) {
+  async fetch({ data }) {
+    const {taskId, boardId} = data;
     const usersBoard = await user_board.findAll({
       where: { board_id: boardId },
     });

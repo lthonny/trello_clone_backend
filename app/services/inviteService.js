@@ -40,7 +40,7 @@ class InviteService {
     }
 
     await user_board.create({ board_id: board.id, owner: false, user_id: userId });
-    return board;
+    return { userId, board: board.dataValues };
   }
 
   async users(userId, name, boardId) {

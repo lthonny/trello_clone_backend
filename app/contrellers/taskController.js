@@ -57,9 +57,9 @@ class TaskController {
 
   async updateDescription(req, res, next) {
     try {
-      const { id, description } = req.body;
+      const { userId, post } = req.body;
       return res.status(200).json(
-        await taskService.updateDescription(id, description),
+        await taskService.updateDescription(userId, post.id, post.description),
       );
     } catch (e) {
       next(e);
