@@ -32,7 +32,9 @@ class AssignedService {
     };
   }
 
-  async create({ userId, taskId, boardId }) {
+  async create({ data }) {
+    const {userId, taskId, boardId} = data;
+
     const user = await User.findOne({
       where: { id: userId },
     });
@@ -70,7 +72,9 @@ class AssignedService {
     }
   }
 
-  async remove({ userId, taskId, boardId }) {
+  async remove({ data }) {
+    const {userId, taskId, boardId} = data;
+
     const user = await User.findOne({
       where: { id: userId },
     });

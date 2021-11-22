@@ -19,248 +19,112 @@ class BoardService {
   async fetchOne(id) {
     let board = await Board.findByPk(id, {
       include: [
-        {
-          model: Task,
-          where: {
-            board_id: id,
-          },
-        },
+        { model: Task, where: { board_id: id } },
       ],
     });
-    // let tasks = board.Tasks.map((task) => task.dataValues);
-    // console.log('tasks', tasks);
+    /*** get all tasks ***/
+    let tasks = board.Tasks.map((task) => task.dataValues);
+    console.log('get all tasks', tasks);
 
+    /*** check if there are tasks on the board ***/
     if (board === null) {
       return { error: 'в таблице нет задач' };
     }
 
-    // const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
-    //   if (data.active) {
-    //     if (data.board_id === Number(id)) {
-    //       return data.dataValues;
-    //     }
-    //   }
-    // }).filter((task) => task);
-    // console.log('activeTasks', activeTasks);
+    /*** get all tasks to which users are assigned ***/
+    const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
+      if (data.active) {
+        if (data.board_id === Number(id)) {
+          return data.dataValues;
+        }
+      }
+    }).filter((task) => task);
 
-    // let idx = activeTasks.map((task, i) => {
-    //   return { task_id: task.task_id, user_id: task.user_id };
-    // });
-    // // console.log(idx);
-    // const joinTasks = [];
-    //
-    // for (let i = 0; i < idx.length; i++) {
-    //   const task = await Task.findOne({ where: { id: idx[i].task_id } });
-    //   // console.log('task', task.dataValues);
-    //
-    //   const userModal = await User.findOne({ where: { id: idx[i].user_id } });
-    //   // console.log(userModal.dataValues);
-    //
-    //   if (userModal.dataValues) {
-    //     const user = {
-    //       id: userModal.dataValues.id,
-    //       name: userModal.dataValues.name,
-    //       email: userModal.dataValues.email,
-    //     };
-    //     if (task) {
-    //       joinTasks.push({
-    //         id: task.id,
-    //         title: task.title,
-    //         description: task.description,
-    //         nameTaskList: task.nameTaskList,
-    //         board_id: task.board_id,
-    //         order: task.order,
-    //         active: [user],
-    //       });
-    //     }
-    //   }
-    // }
+    // console.log('get all tasks to which users are assigned', activeTasks);
 
-    // console.log('joinTasks', joinTasks);
-    // // console.log('ind', ind);
-    /*
-    *
-    *
-    *
-    * */
-    // board.Tasks = board.Tasks.map((task, i) => {
-    //   if(activeTasks[i]) {
-    //     if(task.dataValues.id !== joinTasks.task_id) {
-    //       return joinTasks[i];
-    //     }
-    //     // else {
-    //     //   console.log('else');
-    //     // }
-    // //
-    // //     // console.log('task.dataValues', task.dataValues);
-    // //     // console.log('activeTasks[i].task_id', activeTasks[i].task_id);
-    // //     // if(task.dataValues === activeTasks[i].task_id) {
-    // //       // console.log('task.dataValues', activeTasks[i]);
-    // //       // return activeTasks[i];
-    // //     // }
-    // //     // console.log(task.dataValues !== idx[i].task_id);
-    // //
-    // //     // return task.dataValues !== idx[i].task_id
-    //   }
-    //   else {
-    //     // console.log('else');
-    //     // activeTasks.forEach((data, i) => {
-    //     //   // if(data) {
-    //     //   //   console.log(data.id);
-    //     //   // }
-    //     //   console.log(data.task_id);
-    //     //   // if(data.dataValues.id !== !task.dataValues.id) {
-    //     //   //   return task.dataValues.id
-    //     //   // }
-    //     // })
-    //     // if(!task.dataValues.active) {
-    //     //   console.log('activeTasks', activeTasks);
-    //     //   // console.log(task.dataValues);
-    //     //   return task.dataValues.id
-    //     // }
-    // //     // console.log('task.dataValues', task.dataValues);
-    //     return task.dataValues;
-    //   }
-    // });
-    /*
-    *
-    *
-    *
-    * */
-    //
-    // const index = this.taskListToDo.findIndex((task: any) => task.id === result.item.id);
-    // if (index !== -1) {
-    //   this.taskListToDo.splice(index, 1);
-    // }
+    /*** concatenating tables to get tasks ***/
 
-      // board.Tasks = board.Tasks.filter((task, i) => {
-      //   if(joinTasks) {
-      //     console.log('joinTasks.id', joinTasks[i].id);
-      //   }
-      //   console.log(task.dataValues.id);
-      // })
+    // const a = ['a', 'b', 'c', 'd'];
+    // const b = ['a', 'b', 'x', 'y', 'z'];
+    //
+    // const c = tasks.filter(n => activeTasks.indexOf(n) === -1);
+    // console.log(c);
 
-      // return task.dataValues !== idx.task_id
-    //   if (ind[i]) {
-    //     console.log('task.dataValues.id === ind', task);
-    //
-    //
-    //     if (task.dataValues.id === ind) {
-    //       // return 'gg';
-    //       //  console.log('task.dataValues', task.dataValues);
-    //     }
-    //   } else {
-    //     return task.dataValues;
-    //   }
-    // // const array3 = joinTasks.concat(board.Tasks);
-    //
-    // console.log('board.Tasks', board.Tasks);
-    //
-    // // board.Tasks = board.Tasks.map((task) => {
-    // // if(task) {
-    // //
-    // // }
-    // // })
-    //
-    // // console.log('array3', array3);
-    //
-    // let allTasks = [];
-    // board.Tasks.forEach((task, i) => {
-    //   // console.log(task.dataValues);
-    //   if (joinTasks[i]) {
-    //     if (joinTasks[i].active) {
-    //       allTasks.push(joinTasks[i]);
-    //     }
-    //     // else {
-    //     //   allTasks.push(task);
-    //   }
-    //   // if(task.id !== joinTasks.id) {
-    //   //   allTasks.push(task);
-    //   // }
-    //   // if(task.id !== joinTasks[i].id) {
-    //   //   allTasks.push(task);
-    //   // }
-    //   // console.log('joinTasks[i]', joinTasks[i]);
-    //   // }
-    //   // else {
-    //   //   if(task) {
-    //   //     console.log('task', task.id);
-    //   //     // if(joinTasks[i].id !== task.id) {
-    //   //     //   allTasks.push(task);
-    //   //     // }
-    //   //   }
-    //   // }
-    //   // allTasks.push(task)
-    // });
-    //
-    // // const dd = [];
-    // // board.Tasks.map((task, i) => {
-    // //   if (task) {
-    // //
-    // //     if (allTasks[i]) {
-    // //
-    // //       if (allTasks[i].id !== task.id) {
-    // //         allTasks.push(joinTasks[i]);
-    // //       }
-    // //
-    // //       // if(task[i]) {
-    // //       //   console.log(joinTasks[i].id);
-    // //       //   console.log(task[i].id);
-    // //       // }
-    // //
-    // //       // if(allTasks[i].id !== joinTasks[i].id) {
-    // //       //   dd.push(allTasks[i]);
-    // //       // }
-    // //       // console.log('allTasks', allTasks[i]);
-    // //     }
-    // //   }
-    // // task.id !== board.Tasks[i].id
-    // // if(task.id !== allTasks[i].id) {
-    // //   allTasks.push(task);
-    // // }
-    // // return;
-    // // });
-    //
-    // // console.log('dd', dd);
-    // let newArr = [];
-    // board.Tasks = board.Tasks.map((task, i) => {
-    //   if (activeTasks[i]) {
-    //     if (task.dataValues.id !== activeTasks[i].id) {
-    //       console.log('task', activeTasks);
-    //       newArr.push(activeTasks[i].dataValues);
-    //     } else {
-    //       newArr.push(task);
-    //     }
-    //   } else {
-    //     newArr.push(task);
-    //   }
+    let idx = activeTasks.map((task, i) => {
+      return { task_id: task.task_id, user_id: task.user_id };
+    });
+
+    let joinTasks = [];
+    for (let i = 0; i < idx.length; i++) {
+      const task = await Task.findOne({ where: { id: idx[i].task_id } });
+      const userModal = await User.findOne({ where: { id: idx[i].user_id } });
+      if (userModal.dataValues) {
+        const user = {
+          id: userModal.dataValues.id,
+          name: userModal.dataValues.name,
+          email: userModal.dataValues.email,
+        };
+        if (task) {
+          joinTasks.push({
+            id: task.id,
+            title: task.title,
+            description: task.description,
+            nameTaskList: task.nameTaskList,
+            board_id: task.board_id,
+            order: task.order,
+            active: [user],
+          });
+        }
+      }
+    }
+
+    console.log('concatenating', joinTasks);
+    const joinTasksId = joinTasks.map((task) => task.id);
+    console.log(joinTasksId);
+
+    // tasks = tasks.filter((task, i) => {
+      // console.log(task.id !== joinTasksId[i]);
+      // if(task.id !== joinTasksId[i]) {
+      //   return task;
+      // }
+      // if(task.id === joinTasksId[i]) {
+      //   return joinTasksId[i];
+      // } else {
+      //   return task;
+      // }
+        // console.log(task.id, joinTasks[i].id);
+      // if(task.id === joinTasks[i]) {
+      //   return joinTasks[i];
+      // }
     // })
-    // //
-    // //   if (joinTasks[i]) {
-    // //     if (!task.active) {
-    // //       // console.log(joinTasks[i]);
-    // //       // newArr = newArr.filter((data) => data.active !== task[i].active)
-    // //       // newArr.push(joinTasks[i]);
-    // //       // if(newArr[i].id !== task.id) {
-    // //       //   newArr.push(joinTasks[i]);
-    // //       // }
-    // //     } else {
-    // //       // if(task.id !== joinTasks[i].id) {
-    // //       //   newArr.push(task.dataValues);
-    // //       // }
-    // //     }
-    // //   }
-    // //   else {
-    // //       newArr.push(task.dataValues);
-    //   }
-    // });
-    //
-    // console.log('task', newArr);
+
+    let result = tasks.filter((item, index, array) => {
+      if(item.id === joinTasksId[index]) {
+        // return joinTasks.push(item);
+      } else {
+        return joinTasks.push(item);
+      }
+
+      // console.log(item.id !== joinTasksId[index]);
+
+      // return item.id !== joinTasksId[index];
+    });
+
+    // joinTasks.push(result);
+
+
+    console.log(result);
+
+    // joinTasks = joinTasks.filter((task, i) => task.id !== tasks[i].id);
+    // console.log(joinTasks);
+
+    // const c = tasks.filter(n => joinTasks.indexOf(n) === -1);
+    // console.log('ccccccc', c);
 
     return {
       id: id,
       title: board.dataValues.title,
-      'tasks': board.Tasks,
+      'tasks': joinTasks,
       // activeTasks: joinTasks
     };
   }

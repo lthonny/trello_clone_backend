@@ -1,6 +1,6 @@
-env/.env.test
-env/.env.development
-env/.env.production
+env/.env.test/
+env/.env.development/
+env/.env.production/
 .idea/
 node_modules/
 pg/

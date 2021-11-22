@@ -1,12 +1,13 @@
-const { Task, user_tasks, Board, Transaction, User, user_board } = require('../models/index');
+const { Task, Board, Transaction, User } = require('../models/index');
 
-class Tasks {
+class ModelTasks {
   id;
   title;
   description;
   createdAt;
   updatedAt;
   order;
+  archive;
 
   constructor(model) {
     this.id = model.id;
@@ -15,6 +16,7 @@ class Tasks {
     this.createdAt = model.createdAt;
     this.updatedAt = model.updatedAt;
     this.order = model.order;
+    this.archive = model.archive;
   }
 }
 
@@ -49,6 +51,8 @@ class TaskService {
 
   async updateTask(id, data) {
     const { nameList, order, userId } = data;
+    console.log(nameList, order, userId);
+
     await Task.update({
       nameTaskList: nameList, order: order,
     }, {
@@ -59,29 +63,14 @@ class TaskService {
       where: { nameTaskList: nameList, id: data.data.id },
     });
 
-    if(!task) {
+    if (!task) {
       return 'такой задачи нет';
     }
-
-    // console.log(task);
 
     const updated = await Task.findOne({
       where: { id: data.data.id },
     });
-
-    // console.log('task.id', task.id);
-
-    // const userTasks = await user_tasks.findOne({
-    //   where: { task_id: task.id }
-    // });
-
     const user = await User.findOne({ where: { id: userId } });
-
-    const user_boards = await user_board.findOne({
-      where: { board_id: task.board_id, owner: true },
-    });
-    //
-    // console.log(user_boards);
 
     await Transaction.create({
       task_id: task.id,
@@ -91,24 +80,8 @@ class TaskService {
       transaction: 'moving',
     });
 
-    // console.log('updated', updated);
-
     return updated;
   }
-
-  // async update(boardId, data) {
-  //   const { id, description, nameList, order } = data;
-  //
-  //   const task = await Task.findOne()
-  //
-  //   if(task) {
-  //
-  //   }
-  //
-  //   // const task = Task.update({})
-  //
-  //   return task;
-  // }
 
   async updateTitle(id, title) {
     await Task.update({ title: title }, { where: { id } });
@@ -124,7 +97,7 @@ class TaskService {
     const updated = await Task.findOne({ where: { id } });
 
     const task = await Task.findOne({ where: { id } });
-    const user = await User.findOne({ where: { id:userId } });
+    const user = await User.findOne({ where: { id: userId } });
 
     await Transaction.create({
       task_id: task.id,
@@ -138,8 +111,8 @@ class TaskService {
   }
 
   async updateOrder(id, data) {
-    const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order }) => {
-      return new Tasks({ id, title, description, createdAt, updatedAt, board_id, order });
+    const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order, archive }) => {
+      return new ModelTasks({ id, title, description, createdAt, updatedAt, board_id, order, archive });
     });
 
     async function processArray(updateTasks) {
@@ -150,19 +123,14 @@ class TaskService {
     }
 
     await processArray(updateTasks);
+    let boardId = data[0].board_id;
 
-    const board = await Board.findByPk(id, {
-      include: [
-        {
-          model: Task,
-          where: {
-            board_id: data[0].board_id,
-          },
-        },
-      ],
+    let tasks = await Task.findAll({
+      where: {
+        board_id: boardId,
+      },
     });
-
-    return { id: id, 'tasks': board.Tasks };
+    return { id: id, 'tasks': tasks.dataValues };
   }
 
   async getArchive(id) {
@@ -197,7 +165,7 @@ class TaskService {
   }
 
   async delete(id) {
-    await Task.destroy({ where: { id: id } })
+    await Task.destroy({ where: { id: id } });
     return 'task deleted';
   }
 

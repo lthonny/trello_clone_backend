@@ -1,6 +1,6 @@
-env/.env
-env/.env.test
 env/.env.production
+env/.env.development
+env/.env.test
 .idea/
 node_modules/
 database/

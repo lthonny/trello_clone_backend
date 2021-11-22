@@ -24,9 +24,9 @@ class InviteController {
 
   async getBoard(req, res, next) {
     try {
-      const { id, key } = req.body;
+      const { userId, key } = req.body;
       return res.status(200).json(
-        await inviteService.inviteBoard(id, key),
+        await inviteService.inviteBoard(userId, key),
       );
     } catch (e) {
       next(e);

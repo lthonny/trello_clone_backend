@@ -23,6 +23,7 @@ class InviteService {
   }
 
   async inviteBoard(userId, key) {
+    console.log('userId', userId);
     const inviteKey = await Invites.findOne({ where: { key } });
 
     if (!inviteKey) {
@@ -72,23 +73,27 @@ class InviteService {
   }
 
   async owner(data) {
-    const board = await user_board.findOne({
+    const User_board = await user_board.findOne({
       where: {
         user_id: data.userId, board_id: data.boardId,
       },
     });
 
+    const board = await Board.findOne({ where: { id: data.boardId } });
+
     return {
+      title: board.dataValues.title,
       userId: Number(data.userId),
-      owner: board.owner,
+      owner: User_board.owner,
     };
   }
 
   async leave(data) {
     const { user_id, board_id } = data.data;
     await user_board.destroy({
-      where: { user_id, board_id,
-        owner: false
+      where: {
+        user_id, board_id,
+        owner: false,
       },
     });
     return 'user left the board';

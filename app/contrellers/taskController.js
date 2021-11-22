@@ -99,7 +99,7 @@ class TaskController {
   async deleteTask(req, res, next) {
     try {
       await taskService.delete(req.params.id);
-      return res.status(200);
+      return res.status(200).send([]);
     } catch (e) {
       next(e);
     }
