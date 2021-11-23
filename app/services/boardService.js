@@ -1,5 +1,4 @@
 const { Board, user_board, Task, User, Invites, user_tasks } = require('../models/index');
-const { Op, where } = require('sequelize');
 
 class Boards {
   id;
@@ -40,16 +39,7 @@ class BoardService {
       }
     }).filter((task) => task);
 
-    // console.log('get all tasks to which users are assigned', activeTasks);
-
     /*** concatenating tables to get tasks ***/
-
-      // const a = ['a', 'b', 'c', 'd'];
-      // const b = ['a', 'b', 'x', 'y', 'z'];
-      //
-      // const c = tasks.filter(n => activeTasks.indexOf(n) === -1);
-      // console.log(c);
-
     let idx = activeTasks.map((task, i) => {
         return { task_id: task.task_id, user_id: task.user_id };
       });
@@ -65,17 +55,12 @@ class BoardService {
           email: userModal.dataValues.email,
         };
         if (task) {
-          console.log('task', task.dataValues);
-
           tasks = tasks.filter((item) => {
             console.log(item.id === task.id, 'task id', task.id);
             if(item.id === task.id) {
-              // tasks.splice(1, item)
             } else {
               return item;
             }
-
-            // return task.id === task.id
           })
 
           joinTasks.push({
@@ -96,33 +81,10 @@ class BoardService {
 
     joinTasks.forEach((task) => tasks.push(task));
 
-    // const arr = tasks.filter(item => {
-
-      // joinTasks = joinTasks.filter((kk => {
-      //     return item.id !== kk.id;
-      // }));
-
-      // console.log(item.id, joinTasks[i].id)
-    // });
-    // console.log('arr', joinTasks);
-
-    // let numbers = tasks.filter((n) => {return n.id != joinTasks.id});
-    // console.log('numbers', numbers);
-    // tasks.splice(joinTasks.id);
-
-    // tasks = tasks.filter(d => !joinTasks.includes(d.id))
-
-    // let intersection = tasks.filter(x => joinTasks.includes(x));
-    // console.log('intersection', intersection);
-
-    // const c = tasks.filter(n => joinTasks.indexOf(n) === -1);
-    // console.log('ccccccc', c);
-
     return {
       id: id,
       title: board.dataValues.title,
-      'tasks': tasks,
-      // activeTasks: joinTasks
+      'tasks': tasks
     };
   }
 
@@ -157,16 +119,13 @@ class BoardService {
   async update(id, title, idUser) {
     const user = await User.findOne({ where: { id: idUser } });
     const board = await user_board.findOne({ where: { user_id: user.id } });
-    // console.log(board.owner);
 
     if (board.owner) {
-      // console.log('false');
       await Board.update({ title }, { where: { id } });
       return { id: id, title: title, owner: true };
     } else {
       const board = await Board.findOne({ where: { id } });
       if (board.title !== title) {
-        // console.log('true');
         return { id: id, title: title, owner: false };
       }
     }

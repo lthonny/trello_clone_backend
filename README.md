@@ -1,12 +1,15 @@
-# Trello-backend
-Coursework at Inspirit (back-end).
+# Clone Trello backend
+Repository frontend https://github.com/lthonny/trello_clone_frontend
+
+### Core technology stack:
+
+- Node + Express
+- PostgreSQL
+- JWT + PASSPORT
 
 ### ENV file:
-
 Rename 
-    
-    .env.example to .env
-    
+ 
     .env.test.example to .env.test
 
     .env.test.example to .env.production
@@ -14,23 +17,13 @@ Rename
     .env.development.example to .env.development
 
 ### Testings
-
     npm run test
 
-<!--  
-In order to run e2e tests that are written on the frontend, you need to run:
-
-1) we raise the database in a docker container: ```npm run setup_db_testing```
-2) we create a database, do the migration and fill the database: ```npm run create_db_testing```
-3) run the backend in testing mode: ```npm run test```
-4) then go to front-end repository: ```https://github.com/lthonny/Trello-frontend```
--->
-
-## 1) To download all project dependencies, white:
+### 1) To download all project dependencies, white:
     
     npm ci
 
-## 2) Prepare db(Postgresql) 
+### 2) Prepare db(Postgresql) 
 
 *POSTGRESQL*
 
@@ -40,6 +33,6 @@ In order to run e2e tests that are written on the frontend, you need to run:
 
    - `npm run create_db` create a database inside container and tables
 
-## 3) Run npm start
+### 3) Run npm start
 
     npm run start
