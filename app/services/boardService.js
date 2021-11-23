@@ -44,15 +44,15 @@ class BoardService {
 
     /*** concatenating tables to get tasks ***/
 
-    // const a = ['a', 'b', 'c', 'd'];
-    // const b = ['a', 'b', 'x', 'y', 'z'];
-    //
-    // const c = tasks.filter(n => activeTasks.indexOf(n) === -1);
-    // console.log(c);
+      // const a = ['a', 'b', 'c', 'd'];
+      // const b = ['a', 'b', 'x', 'y', 'z'];
+      //
+      // const c = tasks.filter(n => activeTasks.indexOf(n) === -1);
+      // console.log(c);
 
     let idx = activeTasks.map((task, i) => {
-      return { task_id: task.task_id, user_id: task.user_id };
-    });
+        return { task_id: task.task_id, user_id: task.user_id };
+      });
 
     let joinTasks = [];
     for (let i = 0; i < idx.length; i++) {
@@ -65,6 +65,19 @@ class BoardService {
           email: userModal.dataValues.email,
         };
         if (task) {
+          console.log('task', task.dataValues);
+
+          tasks = tasks.filter((item) => {
+            console.log(item.id === task.id, 'task id', task.id);
+            if(item.id === task.id) {
+              // tasks.splice(1, item)
+            } else {
+              return item;
+            }
+
+            // return task.id === task.id
+          })
+
           joinTasks.push({
             id: task.id,
             title: task.title,
@@ -79,44 +92,28 @@ class BoardService {
     }
 
     console.log('concatenating', joinTasks);
-    const joinTasksId = joinTasks.map((task) => task.id);
-    console.log(joinTasksId);
-
-    // tasks = tasks.filter((task, i) => {
-      // console.log(task.id !== joinTasksId[i]);
-      // if(task.id !== joinTasksId[i]) {
-      //   return task;
-      // }
-      // if(task.id === joinTasksId[i]) {
-      //   return joinTasksId[i];
-      // } else {
-      //   return task;
-      // }
-        // console.log(task.id, joinTasks[i].id);
-      // if(task.id === joinTasks[i]) {
-      //   return joinTasks[i];
-      // }
-    // })
-
-    let result = tasks.filter((item, index, array) => {
-      if(item.id === joinTasksId[index]) {
-        // return joinTasks.push(item);
-      } else {
-        return joinTasks.push(item);
-      }
-
-      // console.log(item.id !== joinTasksId[index]);
-
-      // return item.id !== joinTasksId[index];
-    });
-
-    // joinTasks.push(result);
 
 
-    console.log(result);
+    joinTasks.forEach((task) => tasks.push(task));
 
-    // joinTasks = joinTasks.filter((task, i) => task.id !== tasks[i].id);
-    // console.log(joinTasks);
+    // const arr = tasks.filter(item => {
+
+      // joinTasks = joinTasks.filter((kk => {
+      //     return item.id !== kk.id;
+      // }));
+
+      // console.log(item.id, joinTasks[i].id)
+    // });
+    // console.log('arr', joinTasks);
+
+    // let numbers = tasks.filter((n) => {return n.id != joinTasks.id});
+    // console.log('numbers', numbers);
+    // tasks.splice(joinTasks.id);
+
+    // tasks = tasks.filter(d => !joinTasks.includes(d.id))
+
+    // let intersection = tasks.filter(x => joinTasks.includes(x));
+    // console.log('intersection', intersection);
 
     // const c = tasks.filter(n => joinTasks.indexOf(n) === -1);
     // console.log('ccccccc', c);
@@ -124,7 +121,7 @@ class BoardService {
     return {
       id: id,
       title: board.dataValues.title,
-      'tasks': joinTasks,
+      'tasks': tasks,
       // activeTasks: joinTasks
     };
   }
