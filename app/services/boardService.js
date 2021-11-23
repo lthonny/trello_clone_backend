@@ -21,15 +21,15 @@ class BoardService {
         { model: Task, where: { board_id: id } },
       ],
     });
-    /*** get all tasks ***/
-    let tasks = board.Tasks.map((task) => task.dataValues);
-    console.log('get all tasks', tasks);
 
     /*** check if there are tasks on the board ***/
     if (board === null) {
       return { error: 'в таблице нет задач' };
     }
 
+    /*** get all tasks ***/
+    let tasks = board.Tasks.map((task) => task.dataValues);
+    // console.log('get all tasks', tasks);
     /*** get all tasks to which users are assigned ***/
     const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
       if (data.active) {
@@ -56,13 +56,11 @@ class BoardService {
         };
         if (task) {
           tasks = tasks.filter((item) => {
-            console.log(item.id === task.id, 'task id', task.id);
             if(item.id === task.id) {
             } else {
               return item;
             }
           })
-
           joinTasks.push({
             id: task.id,
             title: task.title,
@@ -75,9 +73,6 @@ class BoardService {
         }
       }
     }
-
-    console.log('concatenating', joinTasks);
-
 
     joinTasks.forEach((task) => tasks.push(task));
 
