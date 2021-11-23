@@ -36,3 +36,14 @@ Rename
 ### 3) Run npm start
 
     npm run start
+    
+    
+### 🤝 Connect with me:
+
+[<img alt="thonny | telegram" src="https://img.shields.io/badge/telegram-4680C2.svg?&style=for-the-badge&logo=telegram&logoColor=fff" />][telegram]
+[<img alt="thonny | Instagram" src="https://img.shields.io/badge/instagram-E4405F.svg?&style=for-the-badge&logo=instagram&logoColor=fff" />][instagram]
+[<img alt="thonny | VK" src="https://img.shields.io/badge/vk-4680C2.svg?&style=for-the-badge&logo=vk&logoColor=fff" />][vk]
+
+[vk]: https://vk.com/thonny_v
+[telegram]: https://t.me/thonnyDev
+[instagram]: https://www.instagram.com/_th_vasiliy_/
