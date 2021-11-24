@@ -12,10 +12,3 @@ module.exports = (sequelize, DataTypes) => {
   user_tasks.associate = (models) => {};
   return user_tasks;
 };
-
-// user_tasks.belongsTo(models.User, {
-//   foreignKey: 'user_id'
-// });
-// user_tasks.belongsTo(models.Task, {
-//   foreignKey: 'task_id'
-// });

@@ -10,24 +10,21 @@ module.exports = {
       task_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'Tasks',
-        //   key: 'id'
-        // },
+        references: {
+          model: 'Tasks',
+          key: 'id'
+        },
         onDelete: 'CASCADE',
       },
       user_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        // references: {
-        //   model: 'Users',
-        //   key: 'id'
-        // },
+        references: {
+          model: 'Users',
+          key: 'id'
+        },
         onDelete: 'CASCADE',
       },
-      // assigned: {
-      //   type: Sequelize.BOOLEAN,
-      // },
       active: {
         type: Sequelize.BOOLEAN
       },
