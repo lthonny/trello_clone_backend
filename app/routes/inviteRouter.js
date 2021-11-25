@@ -1,5 +1,5 @@
 const Router = require('express');
-const inviteController = require('../contrellers/inviteController');
+const inviteController = require('../controllers/inviteController');
 const router = new Router();
 
 router.post('/', inviteController.getBoard);

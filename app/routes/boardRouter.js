@@ -1,6 +1,6 @@
 const Router = require('express');
 const authorize = require('../middlewares/authorize');
-const boardController = require('../contrellers/boardController');
+const boardController = require('../controllers/boardController');
 const router = new Router();
 
 router.get(':id', authorize, boardController.board);

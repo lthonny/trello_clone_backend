@@ -1,6 +1,6 @@
 const Router = require('express');
 const authorize = require('../middlewares/authorize');
-const assignedUsers = require('../contrellers/assignedController');
+const assignedUsers = require('../controllers/assignedController');
 const router = new Router();
 
 router.post(`/:id`, authorize, assignedUsers.assignedUsers);
