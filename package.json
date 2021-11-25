@@ -9,7 +9,7 @@
     "start:test": "cross-env NODE_ENV=test",
     "make-model": "npx sequelize-cli model:generate --name Users --attributes email:string",
     "db:migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
-    "db:create": "cross-env NODE_ENV=development npx sequelize-cli db:create && NODE_ENV=development npx sequelize-cli db:migrate",
+    "db:create": "cross-env NODE_ENV=development npx sequelize-cli db:create && cross-env NODE_ENV=development npx sequelize-cli db:migrate",
     "db:undo": "cross-env NODE_ENV=development npx sequelize-cli db:migrate:undo",
     "prettier": "prettier --write ./app",
     "test": "mocha"
