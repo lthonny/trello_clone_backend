@@ -4,7 +4,7 @@ const router = new Router();
 
 router.post('/', inviteController.getBoard);
 router.get('/create/:id', inviteController.createInvite);
-router.post('/key/:key', inviteController.invite);
+// router.post('/key/:key', inviteController.invite);
 router.post('/users/:id', inviteController.invitedUsers);
 router.post('/owner', inviteController.owner);
 router.post('/leave', inviteController.leaveBoard);

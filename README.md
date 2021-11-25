@@ -17,7 +17,7 @@ Rename
     .env.development.example to .env.development
 
 ### Testings
-    npm run test
+    npm run start:test
 
 ### 1) To download all project dependencies, white:
     
@@ -31,7 +31,7 @@ Rename
  
    **[PATH TO]** - the path where you created the folder to store the container
 
-   - `npm run create_db` create a database inside container and tables
+   - `npm run db:create` create a database inside container and tables
 
 ### 3) Run npm start
 

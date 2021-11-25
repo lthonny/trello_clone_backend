@@ -11,19 +11,7 @@ class InviteService {
     return { key: inviteKey.key };
   }
 
-  async invite(key) {
-    const inviteKey = await Invites.findOne({ where: { key } });
-
-    const owner = await user_board.findOne({
-      where: {
-        board_id: inviteKey.board_id, owner: true,
-      },
-    });
-    return owner;
-  }
-
   async inviteBoard(userId, key) {
-    console.log('userId', userId);
     const inviteKey = await Invites.findOne({ where: { key } });
 
     if (!inviteKey) {
