@@ -12,15 +12,15 @@ Rename
  
     .env.test.example to .env.test
 
-    .env.test.example to .env.production
+    .env.production.example to .env.production
     
     .env.development.example to .env.development
 
 ### Testings
     npm run start:test
 
-### 1) To download all project dependencies, white:
-    
+### 1) To download all project dependencies, run:
+
     npm ci
 
 ### 2) Prepare db(Postgresql) 
