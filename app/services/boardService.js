@@ -24,7 +24,7 @@ class BoardService {
 
     /*** check if there are tasks on the board ***/
     if (board === null) {
-      return { error: 'в таблице нет задач' };
+      return 'в таблице нет задач';
     }
 
     /*** get all tasks ***/
