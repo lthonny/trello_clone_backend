@@ -54,7 +54,7 @@ class BoardController {
 
   async deleteBoard(req, res, next) {
     try {
-      await boardService.delete(req.params.id);
+      await boardService.delete(req.body.user_id, req.params.id);
       return res.status(200).json('ok');
     } catch (e) {
       next(e);

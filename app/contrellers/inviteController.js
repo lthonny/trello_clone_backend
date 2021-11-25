@@ -11,16 +11,16 @@ class InviteController {
     }
   }
 
-  async invite(req, res, next) {
-    try {
-      const { key } = req.params;
-      return res.status(200).json(
-        await inviteService.invite(key),
-      );
-    } catch (e) {
-      next(e);
-    }
-  }
+  // async invite(req, res, next) {
+  //   try {
+  //     const { key } = req.params;
+  //     return res.status(200).json(
+  //       await inviteService.invite(key),
+  //     );
+  //   } catch (e) {
+  //     next(e);
+  //   }
+  // }
 
   async getBoard(req, res, next) {
     try {

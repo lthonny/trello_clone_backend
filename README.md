@@ -17,8 +17,7 @@ Rename
     .env.development.example to .env.development
 
 ### Testings
-
-    npm run test
+    npm run start:test
 
 ### 1) To download all project dependencies, run:
 
