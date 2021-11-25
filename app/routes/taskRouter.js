@@ -1,6 +1,6 @@
 const Router = require('express');
 const authorize = require('../middlewares/authorize');
-const taskController = require('../contrellers/taskController');
+const taskController = require('../controllers/taskController');
 const router = new Router();
 
 router.get('/:id', authorize, taskController.task);

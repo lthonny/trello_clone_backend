@@ -1,6 +1,6 @@
 const Router = require('express');
 const authorize = require('../middlewares/authorize');
-const transactionController = require('../contrellers/transactionController');
+const transactionController = require('../controllers/transactionController');
 const router = new Router();
 
 router.post(`/:id`, authorize, transactionController.getTransactions);
