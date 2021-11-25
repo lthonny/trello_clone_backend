@@ -3,7 +3,7 @@ const inviteService = require('../app/services/inviteService');
 
 describe('Invite service', function() {
   let userId = 1;
-  let boardId = 1;
+  let boardId = 2;
   let key = null;
   beforeEach(async function() {});
   afterEach(async function() {});
