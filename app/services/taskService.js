@@ -171,7 +171,7 @@ class TaskService {
 
   async removeAll(id, nameTaskList) {
     await Task.destroy({ where: { board_id: id, nameTaskList } });
-    return { ok: 'all tasks in this column have been deleted' };
+    return 'all tasks in this column have been deleted';
   }
 }
 

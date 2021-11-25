@@ -29,7 +29,6 @@ class BoardService {
 
     /*** get all tasks ***/
     let tasks = board.Tasks.map((task) => task.dataValues);
-    // console.log('get all tasks', tasks);
     /*** get all tasks to which users are assigned ***/
     const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
       if (data.active) {
@@ -102,13 +101,17 @@ class BoardService {
 
   async getBoard(id) {
     const board = await Board.findOne({ where: { id } });
-    return board.dataValues;
+    if(board) {
+      return board.dataValues;
+    }
   }
 
   async create(id, name) {
     const board = await Board.create({ title: name });
-    const userBoard = await user_board.create({ board_id: board.id, user_id: id, owner: true });
-    return board.dataValues;
+    if(board) {
+      await user_board.create({ board_id: board.id, user_id: id, owner: true });
+      return board.dataValues;
+    }
   }
 
   async update(id, title, idUser) {
@@ -126,16 +129,18 @@ class BoardService {
     }
   }
 
-  async delete(id) {
-    const board = await Invites.findOne({ where: { board_id: id } });
+  async delete(user_id, id) {
+    const userBoard = await user_board.findOne({where: { user_id, board_id: id }});
 
-    if (board) {
+    if(userBoard.dataValues.owner) {
+      await user_board.destroy({ where: { board_id: id }});
       await Invites.destroy({ where: { board_id: id } });
+      await Board.destroy({ where: { id } });
+      return 'board removed';
+    } else {
+      await user_board.destroy({ where: { board_id: id, user_id, owner: false }});
+      return 'board removed';
     }
-
-    await Board.destroy({ where: { id } });
-
-    return 'board removed';
   }
 }
 
