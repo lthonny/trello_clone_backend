@@ -3,11 +3,13 @@ const userService = require('../services/userServices');
 class UserController {
   async signup(req, res, next) {
     try {
-      const {name, email, password} = req.body;
+      const { name, email, password } = req.body;
 
       const userData = await userService.sign_up(name, email, password);
-      res.cookie('refreshToken', userData.refreshToken, { 
-        maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false 
+      res.cookie('refreshToken', userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: false,
       });
 
       return res.status(200).json(userData);
@@ -18,10 +20,14 @@ class UserController {
 
   async login(req, res, next) {
     try {
-      const { email, password} = req.body;
+      const { email, password } = req.body;
 
       const userData = await userService.sign_in(email, password);
-      res.cookie('refreshToken', userData.refreshToken, { maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false });
+      res.cookie('refreshToken', userData.refreshToken, {
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: false,
+      });
 
       return res.status(200).json(userData);
     } catch (e) {
@@ -36,7 +42,7 @@ class UserController {
       await userService.logout(refreshToken);
       res.clearCookie('refreshToken');
 
-      return res.status(200).send({message: 'Complete cleaning'});
+      return res.status(200).send({ message: 'Complete cleaning' });
     } catch (e) {
       next(e);
     }
@@ -45,14 +51,16 @@ class UserController {
   async refresh(req, res, next) {
     try {
       const { refreshToken } = req.cookies;
-      
+
       const token = await userService.refresh(refreshToken);
       res.cookie('refreshToken', token.refreshToken, {
-        maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false
+        maxAge: 30 * 24 * 60 * 60 * 1000,
+        httpOnly: true,
+        secure: false,
       });
 
       return res.status(200).json(token);
-    } catch(e) {
+    } catch (e) {
       next(e);
     }
   }

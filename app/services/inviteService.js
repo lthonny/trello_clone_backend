@@ -28,7 +28,11 @@ class InviteService {
       return 'Board not found';
     }
 
-    await user_board.create({ board_id: board.id, owner: false, user_id: userId });
+    await user_board.create({
+      board_id: board.id,
+      owner: false,
+      user_id: userId,
+    });
     return { userId, board: board.dataValues };
   }
 
@@ -63,7 +67,8 @@ class InviteService {
   async owner(data) {
     const User_board = await user_board.findOne({
       where: {
-        user_id: data.userId, board_id: data.boardId,
+        user_id: data.userId,
+        board_id: data.boardId,
       },
     });
 
@@ -80,7 +85,8 @@ class InviteService {
     const { user_id, board_id } = data.data;
     await user_board.destroy({
       where: {
-        user_id, board_id,
+        user_id,
+        board_id,
         owner: false,
       },
     });

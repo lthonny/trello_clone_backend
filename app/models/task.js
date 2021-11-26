@@ -1,15 +1,19 @@
 module.exports = (sequelize, DataTypes) => {
-  const Task = sequelize.define('Task', {
-    title: DataTypes.STRING,
-    description: DataTypes.STRING,
-    nameTaskList: DataTypes.STRING,
-    board_id: DataTypes.INTEGER,
-    order: DataTypes.INTEGER,
-    archive: {
-      type: DataTypes.BOOLEAN,
-      // allowNull: false
+  const Task = sequelize.define(
+    'Task',
+    {
+      title: DataTypes.STRING,
+      description: DataTypes.STRING,
+      nameTaskList: DataTypes.STRING,
+      board_id: DataTypes.INTEGER,
+      order: DataTypes.INTEGER,
+      archive: {
+        type: DataTypes.BOOLEAN,
+        // allowNull: false
+      },
     },
-  }, {});
+    {},
+  );
   Task.associate = (models) => {
     // Task.hasMany(models.user_tasks, {
     //   foreignKey: 'task_id',
@@ -18,14 +22,14 @@ module.exports = (sequelize, DataTypes) => {
 
     Task.belongsTo(models.Board, {
       foreignKey: 'board_id',
-      onDelete: 'CASCADE'
+      onDelete: 'CASCADE',
     });
 
     Task.belongsToMany(models.User, {
       through: models.user_tasks,
       foreignKey: 'task_id',
-      onDelete: 'CASCADE'
-    })
+      onDelete: 'CASCADE',
+    });
   };
   return Task;
 };

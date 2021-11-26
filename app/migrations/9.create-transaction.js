@@ -5,34 +5,34 @@ module.exports = {
         allowNull: false,
         autoIncrement: true,
         primaryKey: true,
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       task_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       column: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       name_user: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       board_id: {
-        type: Sequelize.INTEGER
+        type: Sequelize.INTEGER,
       },
       transaction: {
-        type: Sequelize.STRING
+        type: Sequelize.STRING,
       },
       createdAt: {
         allowNull: false,
-        type: Sequelize.DATE
+        type: Sequelize.DATE,
       },
       updatedAt: {
         allowNull: false,
-        type: Sequelize.DATE
-      }
+        type: Sequelize.DATE,
+      },
     });
   },
   down: async (queryInterface, Sequelize) => {
     await queryInterface.dropTable('Transactions');
-  }
+  },
 };

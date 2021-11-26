@@ -1,5 +1,5 @@
 const validator = require('validator');
-const { User }  = require("./.././models");
+const { User } = require('./.././models');
 
 const validateAuth = async (req, res, next) => {
   const { name, email, password } = req.body;
@@ -20,6 +20,6 @@ const validateAuth = async (req, res, next) => {
     return res.status(409).send({ error: 'user exist already' });
   }
   next();
-}
+};
 
 module.exports = validateAuth;

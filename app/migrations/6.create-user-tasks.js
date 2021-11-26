@@ -12,7 +12,7 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'Tasks',
-          key: 'id'
+          key: 'id',
         },
         onDelete: 'CASCADE',
       },
@@ -21,17 +21,17 @@ module.exports = {
         allowNull: false,
         references: {
           model: 'Users',
-          key: 'id'
+          key: 'id',
         },
         onDelete: 'CASCADE',
       },
       active: {
-        type: Sequelize.BOOLEAN
+        type: Sequelize.BOOLEAN,
       },
       board_id: {
         type: Sequelize.INTEGER,
         allowNull: false,
-        onDelete: 'CASCADE'
+        onDelete: 'CASCADE',
       },
       createdAt: {
         allowNull: false,

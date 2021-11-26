@@ -5,7 +5,6 @@ class GoogleService {
   }
 
   async sign_in() {
-
     return;
   }
 

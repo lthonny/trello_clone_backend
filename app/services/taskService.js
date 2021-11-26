@@ -20,9 +20,7 @@ class ModelTasks {
   }
 }
 
-
 class TaskService {
-
   async fetchOne(id) {
     const task = await Task.findOne({ where: { id } });
     return task;
@@ -36,7 +34,14 @@ class TaskService {
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
-    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
+    const task = await Task.create({
+      title,
+      description,
+      nameTaskList,
+      board_id,
+      order: order,
+      archive: false,
+    });
     const user = await User.findOne({ where: { id } });
     await Transaction.create({
       task_id: task.id,
@@ -53,11 +58,15 @@ class TaskService {
     const { nameList, order, userId } = data;
     console.log(nameList, order, userId);
 
-    await Task.update({
-      nameTaskList: nameList, order: order,
-    }, {
-      where: { id: data.data.id },
-    });
+    await Task.update(
+      {
+        nameTaskList: nameList,
+        order: order,
+      },
+      {
+        where: { id: data.data.id },
+      },
+    );
 
     const task = await Task.findOne({
       where: { nameTaskList: nameList, id: data.data.id },
@@ -111,14 +120,33 @@ class TaskService {
   }
 
   async updateOrder(id, data) {
-    const updateTasks = data.map(({ id, title, description, createdAt, updatedAt, board_id, order, archive }) => {
-      return new ModelTasks({ id, title, description, createdAt, updatedAt, board_id, order, archive });
-    });
+    const updateTasks = data.map(
+      ({
+        id,
+        title,
+        description,
+        createdAt,
+        updatedAt,
+        board_id,
+        order,
+        archive,
+      }) => {
+        return new ModelTasks({
+          id,
+          title,
+          description,
+          createdAt,
+          updatedAt,
+          board_id,
+          order,
+          archive,
+        });
+      },
+    );
 
     async function processArray(updateTasks) {
       for (const task of updateTasks) {
         await Task.update({ order: task.order }, { where: { id: task.id } });
-        ;
       }
     }
 
@@ -130,7 +158,7 @@ class TaskService {
         board_id: boardId,
       },
     });
-    return { id: id, 'tasks': tasks.dataValues };
+    return { id: id, tasks: tasks.dataValues };
   }
 
   async getArchive(id) {
@@ -152,7 +180,11 @@ class TaskService {
         }
       }).filter((task) => task);
 
-      return { 'idBoard': board.dataValues.id, 'nameBoard': board.dataValues.title, 'tasks': tasks };
+      return {
+        idBoard: board.dataValues.id,
+        nameBoard: board.dataValues.title,
+        tasks: tasks,
+      };
     } else {
       return { error: 'задач для архивации нет' };
     }

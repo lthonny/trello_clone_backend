@@ -1,8 +1,14 @@
-const { user_tasks, user_board, User, Transaction, Task } = require('../models/index');
+const {
+  user_tasks,
+  user_board,
+  User,
+  Transaction,
+  Task,
+} = require('../models/index');
 
 class AssignedService {
   async fetch({ data }) {
-    const {taskId, boardId} = data;
+    const { taskId, boardId } = data;
     const usersBoard = await user_board.findAll({
       where: { board_id: boardId },
     });
@@ -10,18 +16,28 @@ class AssignedService {
       where: { task_id: taskId },
     });
 
-    const owner = await user_board.findOne({ where: { owner: true, board_id: boardId } });
+    const owner = await user_board.findOne({
+      where: { owner: true, board_id: boardId },
+    });
     const user = await User.findOne({ where: { id: owner.user_id } });
 
     let users_task = [];
     for (let i = 0; i < usersTask.length; i++) {
-      const user = await User.findOne({ where: { id: usersTask[i].dataValues.user_id } });
-      users_task.push({ id: user.id, name: user.name, task_id: usersTask[i].dataValues.task_id });
+      const user = await User.findOne({
+        where: { id: usersTask[i].dataValues.user_id },
+      });
+      users_task.push({
+        id: user.id,
+        name: user.name,
+        task_id: usersTask[i].dataValues.task_id,
+      });
     }
 
     let users_board = [];
     for (let i = 0; i < usersBoard.length; i++) {
-      const user = await User.findOne({ where: { id: usersBoard[i].dataValues.user_id } });
+      const user = await User.findOne({
+        where: { id: usersBoard[i].dataValues.user_id },
+      });
       users_board.push({ id: user.id, name: user.name });
     }
 
@@ -33,7 +49,7 @@ class AssignedService {
   }
 
   async create({ data }) {
-    const {userId, taskId, boardId} = data;
+    const { userId, taskId, boardId } = data;
 
     const user = await User.findOne({
       where: { id: userId },
@@ -42,7 +58,7 @@ class AssignedService {
     const exists = await user_tasks.findOne({
       where: {
         task_id: taskId,
-        user_id: user.id
+        user_id: user.id,
       },
     });
 
@@ -57,7 +73,7 @@ class AssignedService {
         task_id: taskId,
         user_id: userId,
         active: true,
-        board_id: boardId
+        board_id: boardId,
       });
 
       await Transaction.create({
@@ -73,7 +89,7 @@ class AssignedService {
   }
 
   async remove({ data }) {
-    const {userId, taskId, boardId} = data;
+    const { userId, taskId, boardId } = data;
 
     const user = await User.findOne({
       where: { id: userId },

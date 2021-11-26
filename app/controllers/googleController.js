@@ -13,12 +13,12 @@ class GoogleController {
   }
 
   async authGoogle() {
-  //   try {
-  //     const user = await taskService.fetchOne(req.params.id);
-  //     return res.json(task);
-  //   } catch (e) {
-  //     next(e);
-  //   }
+    //   try {
+    //     const user = await taskService.fetchOne(req.params.id);
+    //     return res.json(task);
+    //   } catch (e) {
+    //     next(e);
+    //   }
   }
 
   async logoutUser(req, res, next) {
@@ -32,5 +32,3 @@ class GoogleController {
 }
 
 module.exports = new GoogleController();
-
-

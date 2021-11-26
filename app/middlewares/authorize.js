@@ -1,4 +1,4 @@
-const { User } = require("./.././models/index");
+const { User } = require('./.././models/index');
 const jwt = require('jsonwebtoken');
 
 const authorize = (req, res, next) => {
@@ -7,21 +7,25 @@ const authorize = (req, res, next) => {
   }
 
   const token = req.headers.authorization.split(' ')[1];
-  return jwt.verify(token,  process.env.JWT_ACCESS_SECRET, { expiresIn: '24h' }, (error, decoded) => {
-    if (error) {
-      return res.status(401).send({ error });
-    }
+  return jwt.verify(
+    token,
+    process.env.JWT_ACCESS_SECRET,
+    { expiresIn: '24h' },
+    (error, decoded) => {
+      if (error) {
+        return res.status(401).send({ error });
+      }
 
-    req.decoded = decoded;
-    return User.findByPk(decoded.id)
-      .then((user) => {
+      req.decoded = decoded;
+      return User.findByPk(decoded.id).then((user) => {
         if (!user) {
           return res.status(401).send({ error: 'User does not exist' });
         }
-        
+
         return next();
       });
-  });
-}
+    },
+  );
+};
 
 module.exports = authorize;

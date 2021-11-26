@@ -3,9 +3,7 @@ const inviteService = require('../services/inviteService');
 class InviteController {
   async createInvite(req, res, next) {
     try {
-      return res.status(200).json(
-        await inviteService.create(req.params.id),
-      );
+      return res.status(200).json(await inviteService.create(req.params.id));
     } catch (e) {
       next(e);
     }
@@ -25,9 +23,7 @@ class InviteController {
   async getBoard(req, res, next) {
     try {
       const { userId, key } = req.body;
-      return res.status(200).json(
-        await inviteService.inviteBoard(userId, key),
-      );
+      return res.status(200).json(await inviteService.inviteBoard(userId, key));
     } catch (e) {
       next(e);
     }
@@ -36,9 +32,9 @@ class InviteController {
   async invitedUsers(req, res, next) {
     try {
       const { userId, name } = req.body;
-      return res.status(200).json(
-        await inviteService.users(userId, name, req.params),
-      );
+      return res
+        .status(200)
+        .json(await inviteService.users(userId, name, req.params));
     } catch (e) {
       next(e);
     }
@@ -47,9 +43,7 @@ class InviteController {
   async owner(req, res, next) {
     try {
       const { data } = req.body;
-      return res.status(200).json(
-        await inviteService.owner(data),
-      );
+      return res.status(200).json(await inviteService.owner(data));
     } catch (e) {
       next(e);
     }
@@ -57,9 +51,7 @@ class InviteController {
 
   async removeInvited(req, res, next) {
     try {
-      return res.status(200).json(
-        await inviteService.remove(req.body),
-      );
+      return res.status(200).json(await inviteService.remove(req.body));
     } catch (e) {
       next(e);
     }
@@ -67,9 +59,7 @@ class InviteController {
 
   async leaveBoard(req, res, next) {
     try {
-      return res.status(200).json(
-        await inviteService.leave(req.body),
-      );
+      return res.status(200).json(await inviteService.leave(req.body));
     } catch (e) {
       next(e);
     }

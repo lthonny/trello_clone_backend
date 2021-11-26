@@ -15,4 +15,3 @@ router.use('/assigned', assignedRouter);
 router.use('/transaction', transactionRouter);
 
 module.exports = router;
-

@@ -1,4 +1,11 @@
-const { Board, user_board, Task, User, Invites, user_tasks } = require('../models/index');
+const {
+  Board,
+  user_board,
+  Task,
+  User,
+  Invites,
+  user_tasks,
+} = require('../models/index');
 
 class Boards {
   id;
@@ -17,9 +24,7 @@ class Boards {
 class BoardService {
   async fetchOne(id) {
     let board = await Board.findByPk(id, {
-      include: [
-        { model: Task, where: { board_id: id } },
-      ],
+      include: [{ model: Task, where: { board_id: id } }],
     });
 
     /*** check if there are tasks on the board ***/
@@ -30,18 +35,20 @@ class BoardService {
     /*** get all tasks ***/
     let tasks = board.Tasks.map((task) => task.dataValues);
     /*** get all tasks to which users are assigned ***/
-    const activeTasks = (await user_tasks.findAll({ where: { board_id: id } })).map(data => {
-      if (data.active) {
-        if (data.board_id === Number(id)) {
-          return data.dataValues;
+    const activeTasks = (await user_tasks.findAll({ where: { board_id: id } }))
+      .map((data) => {
+        if (data.active) {
+          if (data.board_id === Number(id)) {
+            return data.dataValues;
+          }
         }
-      }
-    }).filter((task) => task);
+      })
+      .filter((task) => task);
 
     /*** concatenating tables to get tasks ***/
     let idx = activeTasks.map((task, i) => {
-        return { task_id: task.task_id, user_id: task.user_id };
-      });
+      return { task_id: task.task_id, user_id: task.user_id };
+    });
 
     let joinTasks = [];
     for (let i = 0; i < idx.length; i++) {
@@ -55,11 +62,11 @@ class BoardService {
         };
         if (task) {
           tasks = tasks.filter((item) => {
-            if(item.id === task.id) {
+            if (item.id === task.id) {
             } else {
               return item;
             }
-          })
+          });
           joinTasks.push({
             id: task.id,
             title: task.title,
@@ -78,7 +85,7 @@ class BoardService {
     return {
       id: id,
       title: board.dataValues.title,
-      'tasks': tasks
+      tasks: tasks,
     };
   }
 
@@ -101,14 +108,14 @@ class BoardService {
 
   async getBoard(id) {
     const board = await Board.findOne({ where: { id } });
-    if(board) {
+    if (board) {
       return board.dataValues;
     }
   }
 
   async create(id, name) {
     const board = await Board.create({ title: name });
-    if(board) {
+    if (board) {
       await user_board.create({ board_id: board.id, user_id: id, owner: true });
       return board.dataValues;
     }
@@ -130,15 +137,19 @@ class BoardService {
   }
 
   async delete(user_id, id) {
-    const userBoard = await user_board.findOne({where: { user_id, board_id: id }});
+    const userBoard = await user_board.findOne({
+      where: { user_id, board_id: id },
+    });
 
-    if(userBoard.dataValues.owner) {
-      await user_board.destroy({ where: { board_id: id }});
+    if (userBoard.dataValues.owner) {
+      await user_board.destroy({ where: { board_id: id } });
       await Invites.destroy({ where: { board_id: id } });
       await Board.destroy({ where: { id } });
       return 'board removed';
     } else {
-      await user_board.destroy({ where: { board_id: id, user_id, owner: false }});
+      await user_board.destroy({
+        where: { board_id: id, user_id, owner: false },
+      });
       return 'board removed';
     }
   }
