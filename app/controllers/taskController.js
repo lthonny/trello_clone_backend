@@ -3,7 +3,8 @@ const taskService = require('../services/taskService');
 class TaskController {
   async task(req, res, next) {
     try {
-      return res.status(200).json(await taskService.fetchOne(req.params.id));
+      const task = await taskService.fetchOne(req.params.id);
+      return res.status(200).json(task);
     } catch (e) {
       next(e);
     }
@@ -28,10 +29,11 @@ class TaskController {
     }
   }
 
-  async titleUpdate(req, res, next) {
+  async updateTitle(req, res, next) {
     try {
       const { id, title } = req.body;
-      return res.status(200).json(await taskService.updateTitle(id, title));
+      const task = await taskService.updateTitle(id, title);
+      return res.status(200).json(task);
     } catch (e) {
       next(e);
     }
@@ -39,7 +41,17 @@ class TaskController {
 
   async updateTask(req, res, next) {
     try {
-      return res.status(200).json(await taskService.updateTask(req.params.id, req.body));
+      const task = await taskService.updateTask(req.params.id, req.body);
+      return res.status(200).json(task);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async updateOrder(req, res, next) {
+    try {
+      const task = await taskService.updateOrder(req.params.id, req.body);
+      return res.status(200).json(task);
     } catch (e) {
       next(e);
     }
@@ -48,31 +60,8 @@ class TaskController {
   async updateDescription(req, res, next) {
     try {
       const { post } = req.body;
-      return res.status(200).json(await taskService.updateDescription(req.decoder.id, post.id, post.description));
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async updateOrder(req, res, next) {
-    try {
-      return res.status(200).json(await taskService.updateOrder(req.params.id, req.body));
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async fetchArchive(req, res, next) {
-    try {
-      return res.status(200).json(await taskService.getArchive(req.params.id));
-    } catch (e) {
-      next(e);
-    }
-  }
-
-  async createArchive(req, res, next) {
-    try {
-      return res.status(200).json(await taskService.setArchive(req.body));
+      const task = await taskService.updateDescription(Number(req.decoded.id), post.id, post.description);
+      return res.status(200).json(task);
     } catch (e) {
       next(e);
     }
@@ -89,7 +78,7 @@ class TaskController {
 
   async removeTasks(req, res, next) {
     try {
-      await taskService.removeAll(req.params.id, req.body.nameTaskList)
+      await taskService.removeAll(req.params.id, req.body.nameTaskList);
       return res.sendStatus(204);
     } catch (e) {
       next(e);

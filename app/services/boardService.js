@@ -2,14 +2,14 @@ const { Board, user_board, Task, User, Invites, user_tasks } = require('../model
 
 class BoardService {
   // +
-  async getBoard(id) {
-    const dbBoard = await Board.findOne({ where: { id } });
-    const board = dbBoard.get({ plain: true });
-
-    if (board) {
-      return board;
-    }
-  }
+  // async getBoard(id) {
+  //   const dbBoard = await Board.findOne({ where: { id } });
+  //   const board = dbBoard.get({ plain: true });
+  //
+  //   if (board) {
+  //     return board;
+  //   }
+  // }
 
   async fetchOne(id) {
     const dbTasks = await Board.findByPk(id, {
@@ -23,41 +23,41 @@ class BoardService {
 
     const tasks = dbTasks.Tasks.map(task => task.get({ plain: true }));
 
-    const users = await Board.findByPk(id, {
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'email'],
-          through: {
-            attributes: ['owner'],
-          },
-        },
-        // {
-        //   model: user_tasks,
-        //   include: {
-        //     model: Task,
-        //     include: [
-        //       {
-        //         model: User,
-        //         attributes: ['id', 'email'],
-        //       },
-        //     ],
-        //   },
-        // },
-
-        // {
-        //   model: user_board,
-        //   where: {
-        //     board_id: id,
-        //   }
-        // }
-      ],
-      attributes: ['id', 'title'],
-    });
-
-    // const qqz = users.Tasks.map(task => task.get({ plain: true }));
-
-    console.log('users', await users);
+    // const users = await Board.findByPk(id, {
+    //   include: [
+    //     {
+    //       model: User,
+    //       attributes: ['id', 'email'],
+    //       through: {
+    //         attributes: ['owner'],
+    //       },
+    //     },
+    //     // {
+    //     //   model: user_tasks,
+    //     //   include: {
+    //     //     model: Task,
+    //     //     include: [
+    //     //       {
+    //     //         model: User,
+    //     //         attributes: ['id', 'email'],
+    //     //       },
+    //     //     ],
+    //     //   },
+    //     // },
+    //
+    //     // {
+    //     //   model: user_board,
+    //     //   where: {
+    //     //     board_id: id,
+    //     //   }
+    //     // }
+    //   ],
+    //   attributes: ['id', 'title'],
+    // });
+    //
+    // // const qqz = users.Tasks.map(task => task.get({ plain: true }));
+    //
+    // console.log('users', await users);
 
     // const activeTasks = (await user_tasks.findAll({ where: { board_id: id } }))
     //   .map((data) => {

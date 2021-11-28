@@ -156,41 +156,6 @@ class TaskService {
     return { id: id, tasks: tasks.dataValues };
   }
 
-  async getArchive(id) {
-    const dbBoard = await Board.findByPk(id, {
-      include: [
-        {
-          model: Task,
-          where: {
-            board_id: id,
-            archive: true,
-          },
-        },
-      ],
-    });
-
-    const archivedTasks = dbBoard.Tasks.map(task => task.get({ plain: true }));
-
-    return {
-      idBoard: dbBoard.dataValues.id,
-      nameBoard: dbBoard.dataValues.title,
-      tasks: archivedTasks,
-    };
-  }
-
-  async setArchive(data) {
-    const updateTask = await Task.update({
-      archive: !data.archive,
-    }, {
-      where: { id: data.id },
-    });
-
-    if (updateTask) {
-      const archiveTask = await Task.findOne({ where: { id: updateTask.id } });
-      return archiveTask;
-    }
-  }
-
   async delete(id) {
     await Task.destroy({ where: { id: id } });
   }

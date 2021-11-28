@@ -1,16 +1,6 @@
 const boardService = require('../services/boardService');
 
 class BoardController {
-    async board(req, res, next) {
-        try {
-            const {id} = req.params;
-            const board = await boardService.getBoard(Number(id));
-            return res.status(200).json(board);
-        } catch (e) {
-            next(e);
-        }
-    }
-
     async tasksBoard(req, res, next) {
         try {
             const {id} = req.params;
