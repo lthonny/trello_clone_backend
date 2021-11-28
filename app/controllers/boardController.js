@@ -4,7 +4,7 @@ class BoardController {
   async tasksBoard(req, res, next) {
     try {
       const { id } = req.params;
-      const board = await boardService.fetchOne(id);
+      const board = await boardService.fetchOne(Number(id));
       return res.status(200).json(board);
     } catch (e) {
       next(e);
@@ -29,9 +29,7 @@ class BoardController {
 
   async createBoard(req, res, next) {
     try {
-      return res
-        .status(200)
-        .send(await boardService.create(req.params.id, req.body.name));
+      return res.status(200).send(await boardService.create(req.params.id, req.body.name));
     } catch (e) {
       next(e);
     }
@@ -39,10 +37,8 @@ class BoardController {
 
   async updateBoard(req, res, next) {
     try {
-      const { title, idUser } = req.body;
-      return res
-        .status(200)
-        .send(await boardService.update(req.params.id, title, idUser));
+      const { title } = req.body;
+      return res.status(200).send(await boardService.update(req.params.id, title, req.decoded.id));
     } catch (e) {
       next(e);
     }
@@ -50,8 +46,8 @@ class BoardController {
 
   async deleteBoard(req, res, next) {
     try {
-      await boardService.delete(req.body.user_id, req.params.id);
-      return res.status(200).json('ok');
+      await boardService.delete(req.params.id, req.decoded.id);
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }

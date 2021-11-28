@@ -15,21 +15,10 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   Task.associate = (models) => {
-    // Task.hasMany(models.user_tasks, {
-    //   foreignKey: 'task_id',
-    //   onDelete: 'CASCADE'
-    // });
-
-    Task.belongsTo(models.Board, {
-      foreignKey: 'board_id',
-      onDelete: 'CASCADE',
-    });
-
-    Task.belongsToMany(models.User, {
-      through: models.user_tasks,
-      foreignKey: 'task_id',
-      onDelete: 'CASCADE',
-    });
+    // Task.hasMany(models.user_tasks, { foreignKey: 'id', onDelete: 'CASCADE' });
+    Task.belongsTo(models.Board, { foreignKey: 'board_id', onDelete: 'CASCADE' });
+    Task.hasMany(models.user_tasks, { foreignKey: 'task_id', onDelete: 'CASCADE' });
+    Task.hasMany(models.Transaction, { foreignKey: 'task_id', onDelete: 'CASCADE' });
   };
   return Task;
 };

@@ -26,11 +26,6 @@ class TaskService {
     return task;
   }
 
-  async fetchAll(id) {
-    const tasks = await Board.findByPk(id, {});
-    return tasks;
-  }
-
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
@@ -122,15 +117,15 @@ class TaskService {
   async updateOrder(id, data) {
     const updateTasks = data.map(
       ({
-        id,
-        title,
-        description,
-        createdAt,
-        updatedAt,
-        board_id,
-        order,
-        archive,
-      }) => {
+         id,
+         title,
+         description,
+         createdAt,
+         updatedAt,
+         board_id,
+         order,
+         archive,
+       }) => {
         return new ModelTasks({
           id,
           title,
@@ -162,38 +157,34 @@ class TaskService {
   }
 
   async getArchive(id) {
-    const board = await Board.findByPk(id, {
+    const dbBoard = await Board.findByPk(id, {
       include: [
         {
           model: Task,
           where: {
             board_id: id,
+            archive: true,
           },
         },
       ],
     });
 
-    if (board !== null) {
-      const tasks = board.Tasks.map((task) => {
-        if (task.archive !== false && task.archive !== null) {
-          return task;
-        }
-      }).filter((task) => task);
+    const archivedTasks = dbBoard.Tasks.map(task => task.get({ plain: true }));
 
-      return {
-        idBoard: board.dataValues.id,
-        nameBoard: board.dataValues.title,
-        tasks: tasks,
-      };
-    } else {
-      return { error: 'задач для архивации нет' };
-    }
+    return {
+      idBoard: dbBoard.dataValues.id,
+      nameBoard: dbBoard.dataValues.title,
+      tasks: archivedTasks,
+    };
   }
 
   async setArchive(data) {
-    await Task.update({ archive: !data.archive }, { where: { id: data.id } });
-    const task = await Task.findOne({ where: { id: data.id } });
-    return task;
+    await Task.update({
+      archive: !data.archive,
+    }, {
+      where: { id: data.id },
+    });
+    return await Task.findOne({ where: { id: data.id } });
   }
 
   async delete(id) {

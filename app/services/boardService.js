@@ -23,91 +23,116 @@ class Boards {
 
 class BoardService {
   async fetchOne(id) {
-    let board = await Board.findByPk(id, {
-      include: [{ model: Task, where: { board_id: id } }],
+    const dbTasks = await Board.findByPk(id, {
+      include: [{
+        model: Task,
+        where: {
+          board_id: id,
+        },
+      }],
     });
 
-    /*** check if there are tasks on the board ***/
-    if (board === null) {
-      return 'в таблице нет задач';
-    }
+    const tasks = dbTasks.Tasks.map(task => task.get({ plain: true }));
+    // console.log('tasks', tasks);
 
-    /*** get all tasks ***/
-    let tasks = board.Tasks.map((task) => task.dataValues);
-    /*** get all tasks to which users are assigned ***/
-    const activeTasks = (await user_tasks.findAll({ where: { board_id: id } }))
-      .map((data) => {
-        if (data.active) {
-          if (data.board_id === Number(id)) {
-            return data.dataValues;
-          }
-        }
-      })
-      .filter((task) => task);
-
-    /*** concatenating tables to get tasks ***/
-    let idx = activeTasks.map((task, i) => {
-      return { task_id: task.task_id, user_id: task.user_id };
+    const users = await Board.findByPk(id, {
+      include: [
+        {
+          model: Task,
+          where: { board_id: id },
+        },
+        // {
+        // model: user_tasks, attributes: ['id']
+        // },
+        // {
+        //   model: user_tasks,
+        //   where: {
+        //     through: {
+        //       attributes: ['task_id'],
+        //     },
+        //   },
+        // },
+      ],
     });
 
-    let joinTasks = [];
-    for (let i = 0; i < idx.length; i++) {
-      const task = await Task.findOne({ where: { id: idx[i].task_id } });
-      const userModal = await User.findOne({ where: { id: idx[i].user_id } });
-      if (userModal.dataValues) {
-        const user = {
-          id: userModal.dataValues.id,
-          name: userModal.dataValues.name,
-          email: userModal.dataValues.email,
-        };
-        if (task) {
-          tasks = tasks.filter((item) => {
-            if (item.id === task.id) {
-            } else {
-              return item;
-            }
-          });
-          joinTasks.push({
-            id: task.id,
-            title: task.title,
-            description: task.description,
-            nameTaskList: task.nameTaskList,
-            board_id: task.board_id,
-            order: task.order,
-            active: [user],
-          });
-        }
-      }
-    }
+    console.log('users', users.Tasks);
 
-    joinTasks.forEach((task) => tasks.push(task));
+    // const activeTasks = (await user_tasks.findAll({ where: { board_id: id } }))
+    //   .map((data) => {
+    //     if (data.active) {
+    //       if (data.board_id === Number(id)) {
+    //         return data.dataValues;
+    //       }
+    //     }
+    //   })
+    //   .filter((task) => task);
+
+
+    // /*** concatenating tables to get tasks ***/
+    // let idx = activeTasks.map((task, i) => {
+    //   return { task_id: task.task_id, user_id: task.user_id };
+    // });
+    //
+    // let joinTasks = [];
+    // for (let i = 0; i < idx.length; i++) {
+    //   const task = await Task.findOne({ where: { id: idx[i].task_id } });
+    //   const userModal = await User.findOne({ where: { id: idx[i].user_id } });
+    //   if (userModal.dataValues) {
+    //     const user = {
+    //       id: userModal.dataValues.id,
+    //       name: userModal.dataValues.name,
+    //       email: userModal.dataValues.email,
+    //     };
+    //     if (task) {
+    //       tasks = tasks.filter((item) => {
+    //         if (item.id === task.id) {
+    //         } else {
+    //           return item;
+    //         }
+    //       });
+    //       joinTasks.push({
+    //         id: task.id,
+    //         title: task.title,
+    //         description: task.description,
+    //         nameTaskList: task.nameTaskList,
+    //         board_id: task.board_id,
+    //         order: task.order,
+    //         active: [user],
+    //       });
+    //     }
+    //   }
+    // }
+    //
+    // joinTasks.forEach((task) => tasks.push(task));
 
     return {
       id: id,
-      title: board.dataValues.title,
+      title: dbTasks.dataValues.title,
       tasks: tasks,
     };
   }
 
   async fetchAll(id) {
-    const getBoards = await Board.findAll({
-      include: {
+    const dbBoards = await Board.findAll({
+      include: [{
         model: user_board,
         where: {
           user_id: id,
         },
-      },
+      }],
+      attributes: ['id', 'title', 'createdAt', 'updatedAt'],
     });
 
-    const boards = getBoards.map(({ id, title, createdAt, updatedAt }) => {
-      return new Boards({ id, title, createdAt, updatedAt });
+    const boards = dbBoards.map(board => {
+      const { id, title, createdAt, updatedAt } = board.get({ plain: true });
+      return { id, title, createdAt, updatedAt };
     });
 
     return boards;
   }
 
   async getBoard(id) {
-    const board = await Board.findOne({ where: { id } });
+    const board = await Board.findOne({ where: { id }});
     if (board) {
       return board.dataValues;
     }
@@ -115,17 +140,23 @@ class BoardService {
 
   async create(id, name) {
     const board = await Board.create({ title: name });
+    // console.log(board);
+
     if (board) {
       await user_board.create({ board_id: board.id, user_id: id, owner: true });
       return board.dataValues;
     }
   }
 
-  async update(id, title, idUser) {
-    const user = await User.findOne({ where: { id: idUser } });
-    const board = await user_board.findOne({ where: { user_id: user.id } });
+  async update(id, title, user_id) {
+    const dbUserBoard = await user_board.findOne({
+      where: { user_id, board_id: id },
+      attributes: ['owner'],
+    });
 
-    if (board.owner) {
+    const owner = dbUserBoard.get({ plain: true });
+
+    if (owner.owner) {
       await Board.update({ title }, { where: { id } });
       return { id: id, title: title, owner: true };
     } else {
@@ -136,21 +167,21 @@ class BoardService {
     }
   }
 
-  async delete(user_id, id) {
-    const userBoard = await user_board.findOne({
+  async delete(id, user_id) {
+    const dbUserBoard = await user_board.findOne({
       where: { user_id, board_id: id },
+      attributes: ['owner'],
     });
 
-    if (userBoard.dataValues.owner) {
-      await user_board.destroy({ where: { board_id: id } });
-      await Invites.destroy({ where: { board_id: id } });
+    const owner = dbUserBoard.get({ plain: true });
+
+    if (owner.owner) {
       await Board.destroy({ where: { id } });
-      return 'board removed';
-    } else {
+    }
+    if (!owner.owner) {
       await user_board.destroy({
         where: { board_id: id, user_id, owner: false },
       });
-      return 'board removed';
     }
   }
 }

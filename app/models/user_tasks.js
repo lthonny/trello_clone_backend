@@ -13,6 +13,9 @@ module.exports = (sequelize, DataTypes) => {
     },
     {},
   );
-  user_tasks.associate = (models) => {};
+  user_tasks.associate = (models) => {
+    user_tasks.belongsTo(models.User, { foreignKey: 'id', onDelete: 'CASCADE' });
+    user_tasks.belongsTo(models.Task, { foreignKey: 'id', onDelete: 'CASCADE' });
+  };
   return user_tasks;
 };

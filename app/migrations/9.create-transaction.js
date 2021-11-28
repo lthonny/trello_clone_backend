@@ -9,6 +9,12 @@ module.exports = {
       },
       task_id: {
         type: Sequelize.INTEGER,
+        allowNull: false,
+        references: {
+          model: 'Tasks',
+          key: 'id',
+        },
+        onDelete: 'CASCADE',
       },
       column: {
         type: Sequelize.STRING,

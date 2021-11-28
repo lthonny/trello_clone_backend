@@ -8,7 +8,7 @@ const authGoogle = require('./app/routes/google');
 const router = require('./app/routes/index');
 const app = express();
 
-const PORT = process.env.PORT || 6000;
+const PORT = process.env.PORT || 5000;
 
 app.use(
   cookieSession({
@@ -30,7 +30,7 @@ app.use(passport.session());
 
 app.use(express.json());
 app.use('/api', router);
-app.use('/auth', authGoogle);
+// app.use('/auth', authGoogle);
 
 const start = async () => {
   try {

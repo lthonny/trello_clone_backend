@@ -11,15 +11,12 @@ module.exports = (sequelize, DataTypes) => {
     {},
   );
   Transaction.associate = (models) => {
-    Transaction.belongsToMany(models.User, {
-      through: models.user_tasks,
-      foreignKey: 'task_id',
-      onDelete: 'CASCADE',
-    });
-    Transaction.belongsTo(models.Board, {
-      foreignKey: 'board_id',
-      onDelete: 'CASCADE',
-    });
+    // Transaction.belongsToMany(models.User, {
+    //   through: models.user_tasks,
+    //   foreignKey: 'task_id',
+    //   onDelete: 'CASCADE',
+    // });
+    Transaction.belongsTo(models.Task);
   };
   return Transaction;
 };

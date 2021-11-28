@@ -9,14 +9,6 @@ class TaskController {
     }
   }
 
-  async tasks(req, res, next) {
-    try {
-      return res.status(200).send(await taskService.fetchAll(req.params.id));
-    } catch (e) {
-      next(e);
-    }
-  }
-
   async createTask(req, res, next) {
     try {
       const { title, description, nameTaskList, board_id, order } = req.body;
@@ -109,11 +101,9 @@ class TaskController {
 
   async removeTasks(req, res, next) {
     try {
-      return res
-        .status(200)
-        .json(
+      return res.status(204).json(
           await taskService.removeAll(req.params.id, req.body.nameTaskList),
-        );
+      );
     } catch (e) {
       next(e);
     }

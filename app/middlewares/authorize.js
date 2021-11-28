@@ -17,13 +17,14 @@ const authorize = (req, res, next) => {
       }
 
       req.decoded = decoded;
+
       return User.findByPk(decoded.id).then((user) => {
         if (!user) {
           return res.status(401).send({ error: 'User does not exist' });
         }
-
-        return next();
+        next();
       });
+
     },
   );
 };
