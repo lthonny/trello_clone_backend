@@ -1,4 +1,4 @@
-const { Task, Board, Transaction, User } = require('../models/index');
+const { Task, Board, Transaction, User, user_board } = require('../models/index');
 
 class ModelTasks {
   id;
@@ -179,22 +179,24 @@ class TaskService {
   }
 
   async setArchive(data) {
-    await Task.update({
+    const updateTask = await Task.update({
       archive: !data.archive,
     }, {
       where: { id: data.id },
     });
-    return await Task.findOne({ where: { id: data.id } });
+
+    if (updateTask) {
+      const archiveTask = await Task.findOne({ where: { id: updateTask.id } });
+      return archiveTask;
+    }
   }
 
   async delete(id) {
     await Task.destroy({ where: { id: id } });
-    return 'task deleted';
   }
 
   async removeAll(id, nameTaskList) {
     await Task.destroy({ where: { board_id: id, nameTaskList } });
-    return 'all tasks in this column have been deleted';
   }
 }
 

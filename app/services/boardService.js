@@ -33,29 +33,42 @@ class BoardService {
     });
 
     const tasks = dbTasks.Tasks.map(task => task.get({ plain: true }));
-    // console.log('tasks', tasks);
 
     const users = await Board.findByPk(id, {
       include: [
         {
-          model: Task,
-          where: { board_id: id },
+          model: User,
+          attributes: ['id', 'email'],
+          through: {
+            attributes: ['owner'],
+          },
         },
         // {
-        // model: user_tasks, attributes: ['id']
-        // },
-        // {
         //   model: user_tasks,
-        //   where: {
-        //     through: {
-        //       attributes: ['task_id'],
-        //     },
+        //   include: {
+        //     model: Task,
+        //     include: [
+        //       {
+        //         model: User,
+        //         attributes: ['id', 'email'],
+        //       },
+        //     ],
         //   },
         // },
+
+        // {
+        //   model: user_board,
+        //   where: {
+        //     board_id: id,
+        //   }
+        // }
       ],
+      attributes: ['id', 'title'],
     });
 
-    console.log('users', users.Tasks);
+    // const qqz = users.Tasks.map(task => task.get({ plain: true }));
+
+    console.log('users', await users);
 
     // const activeTasks = (await user_tasks.findAll({ where: { board_id: id } }))
     //   .map((data) => {
@@ -132,7 +145,7 @@ class BoardService {
   }
 
   async getBoard(id) {
-    const board = await Board.findOne({ where: { id }});
+    const board = await Board.findOne({ where: { id } });
     if (board) {
       return board.dataValues;
     }

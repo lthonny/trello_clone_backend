@@ -16,7 +16,7 @@ module.exports = (sequelize, DataTypes) => {
     //   foreignKey: 'task_id',
     //   onDelete: 'CASCADE',
     // });
-    Transaction.belongsTo(models.Task);
+    Transaction.belongsTo(models.Task, { foreignKey: 'id', onDelete: 'CASCADE' });
   };
   return Transaction;
 };

@@ -93,7 +93,7 @@ class TaskController {
   async deleteTask(req, res, next) {
     try {
       await taskService.delete(req.params.id);
-      return res.status(200).send([]);
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }
@@ -101,9 +101,8 @@ class TaskController {
 
   async removeTasks(req, res, next) {
     try {
-      return res.status(204).json(
-          await taskService.removeAll(req.params.id, req.body.nameTaskList),
-      );
+      await taskService.removeAll(req.params.id, req.body.nameTaskList)
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }
