@@ -1,27 +1,16 @@
-const {
-  Board,
-  user_board,
-  Task,
-  User,
-  Invites,
-  user_tasks,
-} = require('../models/index');
-
-class Boards {
-  id;
-  title;
-  createdAt;
-  updatedAt;
-
-  constructor(model) {
-    this.id = model.id;
-    this.title = model.title;
-    this.createdAt = model.createdAt;
-    this.updatedAt = model.updatedAt;
-  }
-}
+const { Board, user_board, Task, User, Invites, user_tasks } = require('../models/index');
 
 class BoardService {
+  // +
+  async getBoard(id) {
+    const dbBoard = await Board.findOne({ where: { id } });
+    const board = dbBoard.get({ plain: true });
+
+    if (board) {
+      return board;
+    }
+  }
+
   async fetchOne(id) {
     const dbTasks = await Board.findByPk(id, {
       include: [{
@@ -125,6 +114,7 @@ class BoardService {
     };
   }
 
+  // +
   async fetchAll(id) {
     const dbBoards = await Board.findAll({
       include: [{
@@ -144,23 +134,18 @@ class BoardService {
     return boards;
   }
 
-  async getBoard(id) {
-    const board = await Board.findOne({ where: { id } });
-    if (board) {
-      return board.dataValues;
-    }
-  }
-
+  // +
   async create(id, name) {
-    const board = await Board.create({ title: name });
-    // console.log(board);
+    const dbBoard = await Board.create({ title: name });
+    const board = dbBoard.get({ plain: true });
 
     if (board) {
       await user_board.create({ board_id: board.id, user_id: id, owner: true });
-      return board.dataValues;
+      return board;
     }
   }
 
+  // +
   async update(id, title, user_id) {
     const dbUserBoard = await user_board.findOne({
       where: { user_id, board_id: id },
@@ -171,15 +156,17 @@ class BoardService {
 
     if (owner.owner) {
       await Board.update({ title }, { where: { id } });
-      return { id: id, title: title, owner: true };
-    } else {
+      return { id, title, owner: true };
+    }
+    if (!owner.owner) {
       const board = await Board.findOne({ where: { id } });
       if (board.title !== title) {
-        return { id: id, title: title, owner: false };
+        return { id, title, owner: false };
       }
     }
   }
 
+  // +
   async delete(id, user_id) {
     const dbUserBoard = await user_board.findOne({
       where: { user_id, board_id: id },

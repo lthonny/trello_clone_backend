@@ -9,21 +9,10 @@ class InviteController {
     }
   }
 
-  // async invite(req, res, next) {
-  //   try {
-  //     const { key } = req.params;
-  //     return res.status(200).json(
-  //       await inviteService.invite(key),
-  //     );
-  //   } catch (e) {
-  //     next(e);
-  //   }
-  // }
-
   async getBoard(req, res, next) {
     try {
-      const { userId, key } = req.body;
-      return res.status(200).json(await inviteService.inviteBoard(userId, key));
+      const { key } = req.body;
+      return res.status(200).json(await inviteService.inviteBoard(req.decoder.id, key));
     } catch (e) {
       next(e);
     }
@@ -31,10 +20,8 @@ class InviteController {
 
   async invitedUsers(req, res, next) {
     try {
-      const { userId, name } = req.body;
-      return res
-        .status(200)
-        .json(await inviteService.users(userId, name, req.params));
+      const { name } = req.body;
+      return res.status(200).json(await inviteService.users(req.decoder.id, name, req.params));
     } catch (e) {
       next(e);
     }

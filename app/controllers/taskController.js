@@ -39,9 +39,7 @@ class TaskController {
 
   async updateTask(req, res, next) {
     try {
-      return res
-        .status(200)
-        .json(await taskService.updateTask(req.params.id, req.body));
+      return res.status(200).json(await taskService.updateTask(req.params.id, req.body));
     } catch (e) {
       next(e);
     }
@@ -49,16 +47,8 @@ class TaskController {
 
   async updateDescription(req, res, next) {
     try {
-      const { userId, post } = req.body;
-      return res
-        .status(200)
-        .json(
-          await taskService.updateDescription(
-            userId,
-            post.id,
-            post.description,
-          ),
-        );
+      const { post } = req.body;
+      return res.status(200).json(await taskService.updateDescription(req.decoder.id, post.id, post.description));
     } catch (e) {
       next(e);
     }
@@ -66,9 +56,7 @@ class TaskController {
 
   async updateOrder(req, res, next) {
     try {
-      return res
-        .status(200)
-        .json(await taskService.updateOrder(req.params.id, req.body));
+      return res.status(200).json(await taskService.updateOrder(req.params.id, req.body));
     } catch (e) {
       next(e);
     }
