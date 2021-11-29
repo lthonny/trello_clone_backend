@@ -29,7 +29,7 @@ class ArchiveService {
         }, {
             where: {id: data.id},
         });
-        const archiveTask = await Task.findOne({where: {id: updateTask.id}});
+        const archiveTask = await Task.findOne({where: {id: data.id}});
         return archiveTask;
     }
 }
