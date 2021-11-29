@@ -21,11 +21,6 @@ class ModelTasks {
 }
 
 class TaskService {
-  async fetchOne(id) {
-    const task = await Task.findOne({ where: { id } });
-    return task;
-  }
-
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
@@ -37,7 +32,9 @@ class TaskService {
       order: order,
       archive: false,
     });
+
     const user = await User.findOne({ where: { id } });
+
     await Transaction.create({
       task_id: task.id,
       column: nameTaskList,
@@ -49,8 +46,8 @@ class TaskService {
     return task;
   }
 
-  async updateTask(id, data) {
-    const { nameList, order, userId } = data;
+  async updateTask(id, data, user_id) {
+    const { nameList, order } = data;
 
     await Task.update(
       {
@@ -70,7 +67,7 @@ class TaskService {
       where: { id: data.data.id },
     });
 
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findOne({ where: { id: user_id } });
 
     await Transaction.create({
       task_id: task.id,
@@ -90,12 +87,12 @@ class TaskService {
     return task;
   }
 
-  async updateDescription(userId, id, description) {
+  async updateDescription(user_id, id, description) {
     await Task.update({ description }, { where: { id } });
     const updated = await Task.findOne({ where: { id } });
 
     const task = await Task.findOne({ where: { id } });
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findOne({ where: { id: user_id } });
 
     await Transaction.create({
       task_id: task.id,
@@ -108,7 +105,7 @@ class TaskService {
     return updated;
   }
 
-  async updateOrder(id, data) {
+  async updateOrder(user_id, data) {
     const updateTasks = data.map(
       ({
          id,
@@ -147,7 +144,7 @@ class TaskService {
         board_id: boardId,
       },
     });
-    return { id: id, tasks: tasks.dataValues };
+    return { id: user_id, tasks: tasks.dataValues };
   }
 
   async delete(id) {

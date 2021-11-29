@@ -1,29 +1,10 @@
 const taskService = require('../services/taskService');
 
 class TaskController {
-  async task(req, res, next) {
-    try {
-      const task = await taskService.fetchOne(req.params.id);
-      return res.status(200).json(task);
-    } catch (e) {
-      next(e);
-    }
-  }
-
   async createTask(req, res, next) {
     try {
-      const { title, description, nameTaskList, board_id, order } = req.body;
-      return res
-        .status(200)
-        .send(
-          await taskService.create(req.params.id, {
-            title,
-            description,
-            nameTaskList,
-            board_id,
-            order,
-          }),
-        );
+      const task = await taskService.create(Number(req.decoded.id), req.body.data);
+      return res.status(200).send(task);
     } catch (e) {
       next(e);
     }
@@ -41,7 +22,7 @@ class TaskController {
 
   async updateTask(req, res, next) {
     try {
-      const task = await taskService.updateTask(req.params.id, req.body);
+      const task = await taskService.updateTask(req.params.id, req.body, Number(req.decoded.id));
       return res.status(200).json(task);
     } catch (e) {
       next(e);
@@ -50,7 +31,7 @@ class TaskController {
 
   async updateOrder(req, res, next) {
     try {
-      const task = await taskService.updateOrder(req.params.id, req.body);
+      const task = await taskService.updateOrder(Number(req.decoded.id), req.body);
       return res.status(200).json(task);
     } catch (e) {
       next(e);
