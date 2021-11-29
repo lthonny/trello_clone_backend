@@ -11,8 +11,8 @@ class InviteController {
 
   async getBoard(req, res, next) {
     try {
-      const { key } = req.body;
-      return res.status(200).json(await inviteService.inviteBoard(req.decoder.id, key));
+      const { userId, key } = req.body;
+      return res.status(200).json(await inviteService.inviteBoard(userId, key));
     } catch (e) {
       next(e);
     }
@@ -20,8 +20,8 @@ class InviteController {
 
   async invitedUsers(req, res, next) {
     try {
-      const { name } = req.body;
-      return res.status(200).json(await inviteService.users(req.decoder.id, name, req.params));
+      const { userId, name } = req.body;
+      return res.status(200).json(await inviteService.users(userId, name, req.params));
     } catch (e) {
       next(e);
     }
