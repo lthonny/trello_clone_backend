@@ -1,8 +1,8 @@
-const { Board, user_board, Task, User } = require('../models/index');
+const { Board, user_board, Task, User, Invites } = require('../models/index');
 
 class BoardService {
   async fetchOne(id) {
-    const dbBoard = await Board.findOne({where: { id }});
+    const dbBoard = await Board.findOne({ where: { id } });
 
     const dbTaskUsers = await Board.findByPk(id, {
       include: [
@@ -21,9 +21,13 @@ class BoardService {
       ],
     });
 
-    const taskUsers = dbTaskUsers.Tasks.map(task => task.get({ plain: true }));
+    if(dbTaskUsers) {
+      const taskUsers = dbTaskUsers.Tasks.map(task => task.get({ plain: true }));
 
-    return { id, title: dbBoard.dataValues.title, tasks: taskUsers };
+      return { id, title: dbBoard.dataValues.title, tasks: taskUsers };
+    } else {
+      return [];
+    }
   }
 
   // +
@@ -88,6 +92,7 @@ class BoardService {
     const owner = dbUserBoard.get({ plain: true });
 
     if (owner.owner) {
+      await Invites.destroy({ where: { board_id: id } });
       await Board.destroy({ where: { id } });
     }
     if (!owner.owner) {

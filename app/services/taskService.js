@@ -1,4 +1,4 @@
-const { Task, Board, Transaction, User, user_board } = require('../models/index');
+const { Task, Transaction, User } = require('../models/index');
 
 class ModelTasks {
   id;
@@ -51,7 +51,6 @@ class TaskService {
 
   async updateTask(id, data) {
     const { nameList, order, userId } = data;
-    console.log(nameList, order, userId);
 
     await Task.update(
       {
@@ -67,13 +66,10 @@ class TaskService {
       where: { nameTaskList: nameList, id: data.data.id },
     });
 
-    if (!task) {
-      return 'такой задачи нет';
-    }
-
     const updated = await Task.findOne({
       where: { id: data.data.id },
     });
+
     const user = await User.findOne({ where: { id: userId } });
 
     await Transaction.create({
@@ -95,8 +91,6 @@ class TaskService {
   }
 
   async updateDescription(userId, id, description) {
-    console.log('id, description', id, description);
-
     await Task.update({ description }, { where: { id } });
     const updated = await Task.findOne({ where: { id } });
 

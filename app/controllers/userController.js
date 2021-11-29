@@ -42,7 +42,7 @@ class UserController {
       await userService.logout(refreshToken);
       res.clearCookie('refreshToken');
 
-      return res.status(200).send({ message: 'Complete cleaning' });
+      return res.sendStatus(200);
     } catch (e) {
       next(e);
     }
