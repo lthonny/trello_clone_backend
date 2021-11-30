@@ -1,4 +1,4 @@
-const { Board, user_board, Task, User, Invites } = require('../models/index');
+const { Board, user_board, Task, User, Invites } = require('../../models');
 
 class BoardService {
   async fetchOne(id) {

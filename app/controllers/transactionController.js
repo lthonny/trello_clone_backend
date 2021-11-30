@@ -1,4 +1,4 @@
-const TransactionService = require('../services/transactionService');
+const TransactionService = require('../services/history/transactionService');
 
 class TransactionController {
   async transactions(req, res, next) {

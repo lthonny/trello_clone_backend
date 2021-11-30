@@ -1,4 +1,4 @@
-const { user_board } = require('../../models');
+const { user_board } = require('../models');
 
 const authorizeAccess = async (user_id) => {
   const dbUserBoard = await user_board.findOne({

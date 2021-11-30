@@ -1,5 +1,5 @@
-const { user_tasks, user_board, User, Transaction, Task } = require('../models/index');
-const createActionHistory = require('../services/utils/historyService');
+const { user_tasks, user_board, User, Transaction, Task } = require('../../models');
+const createActionHistory = require('../history/actionHistory');
 
 class AssignedService {
   async fetch({ task_id, board_id }) {

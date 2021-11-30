@@ -1,5 +1,5 @@
-const archiveService = require('../services/archiveService');
-const accessService = require('../services/utils/accessService');
+const archiveService = require('../services/archive/archiveService');
+const accessService = require('../services/accessService');
 
 class ArchiveController {
   async archives(req, res, next) {

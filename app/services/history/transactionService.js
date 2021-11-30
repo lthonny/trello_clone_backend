@@ -1,4 +1,4 @@
-const { Transaction } = require('../models/index');
+const { Transaction } = require('../../models');
 
 class TransactionService {
   async getTransaction(id) {

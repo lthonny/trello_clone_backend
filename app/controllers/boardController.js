@@ -1,5 +1,5 @@
-const boardService = require('../services/boardService');
-const accessService = require('../services/utils/accessService');
+const boardService = require('../services/board/boardService');
+const accessService = require('../services/accessService');
 
 class BoardController {
   async tasksBoard(req, res, next) {

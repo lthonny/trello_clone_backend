@@ -1,5 +1,5 @@
 const { Task, User } = require('../../models');
-const createActionHistory = require('../utils/historyService');
+const createActionHistory = require('../history/actionHistory');
 const { ModelTasks } = require('../task/modelTask');
 
 class TaskService {

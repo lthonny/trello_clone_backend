@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const inviteService = require('../app/services/inviteService');
+const inviteService = require('../app/services/invite/inviteService');
 
 describe('Invite service', function() {
   let userId = 1;

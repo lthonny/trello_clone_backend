@@ -1,5 +1,5 @@
-const inviteService = require('../services/inviteService');
-const accessService = require('../services/utils/accessService');
+const inviteService = require('../services/invite/inviteService');
+const accessService = require('../services/accessService');
 
 class InviteController {
   async invite(req, res, next) {

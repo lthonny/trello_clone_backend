@@ -1,5 +1,5 @@
 const { v1 } = require('uuid');
-const { Invites, user_board, User, Board } = require('../models/index');
+const { Invites, user_board, User, Board } = require('../../models');
 
 class InviteService {
   async create(id) {

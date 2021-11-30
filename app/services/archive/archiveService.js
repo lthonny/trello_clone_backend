@@ -1,4 +1,4 @@
-const { Board, Task } = require('../models/index');
+const { Board, Task } = require('../../models');
 
 class ArchiveService {
   async getArchive(id) {
