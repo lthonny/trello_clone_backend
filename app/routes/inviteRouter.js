@@ -1,13 +1,13 @@
 const Router = require('express');
+const authorize = require('../middlewares/authorize');
 const inviteController = require('../controllers/inviteController');
 const router = new Router();
 
-router.post('/', inviteController.getBoard);
-router.get('/create/:id', inviteController.createInvite);
-// router.post('/key/:key', inviteController.invite);
-router.post('/users/:id', inviteController.invitedUsers);
-router.post('/owner', inviteController.owner);
-router.post('/leave', inviteController.leaveBoard);
-router.post('/remove', inviteController.removeInvited);
+router.post('/', authorize, inviteController.getBoard);
+router.post('/create', authorize, inviteController.invite);
+router.get('/users/:id', authorize, inviteController.invitedUsers);
+router.get('/owner/:id', authorize, inviteController.owner);
+router.delete('/leave/:id', authorize, inviteController.leaveBoard);
+router.post('/delete/:id', authorize, inviteController.removeInvited);
 
 module.exports = router;

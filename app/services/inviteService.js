@@ -11,14 +11,14 @@ class InviteService {
     return { key: inviteKey.key };
   }
 
-  async inviteBoard(userId, key) {
+  async inviteBoard(user_id, key) {
     const inviteKey = await Invites.findOne({ where: { key } });
 
     if (!inviteKey) {
       return 'Key not found';
     }
 
-    const user = await User.findOne({ where: { id: userId } });
+    const user = await User.findOne({ where: { id: user_id } });
     if (!user) {
       return 'User not found';
     }
@@ -31,77 +31,72 @@ class InviteService {
     await user_board.create({
       board_id: board.id,
       owner: false,
-      user_id: userId,
+      user_id: user_id,
     });
-    return { userId, board: board.dataValues };
+
+    return board.dataValues;
   }
 
-  async users(userId, name, boardId) {
-    const board = await user_board.findAll({ where: { board_id: boardId.id } });
+  async users(board_id) {
+    const dbInvitedUsers = await user_board.findAll({
+      where: { board_id, owner: false },
+      attributes: ['owner'],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name'],
+        },
+      ],
+    });
 
-    const names = [];
-    const owner = [];
-    for (let i = 0; i < board.length; i++) {
-      let ids = board[i].user_id;
+    if(dbInvitedUsers) {
+      const users = dbInvitedUsers.map((user) => {
+        const { id, name } = user.dataValues.User;
+        return { id, name, owner: user.dataValues.owner}
+      });
 
-      const user = await User.findOne({ where: { id: ids } });
-      if (user.name !== name) {
-        names.push({
-          id: user.id,
-          name: user.name,
-          owner: board[i].owner,
-        });
-      }
-      if (board[i].dataValues.owner) {
-        owner.push({
-          id: board[i].user_id,
-          name: user.name,
-          owner: board[i].owner,
-        });
-      }
+      return users;
     }
 
-    return { owner: owner, names: names };
+    return null;
   }
 
-  async owner(data) {
-    const User_board = await user_board.findOne({
-      where: {
-        user_id: data.userId,
-        board_id: data.boardId,
-      },
+  async owner(user_id, board_id) {
+    const dbBoardUser = await Board.findOne({
+      where: { id: board_id },
+      attributes: ['title'],
+      include:
+        [
+          {
+            model: user_board,
+            where: {
+              user_id, board_id,
+            },
+            attributes: ['owner'],
+          },
+        ],
     });
 
-    const board = await Board.findOne({ where: { id: data.boardId } });
+    if (dbBoardUser) {
+      const owner = dbBoardUser.user_boards[0].dataValues.owner;
+      return { title: dbBoardUser.title, owner: owner };
+    }
 
-    return {
-      title: board.dataValues.title,
-      userId: Number(data.userId),
-      owner: User_board.owner,
-    };
+    return null;
   }
 
-  async leave(data) {
-    const { user_id, board_id } = data.data;
+  async leave(user_id, board_id) {
     await user_board.destroy({
-      where: {
-        user_id,
-        board_id,
-        owner: false,
-      },
+      where: { user_id, board_id, owner: false },
     });
-    return 'user left the board';
+    return null;
   }
 
-  async remove(data) {
+  async remove(user_id, board_id) {
     await user_board.destroy({
-      where: {
-        user_id: data.data.user.id,
-        board_id: data.data.board_id,
-        owner: false,
-      },
+      where: { user_id, board_id, owner: false },
     });
-    return 'user removed from board';
+    return null;
   }
 }
 

@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const taskService = require('../app/services/taskService');
+const taskService = require('../app/services/task/taskService');
 
 describe('Task service', function() {
   let taskId = null;

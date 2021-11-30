@@ -1,47 +1,16 @@
-const { Task, Transaction, User } = require('../models/index');
-
-class ModelTasks {
-  id;
-  title;
-  description;
-  createdAt;
-  updatedAt;
-  order;
-  archive;
-
-  constructor(model) {
-    this.id = model.id;
-    this.title = model.title;
-    this.description = model.description;
-    this.createdAt = model.createdAt;
-    this.updatedAt = model.updatedAt;
-    this.order = model.order;
-    this.archive = model.archive;
-  }
-}
+const { Task, User } = require('../../models');
+const createActionHistory = require('../utils/historyService');
+const { ModelTasks } = require('../task/modelTask');
 
 class TaskService {
   async create(id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
-    const task = await Task.create({
-      title,
-      description,
-      nameTaskList,
-      board_id,
-      order: order,
-      archive: false,
-    });
+    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false, });
 
     const user = await User.findOne({ where: { id } });
 
-    await Transaction.create({
-      task_id: task.id,
-      column: nameTaskList,
-      name_user: user.name,
-      board_id,
-      transaction: 'creation',
-    });
+    await createActionHistory(Number(task.id), Number(board_id), String(nameTaskList), String(user.name), String('creation'));
 
     return task;
   }
@@ -69,13 +38,7 @@ class TaskService {
 
     const user = await User.findOne({ where: { id: user_id } });
 
-    await Transaction.create({
-      task_id: task.id,
-      column: task.nameTaskList,
-      name_user: user.name,
-      board_id: task.board_id,
-      transaction: 'moving',
-    });
+    await createActionHistory(Number(task.id), Number(task.board_id), String(task.nameTaskList), String(user.name), String('moving'));
 
     return updated;
   }
@@ -94,13 +57,7 @@ class TaskService {
     const task = await Task.findOne({ where: { id } });
     const user = await User.findOne({ where: { id: user_id } });
 
-    await Transaction.create({
-      task_id: task.id,
-      column: task.nameTaskList,
-      name_user: user.name,
-      board_id: task.board_id,
-      transaction: 'fixing_a_task',
-    });
+    await createActionHistory(Number(task.id), Number(task.board_id), String(task.nameTaskList), String(user.name), String('fixing_a_task'));
 
     return updated;
   }

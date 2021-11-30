@@ -1,4 +1,4 @@
-const taskService = require('../services/taskService');
+const taskService = require('../services/task/taskService');
 
 class TaskController {
   async createTask(req, res, next) {
@@ -31,7 +31,7 @@ class TaskController {
 
   async updateOrder(req, res, next) {
     try {
-      const task = await taskService.updateOrder(Number(req.decoded.id), req.body);
+      const task = await taskService.updateOrder(Number(req.decoded.id), req.body.data);
       return res.status(200).json(task);
     } catch (e) {
       next(e);

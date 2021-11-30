@@ -1,24 +1,15 @@
-const {
-  user_tasks,
-  user_board,
-  User,
-  Transaction,
-  Task,
-} = require('../models/index');
+const { user_tasks, user_board, User, Transaction, Task } = require('../models/index');
+const createActionHistory = require('../services/utils/historyService');
 
 class AssignedService {
-  async fetch({ data }) {
-    const { taskId, boardId } = data;
-    const usersBoard = await user_board.findAll({
-      where: { board_id: boardId },
-    });
-    const usersTask = await user_tasks.findAll({
-      where: { task_id: taskId },
-    });
+  async fetch({ task_id, board_id }) {
+    const usersBoard = await user_board.findAll({ where: { board_id } });
+    const usersTask = await user_tasks.findAll({ where: { task_id } });
 
     const owner = await user_board.findOne({
-      where: { owner: true, board_id: boardId },
+      where: { owner: true, board_id },
     });
+
     const user = await User.findOne({ where: { id: owner.user_id } });
 
     let users_task = [];
@@ -48,73 +39,53 @@ class AssignedService {
     };
   }
 
-  async create({ data }) {
-    const { userId, taskId, boardId } = data;
-
+  async create({ user_id, task_id, board_id }) {
     const user = await User.findOne({
-      where: { id: userId },
+      where: { id: user_id },
     });
 
     const exists = await user_tasks.findOne({
-      where: {
-        task_id: taskId,
-        user_id: user.id,
-      },
+      where: { task_id, user_id },
     });
 
     if (exists) {
       return { exist: 'user has already been added' };
     } else {
       const task = await Task.findOne({
-        where: { id: taskId },
+        where: { id: task_id },
       });
 
-      await user_tasks.create({
-        task_id: taskId,
-        user_id: userId,
-        active: true,
-        board_id: boardId,
-      });
+      await user_tasks.create({ task_id, user_id, active: true, board_id });
 
-      await Transaction.create({
-        task_id: taskId,
-        column: task.nameTaskList,
-        name_user: user.name,
-        board_id: boardId,
-        transaction: 'assigned_users',
-      });
+      await createActionHistory(Number(task_id), Number(board_id), String(task.nameTaskList), String(user.name), String('assigned_users'));
 
       return { id: user.id, name: user.name };
     }
   }
 
-  async remove({ data }) {
-    const { userId, taskId, boardId } = data;
-
+  async remove({ user_id, task_id, board_id }) {
     const user = await User.findOne({
-      where: { id: userId },
+      where: { id: user_id },
     });
 
     const task = await Task.findOne({
-      where: { id: taskId },
+      where: { id: task_id },
     });
 
     await Transaction.destroy({
       where: {
-        task_id: taskId,
+        task_id: task_id,
         column: task.nameTaskList,
         name_user: user.name,
-        board_id: boardId,
+        board_id: board_id,
         transaction: 'no_assigned_users',
       },
     });
 
     await user_tasks.destroy({
-      where: {
-        task_id: taskId,
-        user_id: userId,
-      },
+      where: { task_id, user_id },
     });
+
     return { message: 'no assigned' };
   }
 }

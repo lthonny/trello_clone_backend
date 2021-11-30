@@ -1,8 +1,8 @@
-const { User } = require('../models/index');
+const { User } = require('../../models');
 const bcrypt = require('bcryptjs');
-const tokenService = require('../services/tokenService');
-require('dotenv').config({ path: require('../../env/env') });
-const ApiError = require('../exceptions/apiError');
+const tokenService = require('./tokenService');
+require('dotenv').config({ path: require('../../../env/env') });
+const ApiError = require('../../exceptions/apiError');
 
 class UserDto {
   id;

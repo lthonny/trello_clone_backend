@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const userService = require('../app/services/userServices');
+const userService = require('../app/services/auth/userServices');
 const userController = require('../app/contrellers/userController');
 
 describe('User service', function() {

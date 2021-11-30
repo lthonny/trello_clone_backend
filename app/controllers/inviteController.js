@@ -1,9 +1,11 @@
 const inviteService = require('../services/inviteService');
+const accessService = require('../services/utils/accessService');
 
 class InviteController {
-  async createInvite(req, res, next) {
+  async invite(req, res, next) {
     try {
-      return res.status(200).json(await inviteService.create(req.params.id));
+      const key = await inviteService.create(req.body.id);
+      return res.status(200).json(key);
     } catch (e) {
       next(e);
     }
@@ -11,8 +13,9 @@ class InviteController {
 
   async getBoard(req, res, next) {
     try {
-      const { userId, key } = req.body;
-      return res.status(200).json(await inviteService.inviteBoard(userId, key));
+      const { key } = req.body;
+      const board = await inviteService.inviteBoard(req.decoded.id, key);
+      return res.status(200).json(board);
     } catch (e) {
       next(e);
     }
@@ -20,8 +23,14 @@ class InviteController {
 
   async invitedUsers(req, res, next) {
     try {
-      const { userId, name } = req.body;
-      return res.status(200).json(await inviteService.users(userId, name, req.params));
+      const access = await accessService(req.decoded.id);
+
+      if(!access) {
+        return res.sendStatus(204);
+      }
+
+      const users = await inviteService.users(req.params.id);
+      return res.status(200).json(users);
     } catch (e) {
       next(e);
     }
@@ -29,16 +38,13 @@ class InviteController {
 
   async owner(req, res, next) {
     try {
-      const { data } = req.body;
-      return res.status(200).json(await inviteService.owner(data));
-    } catch (e) {
-      next(e);
-    }
-  }
+      const owner = await inviteService.owner(req.decoded.id, req.params.id);
 
-  async removeInvited(req, res, next) {
-    try {
-      return res.status(200).json(await inviteService.remove(req.body));
+      if (!owner) {
+        return res.sendStatus(204);
+      }
+
+      return res.status(200).json(owner);
     } catch (e) {
       next(e);
     }
@@ -46,7 +52,23 @@ class InviteController {
 
   async leaveBoard(req, res, next) {
     try {
-      return res.status(200).json(await inviteService.leave(req.body));
+      await inviteService.remove(req.decoded.id, req.params.id);
+      return res.sendStatus(204);
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  async removeInvited(req, res, next) {
+    try {
+      const access = await accessService(req.decoded.id);
+
+      if(!access) {
+        return res.sendStatus(204);
+      }
+
+      await inviteService.remove(req.body.user_id, req.params.id);
+      return res.sendStatus(204);
     } catch (e) {
       next(e);
     }
