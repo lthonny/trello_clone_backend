@@ -1,4 +1,4 @@
-const { user_tasks, user_board, User, Transaction, Task } = require('../../models');
+const { user_tasks, user_board, User, HistoryAction, Task } = require('../../models');
 const createActionHistory = require('../history/actionHistory');
 
 class AssignedService {
@@ -72,7 +72,7 @@ class AssignedService {
       where: { id: task_id },
     });
 
-    await Transaction.destroy({
+    await HistoryAction.destroy({
       where: {
         task_id: task_id,
         column: task.nameTaskList,
