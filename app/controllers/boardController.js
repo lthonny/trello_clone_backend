@@ -53,9 +53,9 @@ class BoardController {
 
       const access = await accessService(req.decoded.id);
 
-      // if (!access) {
-      //   return res.sendStatus(204);
-      // }
+      if (!access) {
+        return res.sendStatus(204);
+      }
 
       const board = await boardService.update(req.params.id, title, req.decoded.id);
       return res.status(200).send(board);
