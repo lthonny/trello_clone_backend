@@ -1,11 +1,13 @@
 const { Transaction } = require('../models/index');
 
 class TransactionService {
-  async fetch(id) {
+  async getTransaction(id) {
     const getTasks = await Transaction.findAll({ where: { task_id: id } });
+
     if (!getTasks) {
-      return { error: 'this problem has no history' };
+      return null;
     }
+
     return getTasks;
   }
 }

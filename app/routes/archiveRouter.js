@@ -3,7 +3,7 @@ const archiveController = require("../controllers/archiveController");
 const Router = require("express");
 const router = new Router();
 
-router.get(`/fetch/:id`, authorize, archiveController.fetchArchive);
-router.post(`/create`, authorize, archiveController.createArchive);
+router.get(`/:id`, authorize, archiveController.archives);
+router.post(`/:id`, authorize, archiveController.create);
 
 module.exports = router;

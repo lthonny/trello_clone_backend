@@ -1,37 +1,32 @@
-const {Board, Task} = require("../models/index");
+const { Board, Task } = require('../models/index');
 
 class ArchiveService {
-    async getArchive(id) {
-        const dbBoard = await Board.findByPk(id, {
-            include: [
-                {
-                    model: Task,
-                    where: {
-                        board_id: id,
-                        archive: true,
-                    },
-                },
-            ],
-        });
+  async getArchive(id) {
+    const dbBoard = await Board.findByPk(id, {
+      include: [{
+        model: Task,
+        where: {
+          board_id: id,
+          archive: true,
+        },
+      }],
+    });
 
-        const archivedTasks = dbBoard.Tasks.map(task => task.get({plain: true}));
-
-        return {
-            idBoard: dbBoard.dataValues.id,
-            nameBoard: dbBoard.dataValues.title,
-            tasks: archivedTasks,
-        };
+    if (dbBoard) {
+      return dbBoard.Tasks.map(task => task.get({ plain: true }));
     }
+    return null;
+  }
 
-    async setArchive(data) {
-        const updateTask = await Task.update({
-            archive: !data.archive,
-        }, {
-            where: {id: data.id},
-        });
-        const archiveTask = await Task.findOne({where: {id: data.id}});
-        return archiveTask;
-    }
+  async setArchive(id, archive) {
+    await Task.update({ archive: !archive }, {
+      where: { id },
+    });
+
+    const archiveTask = await Task.findOne({ where: { id } });
+
+    return archiveTask;
+  }
 }
 
 module.exports = new ArchiveService();

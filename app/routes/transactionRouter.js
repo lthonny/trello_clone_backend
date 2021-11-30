@@ -3,6 +3,6 @@ const authorize = require('../middlewares/authorize');
 const transactionController = require('../controllers/transactionController');
 const router = new Router();
 
-router.post(`/:id`, authorize, transactionController.getTransactions);
+router.get(`/:id`, authorize, transactionController.transactions);
 
 module.exports = router;

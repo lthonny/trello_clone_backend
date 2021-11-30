@@ -21,16 +21,14 @@ class BoardService {
       ],
     });
 
-    if(dbTaskUsers) {
+    if (dbTaskUsers) {
       const taskUsers = dbTaskUsers.Tasks.map(task => task.get({ plain: true }));
-
       return { id, title: dbBoard.dataValues.title, tasks: taskUsers };
-    } else {
-      return [];
     }
+
+    return null;
   }
 
-  // +
   async fetchAll(id) {
     const dbBoards = await Board.findAll({
       include: [{
@@ -47,10 +45,13 @@ class BoardService {
       return { id, title, createdAt, updatedAt };
     });
 
-    return boards;
+    if (boards) {
+      return boards;
+    }
+
+    return null;
   }
 
-  // +
   async create(id, name) {
     const dbBoard = await Board.create({ title: name });
     const board = dbBoard.get({ plain: true });
@@ -59,9 +60,10 @@ class BoardService {
       await user_board.create({ board_id: board.id, user_id: id, owner: true });
       return board;
     }
+
+    return null;
   }
 
-  // +
   async update(id, title, user_id) {
     const dbUserBoard = await user_board.findOne({
       where: { user_id, board_id: id },
@@ -82,7 +84,6 @@ class BoardService {
     }
   }
 
-  // +
   async delete(id, user_id) {
     const dbUserBoard = await user_board.findOne({
       where: { user_id, board_id: id },
