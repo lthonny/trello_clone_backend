@@ -4,9 +4,9 @@ const boardController = require('../controllers/boardController');
 const router = new Router();
 
 router.get('/', authorize, boardController.boards);
-router.get('/tasks/:id', authorize, boardController.tasksBoard);
-router.post('/create', authorize, boardController.createBoard);
-router.post('/update/:id', authorize, boardController.updateBoard);
-router.delete('/:id', authorize, boardController.deleteBoard);
+router.get('/tasks/:id', authorize, boardController.tasks);
+router.post('/create', authorize, boardController.board);
+router.post('/update/:id', authorize, boardController.board);
+router.delete('/:id', authorize, boardController.board);
 
 module.exports = router;

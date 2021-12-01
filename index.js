@@ -1,7 +1,7 @@
 require('dotenv').config({ path: require('./env/env') });
 const cors = require('cors');
 const express = require('express');
-// const { sequelize } = require('./app/models/index');
+const { sequelize } = require('./app/models/index');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
 const authGoogle = require('./app/routes/google');
@@ -34,8 +34,8 @@ app.use('/api', router);
 
 const start = async () => {
   try {
-    // await sequelize.authenticate();
-    // await sequelize.sync();
+    await sequelize.authenticate();
+    await sequelize.sync();
     app.listen(PORT, () => console.log(`Server started on port ${PORT}, path env/.env.${process.env.NODE_ENV}`));
   } catch (e) {
     console.log(e);
