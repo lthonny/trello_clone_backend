@@ -1,27 +1,27 @@
 const assignedService = require('../services/assigned/assignedService');
 
 class AssignedController {
-  async assignedUsers(req, res, next) {
+  async assignedUsers(req, res) {
     try {
       return res.status(200).json(await assignedService.fetch(req.body));
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async createAssignedUser(req, res, next) {
+  async createAssignedUser(req, res) {
     try {
       return res.status(200).json(await assignedService.create(req.body));
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async removeAssignedUser(req, res, next) {
+  async removeAssignedUser(req, res) {
     try {
       return res.status(200).json(await assignedService.remove(req.body));
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 }

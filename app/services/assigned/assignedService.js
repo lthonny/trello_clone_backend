@@ -1,4 +1,4 @@
-const { user_tasks, user_board, User, HistoryAction, Task } = require('../../models');
+const { user_tasks, user_board, User, Task } = require('../../models');
 const createActionHistory = require('../history/actionHistory');
 
 class AssignedService {
@@ -72,21 +72,11 @@ class AssignedService {
       where: { id: task_id },
     });
 
-    await HistoryAction.destroy({
-      where: {
-        task_id: task_id,
-        column: task.nameTaskList,
-        name_user: user.name,
-        board_id: board_id,
-        transaction: 'no_assigned_users',
-      },
-    });
+    await createActionHistory(Number(task.id), Number(board_id), String(task.nameTaskList), String(user.name), String('no_assigned_users'));
 
-    await user_tasks.destroy({
+    return await user_tasks.destroy({
       where: { task_id, user_id },
     });
-
-    return { message: 'no assigned' };
   }
 }
 

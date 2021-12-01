@@ -1,33 +1,28 @@
 const archiveService = require('../services/archive/archiveService');
-const accessService = require('../services/accessService');
 
 class ArchiveController {
-  async archives(req, res, next) {
+  async archives(req, res) {
     try {
       const archives = await archiveService.getArchive(req.params.id);
-
-      if(!archives) {
-        return res.sendStatus(204);
-      }
-
       return res.status(200).json(archives);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async create(req, res, next) {
+  async create(req, res) {
     try {
-      const access = await accessService(req.decoded.id);
+      const { archive, board_id } = req.body;
+      const access = await archiveService.authorizeAccess(Number(req.decoded.id), board_id);
 
       if (!access) {
-        return res.sendStatus(204);
+        res.sendStatus(403);
       }
 
-      const data = await archiveService.setArchive(req.params.id, req.body.archive);
+      const data = await archiveService.setArchive(req.params.id, archive, access);
       return res.status(200).json(data);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 }

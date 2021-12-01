@@ -1,4 +1,4 @@
-const { Board, Task } = require('../../models');
+const { Board, Task, user_board } = require('../../models');
 
 class ArchiveService {
   async getArchive(id) {
@@ -12,21 +12,30 @@ class ArchiveService {
       }],
     });
 
-    if (dbBoard) {
-      return dbBoard.Tasks.map(task => task.get({ plain: true }));
+    if (!dbBoard) {
+      return [];
+    }
+
+    return dbBoard.Tasks.map(task => task.get({ plain: true }));
+  }
+
+  async setArchive(id, archive) {
+    if(archive.owner) {
+      await Task.update({ archive: !archive }, {
+        where: { id },
+      });
+      return await Task.findOne({ where: { id } });
     }
     return null;
   }
 
-  async setArchive(id, archive) {
-    await Task.update({ archive: !archive }, {
-      where: { id },
+  async authorizeAccess(user_id, board_id) {
+    const dbUserBoard = await user_board.findOne({
+      where: { user_id, board_id },
+      attributes: ['owner'],
     });
-
-    const archiveTask = await Task.findOne({ where: { id } });
-
-    return archiveTask;
-  }
+    return dbUserBoard.get({ plain: true });
+  };
 }
 
 module.exports = new ArchiveService();

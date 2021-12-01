@@ -2,10 +2,10 @@ const { v1 } = require('uuid');
 const { Invites, user_board, User, Board } = require('../../models');
 
 class InviteService {
-  async create(id) {
-    let inviteKey = await Invites.findOne({ where: { id } });
+  async create(board_id) {
+    let inviteKey = await Invites.findOne({ where: { board_id } });
     if (!inviteKey) {
-      inviteKey = await Invites.create({ board_id: id, key: v1() });
+      inviteKey = await Invites.create({ board_id, key: v1() });
     }
 
     return { key: inviteKey.key };

@@ -2,26 +2,25 @@ const inviteService = require('../services/invite/inviteService');
 const accessService = require('../services/accessService');
 
 class InviteController {
-  async invite(req, res, next) {
+  async invite(req, res) {
     try {
-      const key = await inviteService.create(req.body.id);
-      return res.status(200).json(key);
-    } catch (e) {
-      next(e);
+      const key = await inviteService.create(req.params.id);
+      return res.status(201).json(key);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async getBoard(req, res, next) {
+  async getBoard(req, res) {
     try {
-      const { key } = req.body;
-      const board = await inviteService.inviteBoard(req.decoded.id, key);
+      const board = await inviteService.inviteBoard(req.decoded.id, req.params.key);
       return res.status(200).json(board);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async invitedUsers(req, res, next) {
+  async invitedUsers(req, res) {
     try {
       const access = await accessService(req.decoded.id);
 
@@ -31,12 +30,12 @@ class InviteController {
 
       const users = await inviteService.users(req.params.id);
       return res.status(200).json(users);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async owner(req, res, next) {
+  async owner(req, res) {
     try {
       const owner = await inviteService.owner(req.decoded.id, req.params.id);
 
@@ -45,21 +44,21 @@ class InviteController {
       }
 
       return res.status(200).json(owner);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async leaveBoard(req, res, next) {
+  async leaveBoard(req, res) {
     try {
       await inviteService.remove(req.decoded.id, req.params.id);
       return res.sendStatus(204);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async removeInvited(req, res, next) {
+  async removeInvited(req, res) {
     try {
       const access = await accessService(req.decoded.id);
 
@@ -69,8 +68,8 @@ class InviteController {
 
       await inviteService.remove(req.body.user_id, req.params.id);
       return res.sendStatus(204);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 }

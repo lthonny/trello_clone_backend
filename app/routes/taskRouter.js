@@ -4,10 +4,10 @@ const Router = require("express");
 const router = new Router();
 
 router.post('/create', authorize, taskController.createTask);
-router.post('/updateTitle', authorize, taskController.updateTitle);
-router.post('/update', authorize, taskController.updateTask);
-router.post(`/order`, authorize, taskController.updateOrder);
-router.post(`/description`, authorize, taskController.updateDescription);
+router.post('/update/title', authorize, taskController.updateTitle);
+router.post('/update/column', authorize, taskController.updateTask);
+router.post(`/update/order`, authorize, taskController.updateOrder);
+router.post(`/update/description`, authorize, taskController.updateDescription);
 router.delete('/:id', authorize, taskController.deleteTask);
 router.post(`/allDelete/:id`, authorize, taskController.removeTasks);
 

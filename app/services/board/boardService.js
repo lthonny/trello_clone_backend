@@ -26,7 +26,7 @@ class BoardService {
       return { id, title: dbBoard.dataValues.title, tasks: taskUsers };
     }
 
-    return null;
+    return [];
   }
 
   async fetchAll(id) {
@@ -52,56 +52,42 @@ class BoardService {
     return null;
   }
 
-  async create(id, name) {
-    const dbBoard = await Board.create({ title: name });
+  async create(user_id, title) {
+    const dbBoard = await Board.create({ title });
     const board = dbBoard.get({ plain: true });
-
-    if (board) {
-      await user_board.create({ board_id: board.id, user_id: id, owner: true });
-      return board;
-    }
-
-    return null;
+    await user_board.create({ board_id: board.id, user_id, owner: true });
+    return board;
   }
 
-  async update(id, title, user_id) {
-    const dbUserBoard = await user_board.findOne({
-      where: { user_id, board_id: id },
-      attributes: ['owner'],
-    });
-
-    const owner = dbUserBoard.get({ plain: true });
-
-    if (owner.owner) {
-      await Board.update({ title }, { where: { id } });
-      return { id, title, owner: true };
+  async update(board_id, title, user_id, access) {
+    if (access.owner) {
+      await Board.update({ title }, { where: { id: board_id } });
+      return { id: board_id, title, owner: true };
     }
-    if (!owner.owner) {
-      const board = await Board.findOne({ where: { id } });
-      if (board.title !== title) {
-        return { id, title, owner: false };
-      }
+    if (!access.owner) {
+      return { id: board_id, title, owner: false };
     }
   }
 
-  async delete(id, user_id) {
-    const dbUserBoard = await user_board.findOne({
-      where: { user_id, board_id: id },
-      attributes: ['owner'],
-    });
-
-    const owner = dbUserBoard.get({ plain: true });
-
-    if (owner.owner) {
-      await Invites.destroy({ where: { board_id: id } });
-      await Board.destroy({ where: { id } });
+  async delete(board_id, user_id, access) {
+    if (access.owner) {
+      await Invites.destroy({ where: { board_id } });
+      return await Board.destroy({ where: { id: board_id } });
     }
-    if (!owner.owner) {
-      await user_board.destroy({
-        where: { board_id: id, user_id, owner: false },
+    if (!access.owner) {
+      return await user_board.destroy({
+        where: { board_id, user_id, owner: false },
       });
     }
   }
+
+  async authorizeAccess(user_id, board_id) {
+    const dbUserBoard = await user_board.findOne({
+      where: { user_id, board_id },
+      attributes: ['owner'],
+    });
+    return dbUserBoard.get({ plain: true });
+  };
 }
 
 module.exports = new BoardService();

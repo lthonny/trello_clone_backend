@@ -1,75 +1,68 @@
 const boardService = require('../services/board/boardService');
-const accessService = require('../services/accessService');
 
 class BoardController {
-  async tasksBoard(req, res, next) {
+  async tasksBoard(req, res) {
     try {
-      const { id } = req.params;
-      const board = await boardService.fetchOne(Number(id));
-
-      if(!board) {
-        return res.status(204);
-      }
-
+      const board = await boardService.fetchOne(Number(req.params.id));
       return res.status(200).json(board);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async boards(req, res, next) {
+  async boards(req, res) {
     try {
       const boardTasks = await boardService.fetchAll(Number(req.decoded.id));
 
-      if(!boardTasks) {
-        return res.sendStatus(204);
+      if (!boardTasks) {
+        return res.status(204).json([]);
       }
 
       return res.status(200).send(boardTasks);
-    } catch (e) {
-      next(e);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async createBoard(req, res, next) {
+  async createBoard(req, res) {
     try {
       const { name } = req.body;
-
       const board = await boardService.create(Number(req.decoded.id), name);
-
-      if(!board) {
-        return res.sendStatus(204);
-      }
-
-      return res.status(200).send(board);
-    } catch (e) {
-      next(e);
+      res.status(201).send(board);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async updateBoard(req, res, next) {
+  async updateBoard(req, res) {
     try {
       const { title } = req.body;
 
-      const access = await accessService(req.decoded.id);
+      const access = await boardService.authorizeAccess(Number(req.decoded.id), req.params.id);
 
       if (!access) {
-        return res.sendStatus(204);
+        res.sendStatus(403);
       }
 
-      const board = await boardService.update(req.params.id, title, req.decoded.id);
-      return res.status(200).send(board);
-    } catch (e) {
-      next(e);
+      const board = await boardService.update(req.params.id, title, req.decoded.id, access);
+      res.status(200).send(board);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 
-  async deleteBoard(req, res, next) {
+  async deleteBoard(req, res) {
     try {
-      await boardService.delete(req.params.id, Number(req.decoded.id));
-      return res.sendStatus(204);
-    } catch (e) {
-      next(e);
+      const access = await boardService.authorizeAccess(Number(req.decoded.id), req.params.id);
+
+      if (!access) {
+        res.sendStatus(403);
+      }
+
+      await boardService.delete(req.params.id, Number(req.decoded.id), access);
+      res.sendStatus(204);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
     }
   }
 }

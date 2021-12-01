@@ -1,11 +1,11 @@
 const { HistoryAction } = require('../../models');
 
 class ActionHistoryService {
-  async getTransaction(id) {
-    const getTasks = await HistoryAction.findAll({ where: { task_id: id } });
+  async getTransaction(task_id) {
+    const getTasks = await HistoryAction.findAll({ where: { task_id } });
 
     if (!getTasks) {
-      return null;
+      return [];
     }
 
     return getTasks;
