@@ -1,7 +1,7 @@
 const boardService = require('../services/board/boardService');
 
 class BoardController {
-  async tasks(req, res) {
+  async tasksBoard(req, res) {
     try {
       const board = await boardService.fetchOne(Number(req.params.id));
       return res.status(200).json(board);
@@ -24,7 +24,7 @@ class BoardController {
     }
   }
 
-  async board(req, res) {
+  async createBoard(req, res) {
     try {
       const { name } = req.body;
       const board = await boardService.create(Number(req.decoded.id), name);
@@ -34,7 +34,7 @@ class BoardController {
     }
   }
 
-  async board(req, res) {
+  async updateBoard(req, res) {
     try {
       const { title } = req.body;
 
@@ -51,7 +51,7 @@ class BoardController {
     }
   }
 
-  async board(req, res) {
+  async deleteBoard(req, res) {
     try {
       const access = await boardService.authorizeAccess(Number(req.decoded.id), req.params.id);
 
