@@ -1,6 +1,4 @@
 const googleService = require('../services/googleService');
-const userGoogleService = require('../services/userGoogleService');
-const taskService = require('../services/task/taskService');
 
 class GoogleController {
   async user(req, res, next) {

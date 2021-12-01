@@ -11,54 +11,52 @@ class InviteService {
     return { key: inviteKey.key };
   }
 
-  async inviteBoard(user_id, key) {
-    const inviteKey = await Invites.findOne({ where: { key } });
-
-    if (!inviteKey) {
-      return 'Key not found';
+  async fetchBoard(user_id, key) {
+    const dbInvite = await Invites.findOne({ where: { key } });
+    if(!dbInvite) {
+      return { message: 'key of undefined'};
     }
 
-    const user = await User.findOne({ where: { id: user_id } });
-    if (!user) {
-      return 'User not found';
+    const dbBoard = await Board.findOne({ where: { id: dbInvite.board_id } });
+    const dbUserBoard = await user_board.findOne({ where: { id: dbBoard.id } });
+
+    if (dbBoard) {
+      if(dbUserBoard) {
+        return { key: dbInvite, board: dbBoard.dataValues };
+      } else {
+        await user_board.create({
+          board_id: dbInvite.board_id, owner: false, user_id,
+        });
+
+        return { key: dbInvite, board: dbBoard.dataValues };
+      }
     }
 
-    const board = await Board.findByPk(inviteKey.board_id);
-    if (!board) {
-      return 'Board not found';
-    }
-
-    await user_board.create({
-      board_id: board.id,
-      owner: false,
-      user_id: user_id,
-    });
-
-    return board.dataValues;
+    const board = await Board.findOne({ where: { id: dbInvite.board_id } });
+    return { key: dbInvite, board: board.dataValues };
   }
 
-  async users(board_id) {
-    const dbInvitedUsers = await user_board.findAll({
-      where: { board_id, owner: false },
-      attributes: ['owner'],
-      include: [
-        {
-          model: User,
-          attributes: ['id', 'name'],
-        },
-      ],
-    });
+  async fetchUsers(board_id, access) {
+    if (access.owner) {
+      const dbInvitedUsers = await user_board.findAll({
+        where: { board_id, owner: false },
+        attributes: ['owner'],
+        include: [
+          {
+            model: User,
+            attributes: ['id', 'name'],
+          },
+        ],
+      });
 
-    if(dbInvitedUsers) {
       const users = dbInvitedUsers.map((user) => {
         const { id, name } = user.dataValues.User;
-        return { id, name, owner: user.dataValues.owner}
+        return { id, name, owner: user.dataValues.owner };
       });
 
       return users;
     }
-
-    return null;
+    return [];
   }
 
   async owner(user_id, board_id) {
@@ -82,7 +80,7 @@ class InviteService {
       return { title: dbBoardUser.title, owner: owner };
     }
 
-    return null;
+    return [];
   }
 
   async leave(user_id, board_id) {
@@ -98,6 +96,17 @@ class InviteService {
     });
     return null;
   }
+
+  async authorizeAccess(user_id, board_id) {
+    const dbUserBoard = await user_board.findOne({
+      where: { user_id, board_id },
+      attributes: ['owner'],
+    });
+    if (dbUserBoard) {
+      return dbUserBoard.get({ plain: true });
+    }
+    return null;
+  };
 }
 
 module.exports = new InviteService();
