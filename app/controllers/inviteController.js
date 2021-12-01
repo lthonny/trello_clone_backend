@@ -66,7 +66,7 @@ class InviteController {
       }
 
       await inviteService.remove(req.body.user_id, req.params.id, access);
-      return res.sendStatus(200);
+      return res.sendStatus(204);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

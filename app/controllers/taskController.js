@@ -72,8 +72,8 @@ class TaskController {
         res.sendStatus(403);
       }
 
-      await taskService.removeAll(req.params.id, nameTaskList, access);
-      return res.sendStatus(204);
+      const tasks = await taskService.removeAll(req.params.id, nameTaskList, access);
+      return res.status(200).json(tasks);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

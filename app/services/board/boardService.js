@@ -1,5 +1,4 @@
-// const { sequelize } = require('/app/models/index');
-const { Board, user_board, Task, User, Invites } = require('../../models');
+const { sequelize, Board, user_board, Task, User, Invites } = require('../../models');
 
 class BoardService {
   async fetchOne(id) {
@@ -72,19 +71,11 @@ class BoardService {
 
   async delete(board_id, user_id, access) {
     if (access.owner) {
-
-      // const t = await sequelize.transaction();
-      // try {
-      //   await Invites.destroy({ where: { board_id }, transaction: t });
-      //   await Board.destroy({ where: { id: board_id}, transaction: t });
-      //
-      //   await t.commit();
-      // } catch (e) {
-      //   await t.rollback();
-      // }
-
-      await Invites.destroy({ where: { board_id } });
-      await Board.destroy({ where: { id: board_id } });
+      await sequelize.transaction(async (transaction) => {
+          await Invites.destroy({ where: { board_id }, transaction });
+          await Board.destroy({ where: { id: board_id}, transaction });
+      });
+      return;
     }
     if (!access.owner) {
       return await user_board.destroy({

@@ -13,15 +13,15 @@ class InviteService {
 
   async fetchBoard(user_id, key) {
     const dbInvite = await Invites.findOne({ where: { key } });
-    if(!dbInvite) {
-      return { message: 'key of undefined'};
+    if (!dbInvite) {
+      return { message: 'key of undefined' };
     }
 
     const dbBoard = await Board.findOne({ where: { id: dbInvite.board_id } });
-    const dbUserBoard = await user_board.findOne({ where: { id: dbBoard.id } });
+    const dbUserBoard = await user_board.findOne({ where: { board_id: dbBoard.id, user_id } });
 
     if (dbBoard) {
-      if(dbUserBoard) {
+      if (dbUserBoard) {
         return { key: dbInvite, board: dbBoard.dataValues };
       } else {
         await user_board.create({
@@ -94,7 +94,6 @@ class InviteService {
     await user_board.destroy({
       where: { user_id, board_id, owner: false },
     });
-    return null;
   }
 
   async authorizeAccess(user_id, board_id) {

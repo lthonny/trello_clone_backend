@@ -1,4 +1,4 @@
-const { Task, User, user_board } = require('../../models');
+const { sequelize, Task, User, user_board, Invites, Board } = require('../../models');
 const createActionHistory = require('../history/actionHistory');
 const { ModelTasks } = require('../task/modelTask');
 
@@ -6,48 +6,78 @@ class TaskService {
   async create(user_id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
-    const task = await Task.create({ title, description, nameTaskList, board_id, order: order, archive: false });
+    const result = await sequelize.transaction(async (transaction) => {
+      const task = await Task.create({
+        title,
+        description,
+        nameTaskList,
+        board_id,
+        order,
+        archive: false,
+      }, transaction);
 
-    const user = await User.findOne({ where: { id: user_id } });
+      const user = await User.findOne({ where: { id: user_id }, transaction });
 
-    await createActionHistory(Number(task.id), Number(board_id), String(nameTaskList), String(user.name), String('creation'));
+      return { task, user };
+    });
 
+    const { task, user } = await result;
+
+    await createActionHistory(task.id, board_id, nameTaskList, user.name, 'creation');
     return task;
   }
 
   async updateTask({ task_id, nameTaskList, order }, user_id) {
-    await Task.update({ nameTaskList, order },
-      { where: { id: task_id } },
-    );
+    const result = await sequelize.transaction(async (transaction) => {
+      await Task.update({ nameTaskList, order },
+        { where: { id: task_id }, transaction },
+      );
 
-    const user = await User.findOne({
-      where: { id: user_id },
+      const user = await User.findOne({
+        where: { id: user_id }, transaction,
+      });
+
+      const task = await Task.findOne({
+        where: { nameTaskList, id: task_id }, transaction,
+      });
+
+      return { task, user };
     });
 
-    const task = await Task.findOne({
-      where: { nameTaskList, id: task_id },
-    });
+    const { task, user } = await result;
 
-    await createActionHistory(Number(task.id), Number(task.board_id), String(task.nameTaskList), String(user.name),
-      String('moving'),
-    );
+    await createActionHistory(task.id, task.board_id, task.nameTaskList, user.name, 'moving');
 
     return task;
   }
 
   async updateTitle(task_id, title) {
-    await Task.update({ title }, { where: { id: task_id } });
-    return await Task.findOne({ where: { id: task_id } });
+    const result = await sequelize.transaction(async (transaction) => {
+      await Task.update({ title }, { where: { id: task_id }, transaction });
+      const task = await Task.findOne({ where: { id: task_id }, transaction });
+
+      return task;
+    });
+
+    const { task } = await result;
+    return task;
   }
 
   async updateDescription(user_id, task_id, description) {
-    await Task.update({ description }, { where: { id: task_id } });
-    const updated = await Task.findOne({ where: { id: task_id } });
 
-    const task = await Task.findOne({ where: { id: task_id } });
-    const user = await User.findOne({ where: { id: user_id } });
+    const result = await sequelize.transaction(async (transaction) => {
+      await Task.update({ description }, { where: { id: task_id }, transaction });
+      const updated = await Task.findOne({ where: { id: task_id }, transaction });
 
-    await createActionHistory(Number(task.id), Number(task.board_id), String(task.nameTaskList), String(user.name), String('fixing_a_task'));
+      const task = await Task.findOne({ where: { id: task_id }, transaction });
+      const user = await User.findOne({ where: { id: user_id }, transaction });
+
+      return { task, user, updated };
+    });
+
+    const { task, user, updated } = result;
+
+    await createActionHistory(task.id, task.board_id, task.nameTaskList, user.name, 'fixing_a_task');
 
     return updated;
   }
@@ -74,7 +104,7 @@ class TaskService {
 
   async removeAll(board_id, nameTaskList, access) {
     if (!access.owner) {
-      return null;
+      return [];
     }
     return await Task.destroy({ where: { board_id, nameTaskList } });
   }
