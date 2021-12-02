@@ -4,7 +4,6 @@ const createActionHistory = require('../history/actionHistory');
 
 class AssignedService {
   async fetch({ task_id, board_id }) {
-    console.log('fetch');
     const result = await sequelize.transaction(async (transaction) => {
       const usersBoard = await user_board.findAll({ where: { board_id }, transaction });
       const usersTask = await user_tasks.findAll({ where: { task_id }, transaction });

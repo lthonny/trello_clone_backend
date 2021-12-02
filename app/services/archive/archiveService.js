@@ -19,14 +19,14 @@ class ArchiveService {
     return dbBoard.Tasks.map(task => task.get({ plain: true }));
   }
 
-  async setArchive(id, archive) {
-    if(archive.owner) {
+  async setArchive(id, archive, access) {
+    if(access.owner) {
       await Task.update({ archive: !archive }, {
         where: { id },
       });
       return await Task.findOne({ where: { id } });
     }
-    return null;
+    return [];
   }
 
   async authorizeAccess(user_id, board_id) {
