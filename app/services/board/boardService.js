@@ -29,7 +29,7 @@ class BoardService {
     return [];
   }
 
-  async fetchAll(id) {
+  async fetchAll(id) { /// id d user_id
     const dbBoards = await Board.findAll({
       include: [{
         model: user_board,
@@ -45,7 +45,7 @@ class BoardService {
       return { id, title, createdAt, updatedAt };
     });
 
-    if (!boards) {
+    if (!boards) { // не нужная проверка
       return [];
     }
 
@@ -53,18 +53,19 @@ class BoardService {
   }
 
   async create(user_id, title) {
-    const dbBoard = await Board.create({ title });
+    const dbBoard = await Board.create({ title }); // транзакция
     const board = dbBoard.get({ plain: true });
     await user_board.create({ board_id: board.id, user_id, owner: true });
     return board;
   }
 
   async update(board_id, title, user_id, access) {
+
     if (access.owner) {
       await Board.update({ title }, { where: { id: board_id } });
       return { id: board_id, title, owner: true };
     }
-    if (!access.owner) {
+    if (!access.owner) { // throw Error 403
       return { id: board_id, title, owner: false };
     }
   }
@@ -77,7 +78,7 @@ class BoardService {
       });
       return;
     }
-    if (!access.owner) {
+    if (!access.owner) { // throw 403
       return await user_board.destroy({
         where: { board_id, user_id, owner: false },
       });

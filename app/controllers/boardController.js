@@ -14,7 +14,7 @@ class BoardController {
     try {
       const boardTasks = await boardService.fetchAll(Number(req.decoded.id));
 
-      if (!boardTasks) {
+      if (!boardTasks) {  // не нужная проверка
         return res.status(204).json([]);
       }
 

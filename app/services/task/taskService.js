@@ -1,4 +1,4 @@
-const { sequelize, Task, User, user_board, Invites, Board } = require('../../models');
+const { sequelize, Task, User, user_board } = require('../../models');
 const createActionHistory = require('../history/actionHistory');
 const { ModelTasks } = require('../task/modelTask');
 
@@ -23,14 +23,14 @@ class TaskService {
 
     const { task, user } = await result;
 
-    await createActionHistory(task.id, board_id, nameTaskList, user.name, 'creation');
+    await createActionHistory(task.id, board_id, nameTaskList, user.name, 'creation'); // не под транзакцией, хранить user_id, вынести в enum creation и остальные типы операций
     return task;
   }
 
   async updateTask({ task_id, nameTaskList, order }, user_id) {
     const result = await sequelize.transaction(async (transaction) => {
       await Task.update({ nameTaskList, order },
-        { where: { id: task_id }, transaction },
+        { where: { id: task_id }, transaction }
       );
 
       const user = await User.findOne({

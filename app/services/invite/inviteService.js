@@ -13,6 +13,7 @@ class InviteService {
 
   async fetchBoard(user_id, key) {
     const dbInvite = await Invites.findOne({ where: { key } });
+
     if (!dbInvite) {
       return { message: 'key of undefined' };
     }
