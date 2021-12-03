@@ -5,10 +5,10 @@ class TaskController {
     try {
       // не работает проверка
       const access = await taskService.authorizeAccess(Number(req.decoded.id), req.body.data.board_id);
-// не работает проверка
-      if (!access) {
-        res.sendStatus(403);
-      }
+      // не работает проверка
+            if (!access) {
+              res.sendStatus(403);
+            }
 
       const task = await taskService.create(Number(req.decoded.id), req.body.data);
       return res.status(201).send(task);
@@ -19,17 +19,18 @@ class TaskController {
 
   async updateTitle(req, res) {
     try {
-      const { id, title } = req.body;
-      const task = await taskService.updateTitle(id, title);
+      const { title } = req.body;
+      const task = await taskService.updateTitle(req.params.id, title);
       return res.status(200).json(task);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
   }
 
-  async updateTask(req, res) {
+  async updateColumn(req, res) {
     try {
-      await taskService.updateTask(req.body, Number(req.decoded.id));
+      const { nameTaskList, order } = req.body;
+      await taskService.updateTask(Number(req.decoded.id), req.params.id, nameTaskList, order);
       return res.sendStatus(204);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -38,6 +39,7 @@ class TaskController {
 
   async updateOrder(req, res) {
     try {
+      const {} = req.body;
       await taskService.updateOrder(Number(req.decoded.id), req.body.data);
       return res.sendStatus(204);
     } catch (error) {
@@ -47,8 +49,8 @@ class TaskController {
 
   async updateDescription(req, res) {
     try {
-      const { post } = req.body;
-      const task = await taskService.updateDescription(Number(req.decoded.id), post.id, post.description);
+      const { description } = req.body;
+      const task = await taskService.updateDescription(Number(req.decoded.id), req.params.id, description);
       return res.status(200).json(task);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -65,17 +67,34 @@ class TaskController {
     }
   }
 
-  async removeTasks(req, res) {
+  async getHistory(req, res) {
     try {
-      const { nameTaskList, board_id } = req.body;
-      const access = await taskService.authorizeAccess(Number(req.decoded.id), board_id);
+      const actionHistory = await taskService.getHistory(req.params.id);
+      return res.status(200).json(actionHistory);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
 
-      if (!access) {
-        res.sendStatus(403);
-      }
+  async assignedUsers(req, res) {
+    try {
+      return res.status(200).json(await taskService.fetchAssignedUsers(req.body));
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
 
-      const tasks = await taskService.removeAll(req.params.id, nameTaskList, access);
-      return res.status(200).json(tasks);
+  async createAssignedUser(req, res) {
+    try {
+      return res.status(200).json(await taskService.createAssignedUser(req.body));
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async removeAssignedUser(req, res) {
+    try {
+      return res.status(200).json(await taskService.deleteAssignedUser(req.body));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

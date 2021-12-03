@@ -1,16 +1,16 @@
-const boardService = require('../services/board/boardService');
+const boardService = require('../services/boardService');
 
 class BoardController {
-  async tasksBoard(req, res) {
+  async getBoardTasks(req, res) {
     try {
-      const board = await boardService.fetchOne(Number(req.params.id));
+      const board = await boardService.fetchOne(Number(req.params.id), Number(req.decoded.id));
       return res.status(200).json(board);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
   }
 
-  async boards(req, res) {
+  async getBoards(req, res) {
     try {
       const boardTasks = await boardService.fetchAll(Number(req.decoded.id));
 
@@ -19,6 +19,24 @@ class BoardController {
       }
 
       return res.status(200).send(boardTasks);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async getInviteLink(req, res) {
+    try {
+      const key = await boardService.getInviteLink(req.params.id);
+      return res.status(201).json(key);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async getInviteBoard(req, res) {
+    try {
+      const board = await boardService.getInviteBoard(req.decoded.id, req.params.key);
+      return res.status(200).json(board);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -37,30 +55,46 @@ class BoardController {
   async updateBoard(req, res) {
     try {
       const { title } = req.body;
-
-      const access = await boardService.authorizeAccess(Number(req.decoded.id), req.params.id);
-
-      if (!access) {
-        res.sendStatus(403);
-      }
-
-      const board = await boardService.update(req.params.id, title, req.decoded.id, access);
+      const board = await boardService.update(req.params.id, title, req.decoded.id);
       res.status(200).send(board);
     } catch (error) {
-      res.status(500).send({ message: error.message });
+      res.sendStatus(500);
     }
   }
 
   async deleteBoard(req, res) {
     try {
-      const access = await boardService.authorizeAccess(Number(req.decoded.id), req.params.id);
-
-      if (!access) {
-        res.sendStatus(403);
-      }
-
-      await boardService.delete(req.params.id, Number(req.decoded.id), access);
+      await boardService.delete(req.params.id, Number(req.decoded.id));
       res.sendStatus(204);
+    } catch (error) {
+      res.sendStatus(500);
+    }
+  }
+
+  async deleteTasksColumn(req, res) {
+    try {
+      const { id, type } = req.params;
+      const tasks = await boardService.removeAll(id, type);
+      return res.status(200).json(tasks);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async deleteUserAccess(req, res) {
+    try {
+      const { id, user } = req.params;
+      await boardService.deleteUserAccess(user, id);
+      return res.sendStatus(204);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async leaveBoard(req, res) {
+    try {
+      await boardService.leaveBoard(req.decoded.id, req.params.id);
+      return res.sendStatus(204);
     } catch (error) {
       res.status(500).send({ message: error.message });
     }

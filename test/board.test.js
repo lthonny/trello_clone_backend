@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const boardService = require('../app/services/board/boardService');
+const boardService = require('../app/services/boardService');
 
 describe('Board service', function() {
   let boardId = null;

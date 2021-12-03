@@ -4,7 +4,7 @@ const express = require('express');
 const { sequelize } = require('./app/models/index');
 const passport = require('passport');
 const cookieSession = require('cookie-session');
-const authGoogle = require('./app/routes/google');
+// const authGoogle = require('./app/routes/google');
 const router = require('./app/routes/index');
 const app = express();
 

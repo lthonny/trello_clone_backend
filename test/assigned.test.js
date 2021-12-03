@@ -1,5 +1,5 @@
 const { expect } = require('chai');
-const assignedService = require('../app/services/assigned/assignedService');
+const assignedService = require('../app/services/assignedService');
 
 describe('Assigned service', function() {
   beforeEach(async function() {});

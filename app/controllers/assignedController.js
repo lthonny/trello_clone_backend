@@ -1,4 +1,4 @@
-const assignedService = require('../services/assigned/assignedService');
+const assignedService = require('../services/assignedService');
 
 class AssignedController {
   async assignedUsers(req, res) {

@@ -3,12 +3,17 @@ const taskController = require('../controllers/taskController');
 const Router = require("express");
 const router = new Router();
 
-router.post('/create', authorize, taskController.createTask); // убрать create из роута
-router.post('/update/title', authorize, taskController.updateTitle); // :id/title метод PUT
-router.post('/update/column', authorize, taskController.updateTask); // :id/column метод PUT
-router.post(`/update/order`, authorize, taskController.updateOrder); // :id/order метод PUT
-router.post(`/update/description`, authorize, taskController.updateDescription); // :id/description метод PUT
+router.get('/:id/history', authorize, taskController.getHistory);
+router.post('/', authorize, taskController.createTask);
+router.put('/:id/title', authorize, taskController.updateTitle);
+router.put('/:id/column', authorize, taskController.updateColumn);
+router.put(`/:id/order`, authorize, taskController.updateOrder);
+router.put(`/:id/description`, authorize, taskController.updateDescription);
 router.delete('/:id', authorize, taskController.deleteTask);
-router.post(`/allDelete/:id`, authorize, taskController.removeTasks); // перенести в борд
+
+router.get(`/:id/assigned`, authorize, taskController.assignedUsers);
+
+// router.post(`/:id/`, authorize, taskController.createAssignedUser);
+// router.post(`/:id/`, authorize, taskController.removeAssignedUser);
 
 module.exports = router;
