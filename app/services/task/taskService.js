@@ -98,11 +98,10 @@ class TaskService {
   }
 
 
-    async fetchAssignedUsers(task_id, board_id) {
-      const usersBoard = await user_board.findAll({ where: { board_id }});
-      const usersTask = await user_tasks.findAll({ where: { task_id } });
-      const owner = await user_board.findOne({ where: { owner: true, board_id }});
-      const user = await User.findOne({ where: { id: owner.user_id } });
+  async fetchAssignedUsers(task_id, board_id) {
+    const usersTask = await user_tasks.findAll({ where: { task_id } });
+    const owner = await user_board.findOne({ where: { owner: true, board_id }});
+    const user = await User.findOne({ where: { id: owner.user_id } });
 
     let users_task = [];
     for (let i = 0; i < usersTask.length; i++) {
@@ -116,17 +115,21 @@ class TaskService {
       });
     }
 
-    let users_board = [];
-    for (let i = 0; i < usersBoard.length; i++) {
-      const user = await User.findOne({
-        where: { id: usersBoard[i].dataValues.user_id },
-      });
-      users_board.push({ id: user.id, name: user.name });
-    }
+    const dbUserBoard = await user_board.findAll({
+      where: { board_id },
+      include: [{
+        model: User,
+        attributes: ['id', 'name']
+      }]
+    });
 
-    return {
-      allUsers: users_board,
-      userAssigned: users_task,
+    const users = dbUserBoard.map((board) => { 
+      const {id, name} = board.User.get({plain: true});
+      return {id, name};
+    });
+
+
+    return { allUsers: users, userAssigned: users_task,
       owner: { id: user.id, name: user.name },
     };
   }
@@ -143,14 +146,13 @@ class TaskService {
   }
 
   async deleteAssignedUser(user_id, task_id) {
-    console.log(user_id, task_id);
       const user = await User.findOne({where: { id: user_id }});
       const task = await Task.findOne({where: { id: task_id }});
       
       await user_tasks.destroy({where: { task_id, user_id }});
       
       return { id: task.id, name: user.name, nameTaskList: task.nameTaskList };
-      
+    
       // await createActionHistory(id, board_id, nameTaskList, user_id, 'no_assigned_users');
   }
 

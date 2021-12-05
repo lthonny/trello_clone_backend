@@ -41,13 +41,11 @@ class BoardService {
     return { board_id, tasks: [], title: dbBoard.dataValues.title, owner: access.owner };
   }
 
-  async fetchAll(id) { /// id d user_id
+  async fetchAll(user_id) {
     const dbBoards = await Board.findAll({
       include: [{
         model: user_board,
-        where: {
-          user_id: id,
-        },
+        where: { user_id },
       }],
       attributes: ['id', 'title', 'createdAt', 'updatedAt'],
     });
@@ -56,10 +54,6 @@ class BoardService {
       const { id, title, createdAt, updatedAt } = board.get({ plain: true });
       return { id, title, createdAt, updatedAt };
     });
-
-    if (!boards) { // не нужная проверка
-      return [];
-    }
 
     return boards;
   }
@@ -83,29 +77,30 @@ class BoardService {
   }
 
   async delete(board_id, user_id) {
-    // if (access.owner) {
+    const access = await this.authorizeAccess(user_id, board_id);
+
+    if (!access.owner) {
       await sequelize.transaction(async (transaction) => {
         await Invites.destroy({ where: { board_id }, transaction });
         await Board.destroy({ where: { id: board_id }, transaction });
       });
       return;
-    // }
+    }
 
-    // if (!access.owner) { // throw 403
-    //   return await user_board.destroy({
-    //     where: { board_id, user_id, owner: false },
-    //   });
-    // }
   }
 
   async removeAll(board_id, nameTaskList) {
     return await Task.destroy({ where: { board_id, nameTaskList } });
   }
 
-  async deleteUserAccess(user_id, board_id) {
-    await user_board.destroy({
-      where: { user_id, board_id, owner: false },
-    });
+  async deleteUserAccess(user_id, board_id, ownerId) {
+    const access = await this.authorizeAccess(ownerId, board_id);
+    if(access.owner) {
+      await user_board.destroy({
+        where: { user_id, board_id, owner: false },
+      });
+    }
+    return {};
   }
 
   async leaveBoard(user_id, board_id) {
@@ -150,71 +145,27 @@ class BoardService {
     return { key: dbInvite, board: board.dataValues };
   }
 
-  async getArchive(id) {
-    console.log(id);
-    const dbBoard = await Board.findByPk(id, {
+  async getArchive(board_id) {
+    const dbBoard = await Board.findByPk(board_id, {
       include: [{
         model: Task,
-        where: {
-          board_id: id,
-          archive: true,
-        },
+        where: { board_id, archive: true },
       }],
     });
-    console.log(dbBoard);
-
-    if (!dbBoard) {
-      return [];
-    }
 
     return dbBoard.Tasks.map(task => task.get({ plain: true }));
   }
 
-  async fetchAssignedUsers(board_id, task_id) {
-    
-    return 'gg';
-  }
+  async createArchive(board_id, archive, task_id, user_id) {
+    const access = await this.authorizeAccess(user_id, board_id);
 
-  // async createAssignedUser(user_id, task_id, board_id) {
-  //   const dbUser = await User.findOne({ where: {id: user_id }});
-  //   const exists = await user_tasks.findOne({ where: { task_id, user_id }});
-
-  //   if (exists) {
-  //     // return { exist: 'user has already been added' };
-  //     return { id: user_id, name: dbUser.dataValues.name };
-  //   } else {
-  //     const task = await Task.findOne({ where: { id: task_id } });
-  //     await user_tasks.create({ task_id, user_id, active: true, board_id });
-  //     return { id: user_id, name: dbUser.dataValues.name };
-  //   }
-  // }
-
-  // async deleteAssignedUser({ user_id, task_id, board_id }) {
-  //   const result = await sequelize.transaction(async (transaction) => {
-  //     const task = await Task.findOne({
-  //       where: { id: task_id }, transaction,
-  //     });
-
-  //     await user_tasks.destroy({
-  //       where: { task_id, user_id },
-  //     });
-
-  //     return { id: task.id, nameTaskList: task.nameTaskList };
-  //   });
-
-  //   const { id, nameTaskList } = result;
-
-  //   await createActionHistory(id, board_id, nameTaskList, user_id, 'no_assigned_users');
-
-  //   return null;
-  // }
-
-
-  async createArchive(board_id, archive, task_id) {
+    if(access.owner) {
       await Task.update({ archive: !archive }, {
         where: { id: task_id },
       });
       return await Task.findOne({ where: { id: task_id } });
+    }
+    throw new Error(403);
   }
 
   async authorizeAccess(user_id, board_id) {
