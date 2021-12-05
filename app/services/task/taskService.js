@@ -97,21 +97,12 @@ class TaskService {
     return getHistoryTask;
   }
 
-  async fetchAssignedUsers(task_id, board_id) {
-    const result = await sequelize.transaction(async (transaction) => {
-      const usersBoard = await user_board.findAll({ where: { board_id }, transaction });
-      const usersTask = await user_tasks.findAll({ where: { task_id }, transaction });
 
-      const owner = await user_board.findOne({
-        where: { owner: true, board_id }, transaction,
-      });
-
+    async fetchAssignedUsers(task_id, board_id) {
+      const usersBoard = await user_board.findAll({ where: { board_id }});
+      const usersTask = await user_tasks.findAll({ where: { task_id } });
+      const owner = await user_board.findOne({ where: { owner: true, board_id }});
       const user = await User.findOne({ where: { id: owner.user_id } });
-
-      return { usersBoard, usersTask, id: user.id, name: user.name };
-    });
-
-    const { usersBoard, usersTask, id, name } = result;
 
     let users_task = [];
     for (let i = 0; i < usersTask.length; i++) {
@@ -133,57 +124,34 @@ class TaskService {
       users_board.push({ id: user.id, name: user.name });
     }
 
-    return { allUsers: users_board, userAssigned: users_task, owner: { id, name } };
+    return {
+      allUsers: users_board,
+      userAssigned: users_task,
+      owner: { id: user.id, name: user.name },
+    };
   }
 
-  async createAssignedUser({ user_id, task_id, board_id }) {
-    const result = await sequelize.transaction(async (transaction) => {
-      const user = await User.findOne({
-        where: { id: user_id }, transaction,
-      });
-
-      const exists = await user_tasks.findOne({
-        where: { task_id, user_id }, transaction,
-      });
-
-      return { id: user.id, name: user.name, exists };
-    });
-
-    const { id, name, exists } = result;
+  async createAssignedUser(task_id, user_id, board_id) {
+    const dbUser = await User.findOne({ where: {id: user_id}});
+    const exists = await user_tasks.findOne({ where: { task_id, user_id }});
 
     if (exists) {
       return { exist: 'user has already been added' };
-    } else {
-      const task = await Task.findOne({
-        where: { id: task_id },
-      });
-
-      await user_tasks.create({ task_id, user_id, active: true, board_id });
-
-      await createActionHistory(task_id, board_id, task.nameTaskList, user_id, 'assigned_users');
-
-      return { id, name };
-    }
+    } 
+    await user_tasks.create({ task_id, user_id, active: true, board_id });
+    return { id: user_id, name: dbUser.dataValues.name };
   }
 
-  async deleteAssignedUser({ user_id, task_id, board_id }) {
-    const result = await sequelize.transaction(async (transaction) => {
-      const task = await Task.findOne({
-        where: { id: task_id }, transaction,
-      });
-
-      await user_tasks.destroy({
-        where: { task_id, user_id },
-      });
-
-      return { id: task.id, nameTaskList: task.nameTaskList };
-    });
-
-    const { id, nameTaskList } = result;
-
-    await createActionHistory(id, board_id, nameTaskList, user_id, 'no_assigned_users');
-
-    return null;
+  async deleteAssignedUser(user_id, task_id) {
+    console.log(user_id, task_id);
+      const user = await User.findOne({where: { id: user_id }});
+      const task = await Task.findOne({where: { id: task_id }});
+      
+      await user_tasks.destroy({where: { task_id, user_id }});
+      
+      return { id: task.id, name: user.name, nameTaskList: task.nameTaskList };
+      
+      // await createActionHistory(id, board_id, nameTaskList, user_id, 'no_assigned_users');
   }
 
   async authorizeAccess(user_id, board_id) {

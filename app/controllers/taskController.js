@@ -76,9 +76,10 @@ class TaskController {
     }
   }
 
-  async assignedUsers(req, res) {
+  async getAllAssignedUsers(req, res) {
     try {
-      return res.status(200).json(await taskService.fetchAssignedUsers(req.body));
+      const {id, board_id} = req.params; 
+      return res.status(200).json(await taskService.fetchAssignedUsers(id, board_id));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -86,19 +87,22 @@ class TaskController {
 
   async createAssignedUser(req, res) {
     try {
-      return res.status(200).json(await taskService.createAssignedUser(req.body));
+      const {id, user_id} = req.params;
+      return res.status(200).json(await taskService.createAssignedUser(user_id, id, Number(req.body.board_id)));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
   }
 
-  async removeAssignedUser(req, res) {
+  async deleteAssignedUser(req, res) {
     try {
-      return res.status(200).json(await taskService.deleteAssignedUser(req.body));
+      const {id, userId} = req.params;
+      return res.status(200).json(await taskService.deleteAssignedUser(userId, id));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
   }
+
 }
 
 module.exports = new TaskController();

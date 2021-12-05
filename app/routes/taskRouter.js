@@ -11,9 +11,8 @@ router.put(`/:id/order`, authorize, taskController.updateOrder);
 router.put(`/:id/description`, authorize, taskController.updateDescription);
 router.delete('/:id', authorize, taskController.deleteTask);
 
-router.get(`/:id/assigned`, authorize, taskController.assignedUsers);
-
-// router.post(`/:id/`, authorize, taskController.createAssignedUser);
-// router.post(`/:id/`, authorize, taskController.removeAssignedUser);
+router.get(`/:id/assigned/:board_id`, authorize, taskController.getAllAssignedUsers);
+router.post(`/:id/assigned/user/:user_id`, authorize, taskController.createAssignedUser);
+router.delete(`/:id/assigned/user/:userId`, authorize, taskController.deleteAssignedUser);
 
 module.exports = router;

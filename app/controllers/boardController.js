@@ -1,4 +1,4 @@
-const boardService = require('../services/boardService');
+const boardService = require('../services/board/boardService');
 
 class BoardController {
   async getBoardTasks(req, res) {
@@ -13,11 +13,6 @@ class BoardController {
   async getBoards(req, res) {
     try {
       const boardTasks = await boardService.fetchAll(Number(req.decoded.id));
-
-      if (!boardTasks) {  // не нужная проверка
-        return res.status(204).json([]);
-      }
-
       return res.status(200).send(boardTasks);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -35,6 +30,7 @@ class BoardController {
 
   async getInviteBoard(req, res) {
     try {
+      console.log(req.decoded.id, req.params.key);
       const board = await boardService.getInviteBoard(req.decoded.id, req.params.key);
       return res.status(200).json(board);
     } catch (error) {
@@ -99,6 +95,34 @@ class BoardController {
       res.status(500).send({ message: error.message });
     }
   }
+
+  async getArchives(req, res) {
+    try {
+      const archives = await boardService.getArchive(req.params.id);
+      return res.status(200).json(archives);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  async createArchive(req, res) {
+    try {
+      const { id, task_id } = req.params;
+      const { archive } = req.body;
+      const data = await boardService.createArchive(id, archive, task_id);
+      return res.status(200).json(data);
+    } catch (error) {
+      res.status(500).send({ message: error.message });
+    }
+  }
+
+  // async removeAssignedUser(req, res) {
+  //   try {
+  //     return res.status(200).json(await boardService.deleteAssignedUser(req.body));
+  //   } catch (error) {
+  //     res.status(500).send({ message: error.message });
+  //   }
+  // }
 }
 
 module.exports = new BoardController();

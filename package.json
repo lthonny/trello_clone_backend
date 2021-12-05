@@ -15,17 +15,17 @@
     "prettier": "prettier --write ./app"
   },
   "author": {
-    "name" : "Vasily Shitukhin",
-    "email" : "thonny02@mail.ru",
-    "url" : "https://vk.com/thonny_v"
+    "name": "Vasily Shitukhin",
+    "email": "thonny02@mail.ru",
+    "url": "https://vk.com/thonny_v"
   },
   "repository": {
     "type": "git",
     "url": "https://github.com/lthonny/trello_clone_backend"
   },
   "bugs": {
-    "url" : "https://github.com/lthonny/trello_clone_backend",
-    "email" : "thonny02@mail.ru"
+    "url": "https://github.com/lthonny/trello_clone_backend",
+    "email": "thonny02@mail.ru"
   },
   "keywords": [],
   "license": "ISC",
@@ -42,7 +42,6 @@
     "jsonwebtoken": "^8.5.1",
     "jwt-decode": "^3.1.2",
     "passport": "^0.5.0",
-    "passport-google-oauth20": "^2.0.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "pg": "^8.7.1",
