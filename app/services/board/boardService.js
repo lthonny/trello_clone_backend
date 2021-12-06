@@ -72,8 +72,6 @@ class BoardService {
       return { title };
     }
     throw 403
-
-    // throw new Error();
   }
 
   async delete(board_id, user_id) {
@@ -152,6 +150,10 @@ class BoardService {
         where: { board_id, archive: true },
       }],
     });
+
+    if(!dbBoard) {
+      return [];
+    }
 
     return dbBoard.Tasks.map(task => task.get({ plain: true }));
   }

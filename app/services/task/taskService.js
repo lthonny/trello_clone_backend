@@ -97,7 +97,6 @@ class TaskService {
     return getHistoryTask;
   }
 
-
   async fetchAssignedUsers(task_id, board_id) {
     const usersTask = await user_tasks.findAll({ where: { task_id } });
     const owner = await user_board.findOne({ where: { owner: true, board_id }});
