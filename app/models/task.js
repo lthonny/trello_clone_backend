@@ -5,7 +5,7 @@ module.exports = (sequelize, DataTypes) => {
       description: DataTypes.STRING,
       nameTaskList: DataTypes.STRING,
       board_id: DataTypes.INTEGER,
-      order: DataTypes.INTEGER,
+      order: DataTypes.DOUBLE,
       archive: {
         type: DataTypes.BOOLEAN,
       },
