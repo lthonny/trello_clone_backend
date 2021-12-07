@@ -6,9 +6,6 @@ const router = new Router();
 router.get('/:id/history', authorize, taskController.getHistory);
 router.post('/', authorize, taskController.createTask);
 router.put('/:id/title', authorize, taskController.updateTitle);
-// router.put('/:id/column', authorize, taskController.updateColumn);
-// router.put(`/:id/order`, authorize, taskController.updateOrder);
-
 router.put('/:id/column', authorize, taskController.updateColumn);
 router.put(`/order`, authorize, taskController.updateOrder);
 

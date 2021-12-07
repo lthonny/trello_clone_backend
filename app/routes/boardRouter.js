@@ -16,7 +16,4 @@ router.delete('/:id/access/:user', authorize, boardController.deleteUserAccess);
 router.get('/:id/archives', authorize, boardController.getArchives);
 router.post('/:id/archive/task/:task_id', authorize, boardController.createArchive);
 
-// router.post(`/:id/assigned/user/:user_id`, authorize, boardController.createAssignedUser);
-// router.post(`/:id/assigned/user/`, authorize, taskController.removeAssignedUser);
-
 module.exports = router;
