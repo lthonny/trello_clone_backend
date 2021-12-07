@@ -71,20 +71,20 @@ class BoardService {
       await Board.update({ title }, { where: { id: board_id } });
       return { title };
     }
-    throw 403
+    throw 403;
   }
 
   async delete(board_id, user_id) {
     const access = await this.authorizeAccess(user_id, board_id);
 
-    if (!access.owner) {
+    if (access.owner) {
       await sequelize.transaction(async (transaction) => {
         await Invites.destroy({ where: { board_id }, transaction });
         await Board.destroy({ where: { id: board_id }, transaction });
       });
       return;
     }
-
+    await user_board.destroy({ where: { board_id, owner: false } });
   }
 
   async removeAll(board_id, nameTaskList) {
@@ -93,7 +93,7 @@ class BoardService {
 
   async deleteUserAccess(user_id, board_id, ownerId) {
     const access = await this.authorizeAccess(ownerId, board_id);
-    if(access.owner) {
+    if (access.owner) {
       await user_board.destroy({
         where: { user_id, board_id, owner: false },
       });
@@ -151,7 +151,7 @@ class BoardService {
       }],
     });
 
-    if(!dbBoard) {
+    if (!dbBoard) {
       return [];
     }
 
@@ -161,7 +161,7 @@ class BoardService {
   async createArchive(board_id, archive, task_id, user_id) {
     const access = await this.authorizeAccess(user_id, board_id);
 
-    if(access.owner) {
+    if (access.owner) {
       await Task.update({ archive: !archive }, {
         where: { id: task_id },
       });
