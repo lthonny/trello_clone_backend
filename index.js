@@ -3,6 +3,8 @@ const cors = require('cors');
 const express = require('express');
 const { sequelize } = require('./app/models/index');
 const cookieSession = require('cookie-session');
+const passport = require('passport');
+const authGoogle = require('./app/routes/authGoogle');
 const router = require('./app/routes/index');
 const app = express();
 
@@ -24,8 +26,12 @@ app.use(
   }),
 );
 
+app.use(passport.initialize());
+app.use(passport.session());
+
 app.use(express.json());
 app.use('/api', router);
+app.use('/auth', authGoogle);
 
 const start = async () => {
   try {
