@@ -86,7 +86,7 @@ class TaskController {
 
   async updateOrder(req, res) {
     try {
-      const data = await dragAndDrop._newUpdateOrder(req.body.data);
+      const data = await dragAndDrop._newUpdateOrder(req.decoded.id, req.body.data);
       res.status(200).json(data);
     } catch (e) {
       res.status(500);
@@ -95,8 +95,26 @@ class TaskController {
 
   async updateColumn(req, res) {
     try {
-      const data = await dragAndDrop.newUpdateColumn(req.params.id, req.body.data, req.body.nameTaskList);
+      const data = await dragAndDrop.newUpdateColumn(req.decoded.id, req.params.id, req.body.data, req.body.nameTaskList);
       res.status(200).json(data);
+    } catch (e) {
+      res.sendStatus(500);
+    }
+  }
+
+  async leaveTask(req, res) {
+    try {
+      const data = await taskService.leaveTask(req.decoded.id, req.params.id);
+      res.sendStatus(204);
+    } catch (e) {
+      res.sendStatus(500);
+    }
+  }
+
+  async returnTaskColumn(req, res) {
+    try {
+      const task = await taskService.returnTaskColumn(req.params.id, req.body.column);
+      res.status(200).json(task);
     } catch (e) {
       res.sendStatus(500);
     }

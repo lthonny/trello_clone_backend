@@ -1,11 +1,14 @@
 const { sequelize, Task } = require('../models/index');
+const createActionHistory = require('../services/task/actionHistory');
 
 class dragDrop {
-  async newUpdateColumn(task_id, { topTaskId, currentTaskId, bottomTaskId }, column) {
+  async newUpdateColumn(user_id, task_id, { topTaskId, currentTaskId, bottomTaskId }, column) {
     return sequelize.transaction(async (transaction) => {
 
       const currentTask = await Task.findOne({ where: { id: currentTaskId }, transaction });
       let { order } = currentTask;
+
+      await createActionHistory(currentTaskId, currentTask.board_id, currentTask.nameTaskList, user_id, 'moving');
 
       if (topTaskId === null && bottomTaskId !== null) {
         const bottomTask = await Task.findOne({ where: { id: bottomTaskId }, transaction });
@@ -41,11 +44,12 @@ class dragDrop {
     });
   }
 
-  async _newUpdateOrder({ topTaskId, currentTaskId, bottomTaskId }) {
+  async _newUpdateOrder(user_id, { topTaskId, currentTaskId, bottomTaskId }) {
     return sequelize.transaction(async (transaction) => {
-
       const currentTask = await Task.findOne({ where: { id: currentTaskId }, transaction });
       let { order } = currentTask;
+
+      await createActionHistory(currentTaskId, currentTask.board_id, currentTask.nameTaskList, user_id, 'moving');
 
       if (topTaskId === null) {
         const bottomTask = await Task.findOne({ where: { id: bottomTaskId }, transaction });
