@@ -17,7 +17,7 @@ class UserDto {
 }
 
 class UserService {
-  async sign_up(name, email, password) {
+  async sign_up(name, email, password, auth_via) {
     const candidate = await User.findOne({ where: { email } });
 
     if (candidate) {
@@ -27,7 +27,15 @@ class UserService {
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
-    const user = (
+
+    let user;
+    if(auth_via) {
+      user = (
+        await User.create({ name, email, password: hashedPassword, auth_via })
+      ).get();
+    }
+
+    user = (
       await User.create({ name, email, password: hashedPassword })
     ).get();
 
