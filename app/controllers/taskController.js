@@ -40,7 +40,6 @@ class TaskController {
 
   async deleteTask(req, res) {
     try {
-      // добавить проверку для доступа
       await taskService.delete(req.params.id);
       return res.sendStatus(204);
     } catch (error) {

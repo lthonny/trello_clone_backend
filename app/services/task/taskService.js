@@ -1,6 +1,5 @@
 const { sequelize, Task, User, user_board, HistoryAction, user_tasks } = require('../../models');
 const createActionHistory = require('./actionHistory');
-const { ModelTasks } = require('../task/modelTask');
 
 class TaskService {
   async create(user_id, data) {
@@ -22,26 +21,6 @@ class TaskService {
     const { task } = await result;
 
     await createActionHistory(task.id, board_id, nameTaskList, user_id, 'creation'); // не под транзакцией, хранить user_id, вынести в enum creation и остальные типы операций
-    return task;
-  }
-
-  async updateTask(user_id, task_id, nameTaskList, order) {
-    const result = await sequelize.transaction(async (transaction) => {
-      await Task.update({ nameTaskList, order },
-        { where: { id: task_id }, transaction },
-      );
-
-      const task = await Task.findOne({
-        where: { nameTaskList, id: task_id }, transaction,
-      });
-
-      return { task };
-    });
-
-    const { task } = result;
-
-    await createActionHistory(task.id, task.board_id, task.nameTaskList, user_id, 'moving');
-
     return task;
   }
 
@@ -70,22 +49,6 @@ class TaskService {
     await createActionHistory(task.id, task.board_id, task.nameTaskList, user_id, 'fixing_a_task');
 
     return task;
-  }
-
-  async updateOrder(user_id, data) {
-    const updateTasks = data.map(
-      ({ id, title, description, createdAt, updatedAt, board_id, order, archive }) => {
-        return new ModelTasks({ id, title, description, createdAt, updatedAt, board_id, order, archive });
-      },
-    );
-
-    async function processArray(updateTasks) {
-      for (const task of updateTasks) {
-        await Task.update({ order: task.order }, { where: { id: task.id } });
-      }
-    }
-
-    await processArray(updateTasks);
   }
 
   async delete(task_id) {

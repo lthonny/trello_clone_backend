@@ -2,41 +2,23 @@ const router = require('express').Router();
 const passport = require('passport');
 require('../passport');
 
-router.get('/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
+router.get('/google',
+  passport.authenticate('google', { scope: ['profile', 'email'] }),
+);
 
-router.get(
-  '/google/callback',
+router.get('/google/callback',
   passport.authenticate('google', {
-    // successRedirect: `${process.env.CLIENT_URL}`,
-    failureRedirect: '/login/failed',
+    successRedirect: `/auth/login/success`,
+    failureRedirect: '/auth/login/failed',
   }),
   function(req, res) {
-    // console.log('req.user', req.user.user.id);
 
-    res.cookie('id', req.user.user.id, {
-      maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false,
-    });
-
-    res.cookie('name', req.user.user.name, {
-      maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: false,
-    });
-
-    res.cookie('token', req.user.refreshToken, {
-      maxAge: 30 * 24 * 60 * 60 * 1000, httpOnly: true, secure: true,
-    });
-
-    res.redirect(`${process.env.CLIENT_URL}/admin/boards`);
-  }
+  },
 );
 
 router.get('/login/success', (req, res) => {
-  // if (req.user) {
-  //   res
-  //     .status(200)
-  //     .json({ success: true, message: 'successfull', user: req.username }); // cookies: req.cookies
-  // }
-  // console.log(req);
-  // res.json(req.user);
+  console.log('/google/callback', req.user.user.email);
+  res.redirect(`${process.env.CLIENT_URL}/admin/google/auth/user/` + req.user.user.email);
 });
 
 router.get('/login/failed', (req, res) => {
@@ -45,6 +27,7 @@ router.get('/login/failed', (req, res) => {
 
 router.get('/logout', (req, res) => {
   req.logout();
+  req.session.destroy();
   res.redirect(`${process.env.CLIENT_URL}`);
 });
 

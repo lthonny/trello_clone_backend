@@ -4,7 +4,7 @@ const tokenService = require('./tokenService');
 const bcrypt = require('bcryptjs');
 
 class GoogleService {
-  async sign_up(name, email) {
+  async sign_up(email) {
     const candidate = await User.findOne({ where: { email } });
 
     if (candidate) {
@@ -14,7 +14,7 @@ class GoogleService {
     }
 
     const user = (
-      await User.create({ name, email, auth_via: 'google' })
+      await User.create({ email, auth_via: 'google' })
     ).get();
 
     const tokens = tokenService.generateTokens({ ...user });
