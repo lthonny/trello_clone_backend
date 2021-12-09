@@ -4,9 +4,7 @@ const dragAndDrop = require('../services/dragDrop');
 class TaskController {
   async createTask(req, res) {
     try {
-      // не работает проверка
       const access = await taskService.authorizeAccess(Number(req.decoded.id), req.body.data.board_id);
-      // не работает проверка
       if (!access) {
         res.sendStatus(403);
       }
