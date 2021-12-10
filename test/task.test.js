@@ -2,7 +2,10 @@ const { expect } = require('chai');
 const taskService = require('../app/services/task/taskService');
 
 describe('Task service', function() {
+  let userId = 999;
   let taskId = null;
+  let boardId = 999;
+
   beforeEach(async function() {});
   afterEach(async function() {});
 
@@ -11,45 +14,36 @@ describe('Task service', function() {
       title: 'new task',
       description: 'new description',
       nameTaskList: 'Coded',
-      board_id: 1,
+      board_id: boardId,
       order: 1,
     };
 
-    const { title, description, nameTaskList, board_id, order } = data;
-    const newTask = await taskService.create(1, { title, description, nameTaskList, board_id, order });
-    await taskService.create(2, { title, description, nameTaskList, board_id, order });
-    taskId = newTask.dataValues.id;
-    expect(title).to.equal(newTask.dataValues.title);
-  });
+    const newTask = await taskService.create(userId, data);
+    taskId = newTask.id;
 
-  it('should get task', async function() {
-    const task = await taskService.fetchOne(taskId);
-    expect(task.dataValues.id).to.equal(taskId);
+    expect(data.title).to.equal(newTask.title);
   });
 
   it('should update title task', async function() {
     const title = 'new title';
     const task = await taskService.updateTitle(taskId, title);
-    expect(task.dataValues.title).to.equal(title);
+    expect(task.title).to.equal(title);
   });
 
   it('should update description task', async function() {
     const description = 'new description';
-    const task = await taskService.updateDescription(1, taskId, description);
-    expect(task.dataValues.description).to.equal(description);
+    const task = await taskService.updateDescription(userId, taskId, description);
+    expect(task.description).to.equal(description);
+  });
+
+  it('should task column', async function() {
+    const column = 'To Do';
+    const task = await taskService.returnTaskColumn(taskId, column);
+    expect(task.nameTaskList).to.equal(column);
   });
 
   it('should remove task', async function() {
     const task = await taskService.delete(taskId);
-    expect(task).to.equal('task deleted');
-  });
-
-  it('should archive task', async function() {
-    const data = {
-      id: 2,
-      archive: true,
-    };
-    const task = await taskService.setArchive(data);
-    expect(task.dataValues.archive).to.equal(false);
+    expect(task).to.equal(1);
   });
 });

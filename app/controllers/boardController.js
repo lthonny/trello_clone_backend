@@ -30,7 +30,6 @@ class BoardController {
 
   async getInviteBoard(req, res) {
     try {
-      console.log(req.decoded.id, req.params.key);
       const board = await boardService.getInviteBoard(req.decoded.id, req.params.key);
       return res.status(200).json(board);
     } catch (error) {

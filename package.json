@@ -6,7 +6,7 @@
   "scripts": {
     "start": "cross-env NODE_ENV=production nodemon index.js",
     "start:dev": "cross-env NODE_ENV=development nodemon index.js",
-    "start:test": "cross-env mocha",
+    "start:test": "cross-env NODE_ENV=development mocha",
     "make-model": "npx sequelize-cli model:generate --name Users --attributes email:string",
     "db:migrate": "cross-env NODE_ENV=development npx sequelize-cli db:migrate",
     "db:undo": "cross-env NODE_ENV=development npx sequelize-cli db:migrate:undo",

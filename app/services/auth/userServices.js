@@ -1,4 +1,4 @@
-const { User } = require('../../models');
+const { User, RefreshToken, sequelize } = require('../../models');
 const bcrypt = require('bcryptjs');
 const tokenService = require('./tokenService');
 require('dotenv').config({ path: require('../../../env/env') });

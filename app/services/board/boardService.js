@@ -1,4 +1,4 @@
-const { sequelize, Board, user_board, Task, User, Invites, user_tasks } = require('../../models');
+const { sequelize, Board, user_board, Task, User, Invites } = require('../../models');
 const { v1 } = require('uuid');
 
 class BoardService {
@@ -82,9 +82,9 @@ class BoardService {
         await Invites.destroy({ where: { board_id }, transaction });
         await Board.destroy({ where: { id: board_id }, transaction });
       });
-      return;
+      return true;
     }
-    await user_board.destroy({ where: { board_id, owner: false } });
+    return await user_board.destroy({ where: { board_id, owner: false } });
   }
 
   async removeAll(board_id, nameTaskList) {

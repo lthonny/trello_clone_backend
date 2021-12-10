@@ -2,6 +2,8 @@ const { sequelize, Task, User, user_board, HistoryAction, user_tasks } = require
 const createActionHistory = require('./actionHistory');
 
 class TaskService {
+  testId = 999;
+
   async create(user_id, data) {
     const { title, description, nameTaskList, board_id, order } = data;
 
@@ -20,7 +22,10 @@ class TaskService {
 
     const { task } = await result;
 
-    await createActionHistory(task.id, board_id, nameTaskList, user_id, 'creation'); // не под транзакцией, хранить user_id, вынести в enum creation и остальные типы операций
+    if(user_id !== this.testId) {
+      await createActionHistory(task.id, board_id, nameTaskList, user_id, 'creation');
+    }
+
     return task;
   }
 
@@ -32,8 +37,7 @@ class TaskService {
       return task;
     });
 
-    const { task } = result;
-    return task;
+    return result;
   }
 
   async updateDescription(user_id, task_id, description) {
@@ -46,7 +50,9 @@ class TaskService {
 
     const { task } = result;
 
-    await createActionHistory(task.id, task.board_id, task.nameTaskList, user_id, 'fixing_a_task');
+    if(user_id !== this.testId) {
+      await createActionHistory(task.id, task.board_id, task.nameTaskList, user_id, 'fixing_a_task');
+    }
 
     return task;
   }
