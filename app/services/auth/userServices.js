@@ -29,15 +29,13 @@ class UserService {
     const hashedPassword = await bcrypt.hash(password, 10);
 
     let user;
-    if(auth_via) {
+    if (auth_via) {
       user = (
         await User.create({ name, email, password: hashedPassword, auth_via })
       ).get();
     }
 
-    user = (
-      await User.create({ name, email, password: hashedPassword })
-    ).get();
+    user = (await User.create({ name, email, password: hashedPassword })).get();
 
     const userDto = new UserDto(user);
     const tokens = tokenService.generateTokens({ ...user });

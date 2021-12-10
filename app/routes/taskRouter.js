@@ -1,6 +1,6 @@
 const authorize = require('../middlewares/authorize');
 const taskController = require('../controllers/taskController');
-const Router = require("express");
+const Router = require('express');
 const router = new Router();
 
 router.get('/:id/history', authorize, taskController.getHistory);
@@ -10,9 +10,21 @@ router.put('/:id/column', authorize, taskController.updateColumn);
 router.put(`/order`, authorize, taskController.updateOrder);
 router.put(`/:id/description`, authorize, taskController.updateDescription);
 router.delete('/:id', authorize, taskController.deleteTask);
-router.get(`/:id/assigned/:board_id`, authorize, taskController.getAllAssignedUsers);
-router.post(`/:id/assigned/user/:user_id`, authorize, taskController.createAssignedUser);
-router.delete(`/:id/assigned/user/:userId`, authorize, taskController.deleteAssignedUser);
+router.get(
+  `/:id/assigned/:board_id`,
+  authorize,
+  taskController.getAllAssignedUsers,
+);
+router.post(
+  `/:id/assigned/user/:user_id`,
+  authorize,
+  taskController.createAssignedUser,
+);
+router.delete(
+  `/:id/assigned/user/:userId`,
+  authorize,
+  taskController.deleteAssignedUser,
+);
 router.delete('/:id/leave', authorize, taskController.leaveTask);
 router.post('/:id/return/column', authorize, taskController.returnTaskColumn);
 

@@ -10,7 +10,7 @@ describe('Board service', function() {
 
   let regUser = {
     name: 'test',
-    email: '99test@mail.ru',
+    email: 'tests@mail.ru',
     password: 'killmenot',
     auth_via: null,
   };

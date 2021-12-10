@@ -1,4 +1,11 @@
-const { sequelize, Board, user_board, Task, User, Invites } = require('../../models');
+const {
+  sequelize,
+  Board,
+  user_board,
+  Task,
+  User,
+  Invites,
+} = require('../../models');
 const { v1 } = require('uuid');
 
 class BoardService {
@@ -23,9 +30,7 @@ class BoardService {
     const dbInvitedUsers = await user_board.findAll({
       where: { board_id, owner: false },
       attributes: ['owner'],
-      include: [
-        { model: User, attributes: ['id', 'name'] },
-      ],
+      include: [{ model: User, attributes: ['id', 'name'] }],
     });
 
     const users = dbInvitedUsers.map((user) => {
@@ -34,23 +39,38 @@ class BoardService {
     });
 
     if (dbTaskUsers) {
-      const taskUsers = dbTaskUsers.Tasks.map(task => task.get({ plain: true }));
-      return { board_id, title: dbBoard.dataValues.title, tasks: taskUsers, owner: access.owner, users };
+      const taskUsers = dbTaskUsers.Tasks.map((task) =>
+        task.get({ plain: true }),
+      );
+      return {
+        board_id,
+        title: dbBoard.dataValues.title,
+        tasks: taskUsers,
+        owner: access.owner,
+        users,
+      };
     }
 
-    return { board_id, tasks: [], title: dbBoard.dataValues.title, owner: access.owner };
+    return {
+      board_id,
+      tasks: [],
+      title: dbBoard.dataValues.title,
+      owner: access.owner,
+    };
   }
 
   async fetchAll(user_id) {
     const dbBoards = await Board.findAll({
-      include: [{
-        model: user_board,
-        where: { user_id },
-      }],
+      include: [
+        {
+          model: user_board,
+          where: { user_id },
+        },
+      ],
       attributes: ['id', 'title', 'createdAt', 'updatedAt'],
     });
 
-    const boards = dbBoards.map(board => {
+    const boards = dbBoards.map((board) => {
       const { id, title, createdAt, updatedAt } = board.get({ plain: true });
       return { id, title, createdAt, updatedAt };
     });
@@ -60,7 +80,11 @@ class BoardService {
 
   async create(user_id, title) {
     const dbBoard = await Board.create({ title });
-    await user_board.create({ board_id: dbBoard.dataValues.id, user_id, owner: true });
+    await user_board.create({
+      board_id: dbBoard.dataValues.id,
+      user_id,
+      owner: true,
+    });
     return dbBoard;
   }
 
@@ -125,14 +149,18 @@ class BoardService {
     }
 
     const dbBoard = await Board.findOne({ where: { id: dbInvite.board_id } });
-    const dbUserBoard = await user_board.findOne({ where: { board_id: dbBoard.id, user_id } });
+    const dbUserBoard = await user_board.findOne({
+      where: { board_id: dbBoard.id, user_id },
+    });
 
     if (dbBoard) {
       if (dbUserBoard) {
         return { key: dbInvite, board: dbBoard.dataValues };
       } else {
         await user_board.create({
-          board_id: dbInvite.board_id, owner: false, user_id,
+          board_id: dbInvite.board_id,
+          owner: false,
+          user_id,
         });
 
         return { key: dbInvite, board: dbBoard.dataValues };
@@ -145,26 +173,31 @@ class BoardService {
 
   async getArchive(board_id) {
     const dbBoard = await Board.findByPk(board_id, {
-      include: [{
-        model: Task,
-        where: { board_id, archive: true },
-      }],
+      include: [
+        {
+          model: Task,
+          where: { board_id, archive: true },
+        },
+      ],
     });
 
     if (!dbBoard) {
       return [];
     }
 
-    return dbBoard.Tasks.map(task => task.get({ plain: true }));
+    return dbBoard.Tasks.map((task) => task.get({ plain: true }));
   }
 
   async createArchive(board_id, archive, task_id, user_id) {
     const access = await this.authorizeAccess(user_id, board_id);
 
     if (access.owner) {
-      await Task.update({ archive: !archive }, {
-        where: { id: task_id },
-      });
+      await Task.update(
+        { archive: !archive },
+        {
+          where: { id: task_id },
+        },
+      );
       return await Task.findOne({ where: { id: task_id } });
     }
     throw new Error(403);
@@ -176,7 +209,7 @@ class BoardService {
       attributes: ['owner'],
     });
     return dbUserBoard.get({ plain: true });
-  };
+  }
 }
 
 module.exports = new BoardService();

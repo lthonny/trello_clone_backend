@@ -1,4 +1,11 @@
-const { sequelize, Task, User, user_board, HistoryAction, user_tasks } = require('../../models');
+const {
+  sequelize,
+  Task,
+  User,
+  user_board,
+  HistoryAction,
+  user_tasks,
+} = require('../../models');
 const createActionHistory = require('./actionHistory');
 
 class TaskService {
@@ -8,22 +15,31 @@ class TaskService {
     const { title, description, nameTaskList, board_id, order } = data;
 
     const result = await sequelize.transaction(async (transaction) => {
-      const task = await Task.create({
-        title,
-        description,
-        nameTaskList,
-        board_id,
-        order,
-        archive: false,
-      }, transaction);
+      const task = await Task.create(
+        {
+          title,
+          description,
+          nameTaskList,
+          board_id,
+          order,
+          archive: false,
+        },
+        transaction,
+      );
 
       return { task };
     });
 
     const { task } = await result;
 
-    if(user_id !== this.testId) {
-      await createActionHistory(task.id, board_id, nameTaskList, user_id, 'creation');
+    if (user_id !== this.testId) {
+      await createActionHistory(
+        task.id,
+        board_id,
+        nameTaskList,
+        user_id,
+        'creation',
+      );
     }
 
     return task;
@@ -41,17 +57,25 @@ class TaskService {
   }
 
   async updateDescription(user_id, task_id, description) {
-
     const result = await sequelize.transaction(async (transaction) => {
-      await Task.update({ description }, { where: { id: task_id }, transaction });
+      await Task.update(
+        { description },
+        { where: { id: task_id }, transaction },
+      );
       const task = await Task.findOne({ where: { id: task_id }, transaction });
       return { task };
     });
 
     const { task } = result;
 
-    if(user_id !== this.testId) {
-      await createActionHistory(task.id, task.board_id, task.nameTaskList, user_id, 'fixing_a_task');
+    if (user_id !== this.testId) {
+      await createActionHistory(
+        task.id,
+        task.board_id,
+        task.nameTaskList,
+        user_id,
+        'fixing_a_task',
+      );
     }
 
     return task;
@@ -68,7 +92,9 @@ class TaskService {
 
   async fetchAssignedUsers(task_id, board_id) {
     const usersTask = await user_tasks.findAll({ where: { task_id } });
-    const owner = await user_board.findOne({ where: { owner: true, board_id } });
+    const owner = await user_board.findOne({
+      where: { owner: true, board_id },
+    });
     const user = await User.findOne({ where: { id: owner.user_id } });
 
     let users_task = [];
@@ -85,10 +111,12 @@ class TaskService {
 
     const dbUserBoard = await user_board.findAll({
       where: { board_id },
-      include: [{
-        model: User,
-        attributes: ['id', 'name'],
-      }],
+      include: [
+        {
+          model: User,
+          attributes: ['id', 'name'],
+        },
+      ],
     });
 
     const users = dbUserBoard.map((board) => {
@@ -96,9 +124,9 @@ class TaskService {
       return { id, name };
     });
 
-
     return {
-      allUsers: users, userAssigned: users_task,
+      allUsers: users,
+      userAssigned: users_task,
       owner: { id: user.id, name: user.name },
     };
   }
@@ -112,7 +140,13 @@ class TaskService {
       return { exist: 'user has already been added' };
     }
     await user_tasks.create({ task_id, user_id, active: true, board_id });
-    await createActionHistory(task_id, board_id, dbTask.nameTaskList, user_id, 'assigned_users');
+    await createActionHistory(
+      task_id,
+      board_id,
+      dbTask.nameTaskList,
+      user_id,
+      'assigned_users',
+    );
 
     return { id: user_id, name: dbUser.dataValues.name };
   }
@@ -132,7 +166,10 @@ class TaskService {
   }
 
   async returnTaskColumn(task_id, column) {
-    await Task.update({ nameTaskList: column, archive: false }, { where: { id: task_id } });
+    await Task.update(
+      { nameTaskList: column, archive: false },
+      { where: { id: task_id } },
+    );
     const task = await Task.findOne({ where: { id: task_id } });
     return task;
   }
@@ -143,7 +180,7 @@ class TaskService {
       attributes: ['owner'],
     });
     return dbUserBoard.get({ plain: true });
-  };
+  }
 }
 
 module.exports = new TaskService();

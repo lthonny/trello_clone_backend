@@ -4,12 +4,18 @@ const dragAndDrop = require('../services/dragDrop');
 class TaskController {
   async createTask(req, res) {
     try {
-      const access = await taskService.authorizeAccess(Number(req.decoded.id), req.body.data.board_id);
+      const access = await taskService.authorizeAccess(
+        Number(req.decoded.id),
+        req.body.data.board_id,
+      );
       if (!access) {
         res.sendStatus(403);
       }
 
-      const task = await taskService.create(Number(req.decoded.id), req.body.data);
+      const task = await taskService.create(
+        Number(req.decoded.id),
+        req.body.data,
+      );
       return res.status(201).send(task);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -29,7 +35,11 @@ class TaskController {
   async updateDescription(req, res) {
     try {
       const { description } = req.body;
-      const task = await taskService.updateDescription(Number(req.decoded.id), req.params.id, description);
+      const task = await taskService.updateDescription(
+        Number(req.decoded.id),
+        req.params.id,
+        description,
+      );
       return res.status(200).json(task);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -57,7 +67,9 @@ class TaskController {
   async getAllAssignedUsers(req, res) {
     try {
       const { id, board_id } = req.params;
-      return res.status(200).json(await taskService.fetchAssignedUsers(id, board_id));
+      return res
+        .status(200)
+        .json(await taskService.fetchAssignedUsers(id, board_id));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -66,7 +78,15 @@ class TaskController {
   async createAssignedUser(req, res) {
     try {
       const { id, user_id } = req.params;
-      return res.status(200).json(await taskService.createAssignedUser(user_id, id, Number(req.body.board_id)));
+      return res
+        .status(200)
+        .json(
+          await taskService.createAssignedUser(
+            user_id,
+            id,
+            Number(req.body.board_id),
+          ),
+        );
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -75,7 +95,9 @@ class TaskController {
   async deleteAssignedUser(req, res) {
     try {
       const { id, userId } = req.params;
-      return res.status(200).json(await taskService.deleteAssignedUser(userId, id));
+      return res
+        .status(200)
+        .json(await taskService.deleteAssignedUser(userId, id));
     } catch (error) {
       res.status(500).send({ message: error.message });
     }
@@ -83,7 +105,10 @@ class TaskController {
 
   async updateOrder(req, res) {
     try {
-      const data = await dragAndDrop._newUpdateOrder(req.decoded.id, req.body.data);
+      const data = await dragAndDrop._newUpdateOrder(
+        req.decoded.id,
+        req.body.data,
+      );
       res.status(200).json(data);
     } catch (e) {
       res.status(500);
@@ -92,7 +117,12 @@ class TaskController {
 
   async updateColumn(req, res) {
     try {
-      const data = await dragAndDrop.newUpdateColumn(req.decoded.id, req.params.id, req.body.data, req.body.nameTaskList);
+      const data = await dragAndDrop.newUpdateColumn(
+        req.decoded.id,
+        req.params.id,
+        req.body.data,
+        req.body.nameTaskList,
+      );
       res.status(200).json(data);
     } catch (e) {
       res.sendStatus(500);
@@ -110,7 +140,10 @@ class TaskController {
 
   async returnTaskColumn(req, res) {
     try {
-      const task = await taskService.returnTaskColumn(req.params.id, req.body.column);
+      const task = await taskService.returnTaskColumn(
+        req.params.id,
+        req.body.column,
+      );
       res.status(200).json(task);
     } catch (e) {
       res.sendStatus(500);

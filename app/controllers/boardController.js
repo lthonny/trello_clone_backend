@@ -3,7 +3,10 @@ const boardService = require('../services/board/boardService');
 class BoardController {
   async getBoardTasks(req, res) {
     try {
-      const board = await boardService.fetchOne(Number(req.params.id), req.decoded.id);
+      const board = await boardService.fetchOne(
+        Number(req.params.id),
+        req.decoded.id,
+      );
       return res.status(200).json(board);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -30,7 +33,10 @@ class BoardController {
 
   async getInviteBoard(req, res) {
     try {
-      const board = await boardService.getInviteBoard(req.decoded.id, req.params.key);
+      const board = await boardService.getInviteBoard(
+        req.decoded.id,
+        req.params.key,
+      );
       return res.status(200).json(board);
     } catch (error) {
       res.status(500).send({ message: error.message });
@@ -50,7 +56,11 @@ class BoardController {
   async updateBoard(req, res) {
     try {
       const { title } = req.body;
-      const board = await boardService.update(Number(req.params.id), title, req.decoded.id);
+      const board = await boardService.update(
+        Number(req.params.id),
+        title,
+        req.decoded.id,
+      );
       res.status(200).send(board);
     } catch (error) {
       res.sendStatus(500);
@@ -108,7 +118,12 @@ class BoardController {
     try {
       const { id, task_id } = req.params;
       const { archive } = req.body;
-      const data = await boardService.createArchive(Number(id), archive, Number(task_id), Number(req.decoded.id));
+      const data = await boardService.createArchive(
+        Number(id),
+        archive,
+        Number(task_id),
+        Number(req.decoded.id),
+      );
       return res.status(200).json(data);
     } catch (error) {
       res.sendStatus(403);
