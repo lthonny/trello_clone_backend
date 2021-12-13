@@ -16,6 +16,9 @@ Rename
     
     .env.development.example to .env.development
 
+### Attention! 
+Goggle authorization will not work on non-custom ports, since they are registered in the GOOGLE API SERVICES.
+
 ### Testings
     npm run start:test
 
@@ -36,7 +39,6 @@ Rename
 ### 3) Run npm start
 
     npm run start
-    
     
 ### 🤝 Connect with me:
 

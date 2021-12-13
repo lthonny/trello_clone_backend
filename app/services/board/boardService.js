@@ -144,14 +144,19 @@ class BoardService {
   async getInviteBoard(user_id, key) {
     const dbInvite = await Invites.findOne({ where: { key } });
 
+    // console.log(dbInvite);
+
     if (!dbInvite) {
       return { message: 'key of undefined' };
     }
-
+    //
     const dbBoard = await Board.findOne({ where: { id: dbInvite.board_id } });
     const dbUserBoard = await user_board.findOne({
       where: { board_id: dbBoard.id, user_id },
     });
+    //
+    // console.log(dbBoard);
+    // return dbBoard;
 
     if (dbBoard) {
       if (dbUserBoard) {

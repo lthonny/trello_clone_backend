@@ -11,10 +11,7 @@ passport.use(
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
       callbackURL: process.env.CALLBACKURL,
     },
-    async function (accessToken, refreshToken, profile, done) {
-      // console.log(accessToken, refreshToken, profile);
-      console.log(profile);
-
+    async function(accessToken, refreshToken, profile, done) {
       const user = {
         name: profile.displayName,
         emails: profile.emails[0].value,
@@ -26,14 +23,11 @@ passport.use(
 );
 
 passport.serializeUser(async (user, done) => {
-  console.log('serializeUser', user);
-
   const dbUser = await User.findOne({ where: { email: user.emails } });
 
   let profile;
   if (dbUser) {
     profile = await userService.sign_in(dbUser.email, 'google');
-    console.log('user существует в базе данных', profile);
     done(null, profile);
   } else {
     profile = await userService.sign_up(
@@ -42,7 +36,6 @@ passport.serializeUser(async (user, done) => {
       'google',
       'google',
     );
-    console.log('user не существует в базе данных', profile);
     done(null, profile);
   }
 });
