@@ -40,7 +40,7 @@ passport.serializeUser(async (user, done) => {
       done(null, profile);
     }
   } catch (e) {
-    console.log('ddddddddddddddddddddddddddddddasssssssssssssssssssssDDDDDDDDDDD');
+    console.log('error', e);
   }
 });
 

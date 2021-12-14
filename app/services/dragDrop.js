@@ -30,10 +30,12 @@ class dragDrop {
         });
         order = bottomTask.order / 2;
 
-        return await Task.update(
+        await Task.update(
           { nameTaskList: column, order },
           { where: { id: task_id }, transaction },
         );
+
+        return await Task.findOne({where: {id: task_id}, transaction});
       }
 
       if (bottomTaskId === null && topTaskId !== null) {
@@ -43,17 +45,21 @@ class dragDrop {
         });
         order = topTask.order + 1;
 
-        return await Task.update(
+        await Task.update(
           { nameTaskList: column, order },
           { where: { id: task_id }, transaction },
         );
+
+        return await Task.findOne({where: {id: task_id}, transaction});
       }
 
       if (topTaskId === null && bottomTaskId === null) {
-        return await Task.update(
+        await Task.update(
           { nameTaskList: column, order: 0 },
           { where: { id: task_id }, transaction },
         );
+
+        return await Task.findOne({where: {id: task_id}, transaction});
       }
 
       const topTask = await Task.findOne({
@@ -66,10 +72,12 @@ class dragDrop {
       });
       order = (topTask.order + bottomTask.order) / 2;
 
-      return await Task.update(
+      await Task.update(
         { nameTaskList: column, order },
         { where: { id: task_id }, transaction },
       );
+
+      return await Task.findOne({where: {id: task_id}, transaction});
     });
   }
 

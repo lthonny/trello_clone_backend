@@ -7,6 +7,6 @@ router.post('/signup', userController.signup);
 router.post('/login', userController.login);
 router.get('/refresh', authorize, userController.refresh);
 router.get('/isauth', authorize, userController.isauth);
-router.post('/logout', authorize, userController.logout);
+router.post('/logout', userController.logout);
 
 module.exports = router;
