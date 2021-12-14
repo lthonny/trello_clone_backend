@@ -14,7 +14,7 @@ passport.use(
     async function(accessToken, refreshToken, profile, done) {
       const user = {
         name: profile.displayName,
-        emails: profile.emails[0].value,
+        email: profile.emails[0].value,
       };
 
       done(null, user);
@@ -23,20 +23,24 @@ passport.use(
 );
 
 passport.serializeUser(async (user, done) => {
-  const dbUser = await User.findOne({ where: { email: user.emails } });
+  try {
+    const dbUser = await User.findOne({ where: { email: user.email } });
 
-  let profile;
-  if (dbUser) {
-    profile = await userService.sign_in(dbUser.email, 'google');
-    done(null, profile);
-  } else {
-    profile = await userService.sign_up(
-      user.name,
-      user.emails,
-      'google',
-      'google',
-    );
-    done(null, profile);
+    let profile;
+    if (dbUser) {
+      profile = await userService.sign_in(dbUser.email, 'google');
+      done(null, profile);
+    } else {
+      profile = await userService.sign_up(
+        user.name,
+        user.email,
+        'google',
+        'google',
+      );
+      done(null, profile);
+    }
+  } catch (e) {
+    console.log('ddddddddddddddddddddddddddddddasssssssssssssssssssssDDDDDDDDDDD');
   }
 });
 
