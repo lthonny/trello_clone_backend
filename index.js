@@ -3,12 +3,15 @@ const cors = require('cors');
 const express = require('express');
 const { sequelize } = require('./app/models/index');
 const cookieSession = require('cookie-session');
+const cookieParser = require('cookie-parser');
 const passport = require('passport');
 const authGoogle = require('./app/routes/authGoogle');
 const router = require('./app/routes/index');
 const app = express();
 
 const PORT = process.env.PORT || 5000;
+
+app.use(cookieParser());
 
 app.use(
   cookieSession({
@@ -17,8 +20,6 @@ app.use(
     maxAge: 24 * 60 * 60 * 100,
   }),
 );
-
-console.log('process.env.CLIENT_URL', process.env.CLIENT_URL);
 
 app.use(
   cors({
@@ -38,7 +39,6 @@ app.use('/auth', authGoogle);
 const start = async () => {
   try {
     await sequelize.authenticate();
-    // await sequelize.sync();
     app.listen(PORT, () => console.log(`Server started on port ${PORT}, path env/.env.${process.env.NODE_ENV}`));
   } catch (e) {
     console.log(e);
