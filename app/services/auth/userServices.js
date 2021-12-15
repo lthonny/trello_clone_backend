@@ -23,9 +23,10 @@ class UserService {
     const candidate = await User.findOne({ where: { email } });
 
     if (candidate) {
-      throw ApiError.BadRequest(
-        `User with mailing address ${email} already exists`,
-      );
+      // throw ApiError.BadRequest(
+      //   `User with mailing address ${email} already exists`,
+      // );
+      throw ApiError.BadRequest('Incorrect email');
     }
 
     const hashedPassword = await bcrypt.hash(password, 10);
