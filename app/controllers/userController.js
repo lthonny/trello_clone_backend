@@ -14,10 +14,7 @@ class UserController {
 
       return res.status(200).json(userData);
     } catch (e) {
-      return res.status(400).json({
-        status: 'error',
-        message: 'Incorrect email'
-      });
+      return res.status(400).json({ status: 'error', message: 'Incorrect email' });
     }
   }
 
