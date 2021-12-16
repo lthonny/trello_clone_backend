@@ -141,14 +141,16 @@ class BoardService {
     return inviteKey.key;
   }
 
-  async getInviteBoard(user_id, key) {
+  async getInviteBoard(user_id, key, board_id) {
     const dbInvite = await Invites.findOne({ where: { key } });
 
     if (!dbInvite) {
-      return { message: 'key of undefined' };
+      return [];
+      // throw new Error({ message: 'key of undefined' });
     }
 
     const dbBoard = await Board.findOne({ where: { id: dbInvite.board_id } });
+
     const dbUserBoard = await user_board.findOne({
       where: { board_id: dbBoard.id, user_id },
     });
@@ -163,12 +165,11 @@ class BoardService {
           user_id,
         });
 
-        return { key: dbInvite, board: dbBoard.dataValues };
+        return { key: dbInvite, board: dbBoard };
       }
     }
-
-    const board = await Board.findOne({ where: { id: dbInvite.board_id } });
-    return { key: dbInvite, board: board.dataValues };
+    // console.log('user привязан');
+    return [];
   }
 
   async getArchive(board_id) {

@@ -36,7 +36,9 @@ class BoardController {
       const board = await boardService.getInviteBoard(
         req.decoded.id,
         req.params.key,
+        Number(req.params.id)
       );
+
       return res.status(200).json(board);
     } catch (error) {
       res.status(500).send({ message: error.message });
